@@ -1,4 +1,4 @@
-package com.popeftimov.automechanic.auth;
+package com.popeftimov.automechanic.auth.exception;
 
 public class EmailExceptions {
 

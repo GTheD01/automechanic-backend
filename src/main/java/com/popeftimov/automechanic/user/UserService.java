@@ -1,6 +1,6 @@
 package com.popeftimov.automechanic.user;
 
-import com.popeftimov.automechanic.auth.EmailExceptions;
+import com.popeftimov.automechanic.auth.exception.EmailExceptions;
 import com.popeftimov.automechanic.auth.token.ConfirmationToken;
 import com.popeftimov.automechanic.auth.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;

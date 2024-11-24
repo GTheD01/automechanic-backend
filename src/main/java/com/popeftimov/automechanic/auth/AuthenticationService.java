@@ -1,19 +1,21 @@
 package com.popeftimov.automechanic.auth;
 
+import com.popeftimov.automechanic.auth.exception.EmailExceptions;
+import com.popeftimov.automechanic.auth.exception.PasswordExceptions;
 import com.popeftimov.automechanic.auth.token.ConfirmationToken;
 import com.popeftimov.automechanic.auth.token.ConfirmationTokenService;
+import com.popeftimov.automechanic.auth.validator.EmailValidator;
+import com.popeftimov.automechanic.auth.validator.PasswordValidator;
 import com.popeftimov.automechanic.config.JwtService;
 import com.popeftimov.automechanic.user.Role;
 import com.popeftimov.automechanic.user.User;
 import com.popeftimov.automechanic.user.UserRepository;
 import com.popeftimov.automechanic.user.UserService;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -27,6 +29,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailValidator emailValidator;
+    private final PasswordValidator passwordValidator;
 
     public String register(RegisterRequest request) {
         boolean isValidEmail = emailValidator
@@ -34,6 +37,13 @@ public class AuthenticationService {
 
         if (!isValidEmail) {
             throw new EmailExceptions.InvalidEmailException();
+        }
+
+        boolean passwordStrongEnough = passwordValidator
+                .test(request.getPassword());
+
+        if (!passwordStrongEnough) {
+            throw new PasswordExceptions.InvalidPasswordException();
         }
 
         String token = userService.signUpUser(
