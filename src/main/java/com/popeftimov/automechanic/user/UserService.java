@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.user;
 
+import com.popeftimov.automechanic.auth.EmailExceptions;
 import com.popeftimov.automechanic.auth.token.ConfirmationToken;
 import com.popeftimov.automechanic.auth.token.ConfirmationTokenService;
 import lombok.AllArgsConstructor;
@@ -33,7 +34,7 @@ public class UserService implements UserDetailsService {
                 .isPresent();
 
         if (userExists) {
-            throw new IllegalStateException("Email already taken");
+            throw new EmailExceptions.EmailAlreadyTakenException();
         }
 
         String encodedPassword = passwordEncoder.encode(user.getPassword());

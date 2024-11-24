@@ -28,12 +28,12 @@ public class AuthenticationService {
     private final ConfirmationTokenService confirmationTokenService;
     private final EmailValidator emailValidator;
 
-    public AuthenticationResponse register(RegisterRequest request) {
+    public String register(RegisterRequest request) {
         boolean isValidEmail = emailValidator
                 .test(request.getEmail());
 
         if (!isValidEmail) {
-            throw new IllegalStateException("Invalid email address");
+            throw new EmailExceptions.InvalidEmailException();
         }
 
         String token = userService.signUpUser(
@@ -48,7 +48,7 @@ public class AuthenticationService {
 
         String link = "http://localhost:8080/api/v1/auth/register/confirm?token=" + token;
 //        TODO: send email
-        return AuthenticationResponse.builder().token(token).build();
+        return token;
     }
 
     @Transactional
