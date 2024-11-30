@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.appointment;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.popeftimov.automechanic.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -23,6 +24,7 @@ public class Appointment {
 
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
     private User user;
 
 }

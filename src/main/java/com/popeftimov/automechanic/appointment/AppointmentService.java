@@ -41,7 +41,7 @@ public class AppointmentService {
                 newAppointment.getAppointmentTime(), userResponse);
     }
 
-    public List<Appointment> getAllAppointments() {
-        return appointmentRepository.findAll();
+    public List<Appointment> getAppointmentsByUser(User user) {
+        return appointmentRepository.findByUser(user);
     }
 }

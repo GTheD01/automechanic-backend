@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/appointments")
@@ -48,5 +49,13 @@ public class AppointmentController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(appointment);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<List<Appointment>> getAppointmentsForLoggedInUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        List<Appointment> appointments = appointmentService.getAppointmentsByUser(user);
+        return ResponseEntity.ok(appointments);
     }
 }
