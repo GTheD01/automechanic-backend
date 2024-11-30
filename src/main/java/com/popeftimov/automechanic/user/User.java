@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.user;
 
+import com.popeftimov.automechanic.appointment.Appointment;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,7 +23,7 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
     private String firstName;
     private String lastName;
     private String email;
@@ -31,6 +32,9 @@ public class User implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private List<Appointment> appointments;
 
     public User(String firstName, String lastName, String email, String password, Role role) {
         this.firstName = firstName;

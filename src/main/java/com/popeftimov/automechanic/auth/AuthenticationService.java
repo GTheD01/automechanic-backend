@@ -13,11 +13,8 @@ import com.popeftimov.automechanic.user.UserRepository;
 import com.popeftimov.automechanic.user.UserService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -67,7 +64,7 @@ public class AuthenticationService {
     }
 
     @Transactional
-    public String confirmToken(String token) {
+    public Map<String, String> confirmToken(String token) {
         ConfirmationToken confirmationToken = confirmationTokenService
                 .getToken(token)
                 .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
@@ -84,8 +81,10 @@ public class AuthenticationService {
 
         confirmationTokenService.setConfirmedAt(token);
         userService.enableUser(confirmationToken.getUser().getEmail());
+        Map<String, String> response = new HashMap<>();
+        response.put("message", "confirmed");
 
-        return "confirmed";
+        return response;
     }
 
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
