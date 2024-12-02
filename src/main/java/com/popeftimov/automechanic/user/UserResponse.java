@@ -1,13 +1,9 @@
 package com.popeftimov.automechanic.user;
 
-import com.popeftimov.automechanic.appointment.Appointment;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
-
 
 @Data
 @Builder

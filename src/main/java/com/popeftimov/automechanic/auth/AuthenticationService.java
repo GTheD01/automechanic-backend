@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.auth;
 
+import com.popeftimov.automechanic.auth.exception.ConfirmationExceptions;
 import com.popeftimov.automechanic.auth.exception.EmailExceptions;
 import com.popeftimov.automechanic.auth.exception.PasswordExceptions;
 import com.popeftimov.automechanic.auth.token.ConfirmationToken;
@@ -70,13 +71,13 @@ public class AuthenticationService {
                 .orElseThrow(() -> new UsernameNotFoundException("Token not found"));
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new IllegalStateException("Email already confirmed");
+            throw new ConfirmationExceptions.EmailAlreadyConfirmed();
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new IllegalStateException("Expired token");
+            throw new ConfirmationExceptions.TokenExpired();
         }
 
         confirmationTokenService.setConfirmedAt(token);
