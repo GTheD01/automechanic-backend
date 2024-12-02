@@ -1,4 +1,4 @@
-package com.popeftimov.automechanic.auth.token;
+package com.popeftimov.automechanic.auth.confirmationtoken;
 
 
 import com.popeftimov.automechanic.user.User;

@@ -1,10 +1,11 @@
 package com.popeftimov.automechanic.auth;
 
+import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenResponse;
+import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -12,6 +13,7 @@ import java.util.Map;
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
+    private final ConfirmationTokenService confirmationTokenService;
 
     @PostMapping("/register")
     public ResponseEntity<String> register(
@@ -20,9 +22,9 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.register(request));
     }
 
-    @GetMapping(path = "register/confirm")
-    public Map<String, String> confirm(@RequestParam("token") String token) {
-        return authenticationService.confirmToken(token);
+    @GetMapping(path = "register/confirm-email")
+    public ConfirmationTokenResponse confirm(@RequestParam("token") String token) {
+        return confirmationTokenService.confirmToken(token);
     }
 
     @PostMapping("/authenticate")

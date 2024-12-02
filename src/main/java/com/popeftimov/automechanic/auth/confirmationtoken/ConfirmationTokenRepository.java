@@ -1,4 +1,4 @@
-package com.popeftimov.automechanic.auth.token;
+package com.popeftimov.automechanic.auth.confirmationtoken;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
