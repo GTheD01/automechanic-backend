@@ -2,6 +2,7 @@ package com.popeftimov.automechanic.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.popeftimov.automechanic.appointment.Appointment;
+import com.popeftimov.automechanic.car.models.Car;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -37,6 +38,9 @@ public class User implements UserDetails {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     @JsonManagedReference
     private List<Appointment> appointments;
+
+    @OneToMany(mappedBy = "user")
+    private List<Car> cars;
 
     public User(String firstName, String lastName, String email, String password, Role role) {
         this.firstName = firstName;
