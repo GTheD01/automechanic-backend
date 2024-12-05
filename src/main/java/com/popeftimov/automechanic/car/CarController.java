@@ -3,13 +3,9 @@ package com.popeftimov.automechanic.car;
 import com.popeftimov.automechanic.car.dto.CarBrandResponse;
 import com.popeftimov.automechanic.car.dto.CarModelResponse;
 import com.popeftimov.automechanic.car.dto.CarModelYearsResponse;
-import com.popeftimov.automechanic.car.models.CarModel;
 import com.popeftimov.automechanic.car.services.CarModelService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.popeftimov.automechanic.car.services.CarBrandService;
 
 import java.util.List;
@@ -36,5 +32,4 @@ public class CarController {
     public CarModelYearsResponse getModelYears(@PathVariable String brand, @PathVariable String modelName) {
         return carModelService.getModelYearsByName(modelName);
     }
-
 }
