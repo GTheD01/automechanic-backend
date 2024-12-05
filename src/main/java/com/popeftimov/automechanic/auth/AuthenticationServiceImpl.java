@@ -4,11 +4,14 @@ import com.popeftimov.automechanic.auth.exception.EmailExceptions;
 import com.popeftimov.automechanic.auth.exception.PasswordExceptions;
 import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationToken;
 import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenService;
+import com.popeftimov.automechanic.auth.passwordresettoken.PasswordResetTokenService;
 import com.popeftimov.automechanic.auth.validator.EmailValidator;
 import com.popeftimov.automechanic.auth.validator.PasswordValidator;
 import com.popeftimov.automechanic.config.JwtService;
 import com.popeftimov.automechanic.user.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,6 +31,8 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final EmailValidator emailValidator;
     private final PasswordValidator passwordValidator;
+    private final PasswordResetTokenService passwordResetTokenService;
+    private final UserService userService;
 
     public String register(RegisterRequest request) {
         boolean isValidEmail = emailValidator
@@ -96,5 +101,31 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponse.builder()
                 .token(jwtToken)
                 .build();
+    }
+
+    @Override
+    public String requestPasswordReset(String email) {
+        if (!emailValidator.test(email)) {
+            throw new EmailExceptions.InvalidEmailException();
+        }
+
+        return passwordResetTokenService.generatePasswordResetToken(email);
+    }
+
+    @Override
+    public ResponseEntity<String> resetUserPassword(String token, String newPassword) {
+        if (!passwordValidator.test(newPassword)) {
+            throw new PasswordExceptions.InvalidPasswordException();
+        }
+
+        boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(token);
+
+        if (!isValidToken) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
+        }
+
+        userService.resetPassword(token, newPassword);
+
+        return ResponseEntity.ok("Password reset successful.");
     }
 }
