@@ -20,3 +20,24 @@ spring:
     last_name: ${ADMIN_LASTNAME}
     email: ${ADMIN_EMAIL}
     password: ${ADMIN_PASSWORD}
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SUPPORT_EMAIL_HOST}
+    password: ${APP_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+  web:
+    resources:
+      static-locations: classpath:/static/, file:/uploads/avatars/
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 20MB
+upload:
+  avatar-dir: uploads/avatars/

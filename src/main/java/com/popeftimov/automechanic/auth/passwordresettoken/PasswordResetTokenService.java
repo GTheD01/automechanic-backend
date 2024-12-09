@@ -8,4 +8,5 @@ public interface PasswordResetTokenService {
     boolean validatePasswordResetToken(String token);
     void deletePasswordResetToken(String token);
     void deleteAllByUser(User user);
+    void sendPasswordResetEmail(String email, String link);
 }

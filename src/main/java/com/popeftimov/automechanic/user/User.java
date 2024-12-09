@@ -42,6 +42,8 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user")
     private List<Car> cars;
 
+    private String avatar;
+
     public User(String firstName, String lastName, String email, String password, Role role) {
         this.firstName = firstName;
         this.lastName = lastName;

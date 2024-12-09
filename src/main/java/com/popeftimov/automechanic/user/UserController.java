@@ -1,10 +1,12 @@
 package com.popeftimov.automechanic.user;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("api/v1")
@@ -16,5 +18,10 @@ public class UserController {
     public UserResponse findCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userService.convertToUserResponse(user);
+    }
+
+    @PostMapping("/{userId}/avatar")
+    public ResponseEntity<?> uploadAvatar(@PathVariable("userId") Long userId, @RequestParam(value = "avatar", required = false) MultipartFile avatarFile) throws IOException {
+        return userService.uploadAvatar(userId, avatarFile);
     }
 }

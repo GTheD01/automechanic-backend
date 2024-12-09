@@ -2,8 +2,8 @@ package com.popeftimov.automechanic.auth;
 
 import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenResponse;
 import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenService;
+import com.popeftimov.automechanic.auth.dto.*;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
