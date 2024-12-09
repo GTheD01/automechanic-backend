@@ -13,6 +13,6 @@ public interface UserService {
     int enableUser(String email);
     UserResponse convertToUserResponse(User user);
     ResponseEntity<?> uploadAvatar(@PathVariable("userId") Long userId, @RequestParam("avatar") MultipartFile avatarFile) throws IOException;
-
+    ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData);
     void resetPassword(String token, String newPassword);
 }

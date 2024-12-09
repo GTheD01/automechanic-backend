@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -60,8 +62,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> uploadAvatar(Long userId, MultipartFile avatarFile) throws IOException {
-        System.out.println("INSIDE CONTROLLER UPLOAD");
-        User user = userRepository.findById(userId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         if (avatarFile == null || avatarFile.isEmpty()) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("No file selected");
         }
@@ -101,6 +102,32 @@ public class UserServiceImpl implements UserService {
                 .avatar(avatarUrl)
                 .build();
 
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @Override
+    public ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User fetchedUser = userRepository.findById(userId)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!fetchedUser.getEmail().equals(email)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body("You are not authorized to update this profile.");
+        }
+        fetchedUser.setFirstName(userData.getFirstName());
+        fetchedUser.setLastName(userData.getLastName());
+
+        userRepository.save(fetchedUser);
+        UserResponse userResponse = new UserResponse(
+                fetchedUser.getId(),
+                userData.getFirstName(),
+                userData.getLastName(),
+                fetchedUser.getEmail(),
+                fetchedUser.getRole(),
+                fetchedUser.getAvatar()
+        );
         return ResponseEntity.ok(userResponse);
     }
 

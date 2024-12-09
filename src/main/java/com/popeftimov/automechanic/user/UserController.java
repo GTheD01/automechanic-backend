@@ -24,4 +24,9 @@ public class UserController {
     public ResponseEntity<?> uploadAvatar(@PathVariable("userId") Long userId, @RequestParam(value = "avatar", required = false) MultipartFile avatarFile) throws IOException {
         return userService.uploadAvatar(userId, avatarFile);
     }
+
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<?> updateUserProfile(@PathVariable("userId") Long userId, @RequestBody UserResponse userData) {
+        return userService.updateUserProfile(userId, userData);
+    }
 }
