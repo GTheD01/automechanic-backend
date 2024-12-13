@@ -4,6 +4,7 @@ import com.popeftimov.automechanic.car.dto.CarBrandResponse;
 import com.popeftimov.automechanic.car.models.CarBrand;
 import com.popeftimov.automechanic.car.repository.CarBrandRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,7 +26,13 @@ public class CarBrandService {
         return carBrandRepository.findByName(name);
     }
 
-    public CarBrand createCarBrand(CarBrand carBrand) {
-        return carBrandRepository.save(carBrand);
+    public ResponseEntity<?> createCarBrand(String brandName) {
+        if (brandName == null || brandName.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+        CarBrand carBrand = new CarBrand(brandName);
+        carBrandRepository.save(carBrand);
+        CarBrandResponse carBrandResponse = new CarBrandResponse(carBrand.getId(), carBrand.getName());
+        return ResponseEntity.ok(carBrandResponse);
     }
 }
