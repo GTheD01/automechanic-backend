@@ -8,4 +8,10 @@ public class PasswordExceptions {
                     "contain at least one uppercase letter, one number, and one special character.");
         }
     }
+
+    public static class PasswordDoNotMatchException extends RuntimeException {
+        public PasswordDoNotMatchException() {
+            super("Password do not match.");
+        }
+    }
 }

@@ -30,6 +30,11 @@ public class GlobalExceptionHandler {
         return ErrorResponseUtil.createErrorResponse("password", ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
+    @ExceptionHandler(PasswordExceptions.PasswordDoNotMatchException.class)
+    public ResponseEntity<Object> handlePasswordDoNotMatchException(PasswordExceptions.PasswordDoNotMatchException ex) {
+        return ErrorResponseUtil.createErrorResponse("repeat_password", ex.getMessage(), HttpStatus.BAD_REQUEST );
+    }
+
     @ExceptionHandler(AppointmentExceptions.AppointmentAtDateTimeExists.class)
     public ResponseEntity<Object> handleAppointmentAtDateTimeExists(AppointmentExceptions.AppointmentAtDateTimeExists ex) {
         return ErrorResponseUtil.createErrorResponse("appointment", ex.getMessage(), HttpStatus.BAD_REQUEST );

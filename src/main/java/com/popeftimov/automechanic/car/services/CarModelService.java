@@ -22,10 +22,6 @@ public class CarModelService {
     private final CarModelRepository carModelRepository;
     private final CarBrandRepository carBrandRepository;
 
-    public CarModel getCarModel(String name) {
-        return carModelRepository.findByName(name);
-    }
-
     public ResponseEntity<?> createModel(@PathVariable String brandName, String modelName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
@@ -37,9 +33,14 @@ public class CarModelService {
         return ResponseEntity.status(HttpStatus.CREATED).body(carModel);
     }
 
-    public CarModel addYearToCarModel(CarModel carModel, int year) {
+    public ResponseEntity<?> addYearToCarModel(String modelName, int year) {
+        CarModel carModel = carModelRepository.findByName(modelName);
+        if (carModel == null) {
+            return ResponseEntity.notFound().build();
+        }
         carModel.addYear(year);
-        return carModelRepository.save(carModel);
+        carModelRepository.save(carModel);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carModel);
     }
 
     public List<CarModelResponse> getAllCarModelsByBrand(String brand) {

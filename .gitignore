@@ -4,6 +4,10 @@ target/
 !**/src/main/**/target/
 !**/src/test/**/target/
 
+# Ignore .DS_Store files (macOS)
+.DS_Store
+
+
 ### STS ###
 .apt_generated
 .classpath

@@ -24,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.UUID;
 
 @Service
@@ -53,6 +54,10 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         if (!passwordStrongEnough) {
             throw new PasswordExceptions.InvalidPasswordException();
+        }
+
+        if (!Objects.equals(request.getPassword(), request.getRepeatPassword())) {
+            throw new PasswordExceptions.PasswordDoNotMatchException();
         }
 
         User user = new User(
@@ -93,6 +98,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return token;
     }
 
+    @Override
+    public ResponseEntity<String> resetUserPassword(String token, String newPassword) {
+        if (!passwordValidator.test(newPassword)) {
+            throw new PasswordExceptions.InvalidPasswordException();
+        }
+
+        boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(token);
+
+        if (!isValidToken) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
+        }
+
+        userService.resetPassword(token, newPassword);
+
+        return ResponseEntity.ok("Password reset successful.");
+    }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -118,23 +140,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return passwordResetTokenService.generatePasswordResetToken(email);
     }
 
-    @Override
-    public ResponseEntity<String> resetUserPassword(String token, String newPassword) {
-        if (!passwordValidator.test(newPassword)) {
-            throw new PasswordExceptions.InvalidPasswordException();
-        }
-
-        boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(token);
-
-        if (!isValidToken) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
-        }
-
-        userService.resetPassword(token, newPassword);
-
-        return ResponseEntity.ok("Password reset successful.");
-    }
-
     public void sendVerificationEmail(String email, String link) {
         String subject = "Account verification";
         String htmlMessage = "<html>"
@@ -155,7 +160,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             emailService.sendEmail(email, subject, htmlMessage);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            System.out.println(e.getMessage());
         }
 
     }

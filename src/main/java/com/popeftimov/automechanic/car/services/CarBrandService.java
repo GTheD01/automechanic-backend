@@ -22,10 +22,6 @@ public class CarBrandService {
                 .collect(Collectors.toList());
     }
 
-    public CarBrand getCarBrand(String name) {
-        return carBrandRepository.findByName(name);
-    }
-
     public ResponseEntity<?> createCarBrand(String brandName) {
         if (brandName == null || brandName.isEmpty()) {
             return ResponseEntity.badRequest().build();
