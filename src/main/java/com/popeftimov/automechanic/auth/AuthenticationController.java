@@ -45,7 +45,8 @@ public class AuthenticationController {
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
         String token = passwordResetDTO.getToken();
         String newPassword = passwordResetDTO.getNewPassword();
+        String repeatNewPassword = passwordResetDTO.getRepeatNewPassword();
 
-        return authenticationService.resetUserPassword(token, newPassword);
+        return authenticationService.resetUserPassword(token, newPassword, repeatNewPassword);
     }
 }

@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
         String originalFileName = StringUtils.cleanPath(Objects.requireNonNull(avatarFile.getOriginalFilename()));
         String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
-        if (!fileExtension.matches("jpg|jpeg|png|gif|bmp")) {
+        if (!fileExtension.matches("jpg|jpeg|png|gif|bmp|webp")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid file type. Only images are allowed");
         }
         String newFileName = UUID.randomUUID().toString() + "." + fileExtension;
@@ -131,12 +131,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(String token, String newPassword) {
+    public void resetPassword(String token, String newPassword, String repeatNewPassword) {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
         if (passwordResetTokenOptional.isEmpty()) {
             return;
         }
         User user = passwordResetTokenOptional.get().getUser();
+
         String encryptedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encryptedPassword);
 

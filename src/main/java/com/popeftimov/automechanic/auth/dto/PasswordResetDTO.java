@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class PasswordResetDTO {
     private String token;
     private String newPassword;
+    private String repeatNewPassword;
 }
