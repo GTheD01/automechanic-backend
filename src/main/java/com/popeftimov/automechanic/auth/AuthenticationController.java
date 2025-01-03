@@ -43,10 +43,11 @@ public class AuthenticationController {
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
+        String email = passwordResetDTO.getEmail();
         String token = passwordResetDTO.getToken();
         String newPassword = passwordResetDTO.getNewPassword();
         String repeatNewPassword = passwordResetDTO.getRepeatNewPassword();
 
-        return authenticationService.resetUserPassword(token, newPassword, repeatNewPassword);
+        return authenticationService.resetUserPassword(email, token, newPassword, repeatNewPassword);
     }
 }

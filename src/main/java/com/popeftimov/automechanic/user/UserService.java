@@ -14,5 +14,5 @@ public interface UserService {
     UserResponse convertToUserResponse(User user);
     ResponseEntity<?> uploadAvatar(@PathVariable("userId") Long userId, @RequestParam("avatar") MultipartFile avatarFile) throws IOException;
     ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData);
-    void resetPassword(String token, String newPassword, String repeatNewPassword);
+    void resetPassword(String email, String token, String newPassword, String repeatNewPassword);
 }

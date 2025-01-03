@@ -131,7 +131,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(String token, String newPassword, String repeatNewPassword) {
+    public void resetPassword(String email, String token, String newPassword, String repeatNewPassword) {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
         if (passwordResetTokenOptional.isEmpty()) {
             return;

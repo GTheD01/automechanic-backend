@@ -99,7 +99,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity<String> resetUserPassword(String token, String newPassword, String repeatNewPassword) {
+    public ResponseEntity<String> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword) {
+        boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(email, token);
+
+        if (!isValidToken) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
+        }
+
         if (!passwordValidator.test(newPassword)) {
             throw new PasswordExceptions.InvalidPasswordException();
         }
@@ -108,13 +114,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Passwords do not match.");
         }
 
-        boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(token);
-
-        if (!isValidToken) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid or expired token.");
-        }
-
-        userService.resetPassword(token, newPassword, repeatNewPassword);
+        userService.resetPassword(email, token, newPassword, repeatNewPassword);
 
         return ResponseEntity.ok("Password reset successful.");
     }

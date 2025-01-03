@@ -11,5 +11,5 @@ public interface AuthenticationService {
     String requestPasswordReset(String email);
     void sendVerificationEmail(String email, String link);
 
-    ResponseEntity<String> resetUserPassword(String token, String newPassword, String repeatNewPassword);
+    ResponseEntity<String> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
 }
