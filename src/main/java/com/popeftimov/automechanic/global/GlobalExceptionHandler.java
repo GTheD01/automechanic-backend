@@ -6,6 +6,8 @@ import com.popeftimov.automechanic.auth.exception.EmailExceptions;
 import com.popeftimov.automechanic.auth.exception.PasswordExceptions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -27,12 +29,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(PasswordExceptions.InvalidPasswordException.class)
     public ResponseEntity<Object> handleInvalidPasswordException(PasswordExceptions.InvalidPasswordException ex) {
-        return ErrorResponseUtil.createErrorResponse("password", ex.getMessage(), HttpStatus.BAD_REQUEST );
+        return ErrorResponseUtil.createErrorResponse("newPassword", ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
     @ExceptionHandler(PasswordExceptions.PasswordDoNotMatchException.class)
     public ResponseEntity<Object> handlePasswordDoNotMatchException(PasswordExceptions.PasswordDoNotMatchException ex) {
-        return ErrorResponseUtil.createErrorResponse("repeat_password", ex.getMessage(), HttpStatus.BAD_REQUEST );
+        return ErrorResponseUtil.createErrorResponse("repeatNewPassword", ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
     @ExceptionHandler(AppointmentExceptions.AppointmentAtDateTimeExists.class)
@@ -50,8 +52,26 @@ public class GlobalExceptionHandler {
         return ErrorResponseUtil.createErrorResponse("email", ex.getMessage(), HttpStatus.BAD_REQUEST );
     }
 
-    @ExceptionHandler(ConfirmationExceptions.TokenExpired.class)
-    public ResponseEntity<Object> handleTokenExpired(ConfirmationExceptions.TokenExpired ex) {
+    @ExceptionHandler(ConfirmationExceptions.TokenInvalidExpired.class)
+    public ResponseEntity<Object> handleTokenExpired(ConfirmationExceptions.TokenInvalidExpired ex) {
         return ErrorResponseUtil.createErrorResponse("token", ex.getMessage(), HttpStatus.BAD_REQUEST );
+    }
+
+    @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
+    public ResponseEntity<Object> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("status", HttpStatus.METHOD_NOT_ALLOWED.value());
+        errors.put("error", "METHOD NOT ALLOWED");
+        errors.put("message", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.METHOD_NOT_ALLOWED);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public ResponseEntity<Object> handleAuthenticationException(AuthenticationException ex) {
+        Map<String, Object> errors = new HashMap<>();
+        errors.put("status", HttpStatus.UNAUTHORIZED.value());
+        errors.put("error", "UNAUTHORIZED");
+        errors.put("message", ex.getMessage());
+        return new ResponseEntity<>(errors, HttpStatus.UNAUTHORIZED);
     }
 }

@@ -39,7 +39,7 @@ public class User implements UserDetails {
     @JsonManagedReference
     private List<Appointment> appointments;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<Car> cars;
 
     private String avatar;
@@ -60,21 +60,6 @@ public class User implements UserDetails {
     @Override
     public String getUsername() {
         return email;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
     }
 
     @Override

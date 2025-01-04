@@ -7,9 +7,9 @@ public class ConfirmationExceptions {
         }
     }
 
-    public static class TokenExpired extends RuntimeException {
-        public TokenExpired() {
-            super("Token expired");
+    public static class TokenInvalidExpired extends RuntimeException {
+        public TokenInvalidExpired() {
+            super("Invalid or expired token");
         }
     }
 }

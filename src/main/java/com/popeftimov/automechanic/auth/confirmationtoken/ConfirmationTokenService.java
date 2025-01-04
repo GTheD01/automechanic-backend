@@ -44,7 +44,7 @@ public class ConfirmationTokenService {
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new ConfirmationExceptions.TokenExpired();
+            throw new ConfirmationExceptions.TokenInvalidExpired();
         }
 
         setConfirmedAt(token);

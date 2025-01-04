@@ -3,6 +3,7 @@ package com.popeftimov.automechanic.auth;
 import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenResponse;
 import com.popeftimov.automechanic.auth.confirmationtoken.ConfirmationTokenService;
 import com.popeftimov.automechanic.auth.dto.*;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,9 +31,10 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody AuthenticationRequest request
+            @RequestBody AuthenticationRequest request,
+            HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authenticationService.authenticate(request));
+        return ResponseEntity.ok(authenticationService.authenticate(request, response));
     }
 
     @PostMapping("/request-password-reset")
