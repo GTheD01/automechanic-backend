@@ -136,7 +136,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtCookie.setHttpOnly(true);
         jwtCookie.setSecure(true);
         jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60*60);
+        jwtCookie.setMaxAge(60*60*24);
 
         response.addCookie(jwtCookie);
 
