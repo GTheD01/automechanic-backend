@@ -37,6 +37,11 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticationService.authenticate(request, response));
     }
 
+    @PostMapping("/logout")
+    public void logout(HttpServletResponse response) {
+        authenticationService.logout(response);
+    }
+
     @PostMapping("/request-password-reset")
     public ResponseEntity<String> requestPasswordReset(@RequestBody PasswordResetRequest emailRequest) {
         String email = emailRequest.getEmail();

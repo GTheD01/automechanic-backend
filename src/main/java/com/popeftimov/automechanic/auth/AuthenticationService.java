@@ -13,4 +13,6 @@ public interface AuthenticationService {
     void sendVerificationEmail(String email, String link);
 
     ResponseEntity<?> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
+
+    void logout(HttpServletResponse response);
 }

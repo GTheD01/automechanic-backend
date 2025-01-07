@@ -121,6 +121,17 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return ResponseEntity.ok().build();
     }
 
+    @Override
+    public void logout(HttpServletResponse response) {
+        Cookie jwtCookie = new Cookie("accessToken", null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(0);
+
+        response.addCookie(jwtCookie);
+    }
+
     public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -176,6 +187,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         } catch (MessagingException e) {
             System.out.println(e.getMessage());
         }
-
     }
 }
