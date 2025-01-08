@@ -1,8 +1,8 @@
 package com.popeftimov.automechanic;
 
-import com.popeftimov.automechanic.user.Role;
-import com.popeftimov.automechanic.user.User;
-import com.popeftimov.automechanic.user.UserRepository;
+import com.popeftimov.automechanic.model.UserRole;
+import com.popeftimov.automechanic.model.User;
+import com.popeftimov.automechanic.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -37,7 +37,7 @@ public class CommandLineAppStartupRunner implements CommandLineRunner {
                 lastName,
                 adminEmail,
                 passwordEncoder.encode(adminPassword),
-                Role.ADMIN
+                UserRole.ADMIN
         );
         admin.setEnabled(true);
         userRepository.save(admin);

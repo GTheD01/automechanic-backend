@@ -1,6 +1,6 @@
 package com.popeftimov.automechanic.config;
 
-import com.popeftimov.automechanic.user.UserRepository;
+import com.popeftimov.automechanic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
