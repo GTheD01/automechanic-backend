@@ -91,13 +91,21 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 LocalDateTime.now().plusMinutes(15),
                 user
         );
-        System.out.println("BEFORE SAVE CONFIRMATION TOKEN");
 
         confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-        String link = "http://localhost:8080/api/v1/auth/register/confirm-email?token=" + token;
+        String link = "http://localhost:5173/customer/verify-email?token=" + token;
         sendVerificationEmail(user.getEmail(), link);
         return ResponseEntity.ok().body(token);
+    }
+
+    @Override
+    public String requestPasswordReset(String email) {
+        if (!emailValidator.test(email)) {
+            throw new EmailExceptions.InvalidEmailException();
+        }
+
+        return passwordResetTokenService.generatePasswordResetToken(email);
     }
 
     @Override
@@ -154,15 +162,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return AuthenticationResponse.builder()
                 .accessToken(jwtToken)
                 .build();
-    }
-
-    @Override
-    public String requestPasswordReset(String email) {
-        if (!emailValidator.test(email)) {
-            throw new EmailExceptions.InvalidEmailException();
-        }
-
-        return passwordResetTokenService.generatePasswordResetToken(email);
     }
 
     public void sendVerificationEmail(String email, String link) {

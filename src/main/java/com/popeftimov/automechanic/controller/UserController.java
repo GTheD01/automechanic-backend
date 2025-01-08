@@ -15,17 +15,13 @@ import java.io.IOException;
 @RequestMapping("api/v1")
 @RequiredArgsConstructor
 public class UserController {
+
     private final UserService userService;
 
     @GetMapping("/users/me")
     public UserResponse findCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userService.convertToUserResponse(user);
-    }
-
-    @PostMapping("/{userId}/avatar")
-    public ResponseEntity<?> uploadAvatar(@PathVariable("userId") Long userId, @RequestParam(value = "avatar", required = false) MultipartFile avatarFile) throws IOException {
-        return userService.uploadAvatar(userId, avatarFile);
     }
 
     @PutMapping("/users/{userId}")
