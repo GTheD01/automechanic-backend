@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -25,6 +26,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Override
     public boolean isAppointmentAtTimeExists(LocalDate appointmentDate, LocalTime appointmentTime) {
@@ -63,17 +65,39 @@ public class AppointmentServiceImpl implements AppointmentService {
                 user.getEmail(),
                 user.getUserRole(),
                 user.getAvatar(),
-                user.getPhoneNumber()
+                user.getPhoneNumber(),
+                user.getCarsCount(),
+                user.getAppointmentsCount()
         );
 
         return new AppointmentResponse(newAppointment.getId(), newAppointment.getDescription(), newAppointment.getAppointmentDate(),
                 newAppointment.getAppointmentTime(), userResponse);
     }
 
-    @Override
-    public List<Appointment> getAppointmentsByUser() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public List<AppointmentResponse> convertToAppointmentDtoList(List<Appointment> appointments) {
+        List<AppointmentResponse> appointmentResponseList = new ArrayList<>();
 
-        return appointmentRepository.findByUser(user);
+        for (Appointment appointment : appointments) {
+            AppointmentResponse appointmentResponse = AppointmentResponse.builder()
+                    .id(appointment.getId())
+                    .description(appointment.getDescription())
+                    .appointmentDate(appointment.getAppointmentDate())
+                    .appointmentTime(appointment.getAppointmentTime())
+                    .user(userService.convertToUserResponse(appointment.getUser()))
+                    .build();
+
+            appointmentResponseList.add(appointmentResponse);
+        }
+
+        return appointmentResponseList;
+    }
+
+
+    @Override
+    public List<AppointmentResponse> getAppointmentsByUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Appointment> userAppointments = appointmentRepository.findByUser(user);
+
+        return convertToAppointmentDtoList(userAppointments);
     }
 }

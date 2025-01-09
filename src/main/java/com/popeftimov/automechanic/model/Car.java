@@ -15,7 +15,7 @@ public class Car {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
+    @JoinColumn(nullable = false, name = "user_id")
     private User user;
 
     @ManyToOne

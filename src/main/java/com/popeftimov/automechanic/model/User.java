@@ -1,11 +1,12 @@
 package com.popeftimov.automechanic.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Formula;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,14 +32,20 @@ public class User implements UserDetails {
     private String phoneNumber;
     private Boolean enabled = false;
 
+    @Formula("(SELECT COUNT(*) FROM Car c WHERE c.user_id = id)")
+    private Long carsCount;
+
+    @Formula("(SELECT COUNT(*) FROM Appointment a WHERE a.user_id = id)")
+    private Long appointmentsCount;
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-    @JsonManagedReference
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnore
     private List<Appointment> appointments;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     private List<Car> cars;
 
     private String avatar;

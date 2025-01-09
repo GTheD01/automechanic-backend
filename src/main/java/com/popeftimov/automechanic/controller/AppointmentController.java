@@ -27,8 +27,8 @@ public class AppointmentController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<List<Appointment>> getAppointmentsForLoggedInUser() {
-        List<Appointment> appointments = appointmentService.getAppointmentsByUser();
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsForLoggedInUser() {
+        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByUser();
 
         return ResponseEntity.ok(appointments);
     }

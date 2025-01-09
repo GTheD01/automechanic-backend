@@ -1,6 +1,7 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.UserResponse;
+import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
@@ -47,6 +48,9 @@ public class UserServiceImpl implements UserService {
                 .lastName(user.getLastName())
                 .email(user.getEmail())
                 .userRole(user.getUserRole())
+                .appointmentCount(user.getAppointmentsCount())
+                .carsCount(user.getCarsCount())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 
@@ -67,12 +71,10 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(fetchedUser);
 
-        UserResponse userResponse = new UserResponse(
-                fetchedUser.getId(),
+        UserUpdateProfileResponse userResponse = new UserUpdateProfileResponse(
                 fetchedUser.getFirstName(),
                 fetchedUser.getLastName(),
                 fetchedUser.getEmail(),
-                fetchedUser.getUserRole(),
                 fetchedUser.getAvatar(),
                 fetchedUser.getPhoneNumber()
         );
@@ -98,9 +100,20 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<List<UserResponse>> getAllUsers() {
         List<User> users = userRepository.findAll();
         List<UserResponse> userResponses = users.stream()
-                .map(user -> new UserResponse(user.getId(), user.getFirstName(),
-                        user.getLastName(), user.getEmail(), user.getUserRole(), user.getAvatar(), user.getPhoneNumber()))
-                .toList();
+                .map(user -> {
+
+                    return new UserResponse(
+                            user.getId(),
+                            user.getFirstName(),
+                            user.getLastName(),
+                            user.getEmail(),
+                            user.getUserRole(),
+                            user.getAvatar(),
+                            user.getPhoneNumber(),
+                            user.getCarsCount(),
+                            user.getAppointmentsCount()
+                    );
+                }).toList();
         return ResponseEntity.ok().body(userResponses);
     }
 
