@@ -6,6 +6,7 @@ import com.popeftimov.automechanic.service.ConfirmationTokenService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -18,6 +19,7 @@ public class AuthenticationController {
     private final ConfirmationTokenService confirmationTokenService;
 
     @PostMapping("/register")
+    @Transactional
     public ResponseEntity<?> register(
             @RequestBody RegisterRequest request
     ) {

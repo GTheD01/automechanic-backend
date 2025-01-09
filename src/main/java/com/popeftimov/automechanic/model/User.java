@@ -28,6 +28,7 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
+    private String phoneNumber;
     private Boolean enabled = false;
 
     @Enumerated(EnumType.STRING)

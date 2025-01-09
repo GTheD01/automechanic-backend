@@ -7,9 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1")
@@ -27,5 +26,10 @@ public class UserController {
     @PutMapping("/users/{userId}")
     public ResponseEntity<?> updateUserProfile(@PathVariable("userId") Long userId, @RequestBody UserResponse userData) {
         return userService.updateUserProfile(userId, userData);
+    }
+
+    @GetMapping("/admin/users")
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        return userService.getAllUsers();
     }
 }

@@ -6,6 +6,7 @@ import com.popeftimov.automechanic.dto.RegisterRequest;
 import com.popeftimov.automechanic.exception.ConfirmationExceptions;
 import com.popeftimov.automechanic.exception.EmailExceptions;
 import com.popeftimov.automechanic.exception.PasswordExceptions;
+import com.popeftimov.automechanic.exception.RegisterExceptions;
 import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.validator.EmailValidator;
@@ -17,6 +18,7 @@ import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -81,22 +83,27 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setPassword(encodedPassword);
 
-        userRepository.save(user);
 
-        String token = UUID.randomUUID().toString();
+        try {
+            userRepository.save(user);
 
-        ConfirmationToken confirmationToken = new ConfirmationToken(
-                token,
-                LocalDateTime.now(),
-                LocalDateTime.now().plusMinutes(15),
-                user
-        );
+            String token = UUID.randomUUID().toString();
 
-        confirmationTokenService.saveConfirmationToken(confirmationToken);
+            ConfirmationToken confirmationToken = new ConfirmationToken(
+                    token,
+                    LocalDateTime.now(),
+                    LocalDateTime.now().plusMinutes(15),
+                    user
+            );
 
-        String link = "http://localhost:5173/customer/verify-email?token=" + token;
-        sendVerificationEmail(user.getEmail(), link);
-        return ResponseEntity.ok().body(token);
+            confirmationTokenService.saveConfirmationToken(confirmationToken);
+
+            String link = "http://localhost:5173/customer/verify-email?token=" + token;
+            sendVerificationEmail(user.getEmail(), link);
+            return ResponseEntity.status(HttpStatus.CREATED).build();
+        } catch (MessagingException e) {
+            throw new RegisterExceptions.FailedToSendEmail();
+        }
     }
 
     @Override
@@ -164,7 +171,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .build();
     }
 
-    public void sendVerificationEmail(String email, String link) {
+    public void sendVerificationEmail(String email, String link) throws MessagingException{
         String subject = "Account verification";
         String htmlMessage = "<html>"
                 + "<body style=\"font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;\">"
@@ -184,7 +191,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         try {
             emailService.sendEmail(email, subject, htmlMessage);
         } catch (MessagingException e) {
-            System.out.println(e.getMessage());
+            throw new MessagingException();
         }
     }
 }

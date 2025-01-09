@@ -6,7 +6,6 @@ import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -27,9 +27,6 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final static String USER_NOT_FOUND_MSG = "User with email %s not found";
     private final PasswordEncoder passwordEncoder;
-
-    @Value("${upload.avatar-dir}")
-    private String avatarDir;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -64,17 +61,20 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You are not authorized to update this profile.");
         }
-        fetchedUser.setFirstName(userData.getFirstName());
-        fetchedUser.setLastName(userData.getLastName());
+        fetchedUser.setFirstName(userData.getFirstName() != null && !userData.getFirstName().isEmpty() ? userData.getFirstName() : fetchedUser.getFirstName());
+        fetchedUser.setLastName(userData.getLastName() != null && !userData.getLastName().isEmpty() ? userData.getLastName() : fetchedUser.getLastName());
+        fetchedUser.setPhoneNumber(userData.getPhoneNumber() != null && !userData.getPhoneNumber().isEmpty() ? userData.getPhoneNumber() : fetchedUser.getPhoneNumber());
 
         userRepository.save(fetchedUser);
+
         UserResponse userResponse = new UserResponse(
                 fetchedUser.getId(),
-                userData.getFirstName(),
-                userData.getLastName(),
+                fetchedUser.getFirstName(),
+                fetchedUser.getLastName(),
                 fetchedUser.getEmail(),
                 fetchedUser.getUserRole(),
-                fetchedUser.getAvatar()
+                fetchedUser.getAvatar(),
+                fetchedUser.getPhoneNumber()
         );
         return ResponseEntity.ok(userResponse);
     }
@@ -92,6 +92,16 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
         passwordResetTokenRepository.delete(passwordResetTokenOptional.get());
+    }
+
+    @Override
+    public ResponseEntity<List<UserResponse>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserResponse> userResponses = users.stream()
+                .map(user -> new UserResponse(user.getId(), user.getFirstName(),
+                        user.getLastName(), user.getEmail(), user.getUserRole(), user.getAvatar(), user.getPhoneNumber()))
+                .toList();
+        return ResponseEntity.ok().body(userResponses);
     }
 
 }

@@ -131,4 +131,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
+
+    @ExceptionHandler(RegisterExceptions.FailedToSendEmail.class)
+    public ResponseEntity<ApiError> handleFailedToSendEmailException(RegisterExceptions.FailedToSendEmail ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                "INTERNAL_SERVER_ERROR",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
 }
