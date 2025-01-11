@@ -1,12 +1,16 @@
 package com.popeftimov.automechanic.service;
 
+import com.popeftimov.automechanic.dto.UserFilter;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.repository.UserRepository;
+import com.popeftimov.automechanic.specifications.UserSpecification;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +20,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 import java.util.Optional;
 
 
@@ -97,12 +101,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UserResponse> userResponses = users.stream()
-                .map(user -> {
+    public ResponseEntity<Page<UserResponse>> getAllUsers(String name,
+                                                          Boolean minCarCount,
+                                                          Boolean minAppointmentCount,
+                                                          Pageable pageable) {
+        UserFilter filter = new UserFilter(name, minCarCount, minAppointmentCount);
+        Specification<User> spec = UserSpecification.applyFilters(filter);
 
-                    return new UserResponse(
+        Page<User> users = userRepository.findAll(spec, (org.springframework.data.domain.Pageable) pageable);
+
+        Page<UserResponse> userResponses = users
+                .map(user -> new UserResponse(
                             user.getId(),
                             user.getFirstName(),
                             user.getLastName(),
@@ -111,9 +120,10 @@ public class UserServiceImpl implements UserService {
                             user.getAvatar(),
                             user.getPhoneNumber(),
                             user.getCarsCount(),
-                            user.getAppointmentsCount()
-                    );
-                }).toList();
+                            user.getAppointmentsCount(),
+                            user.getEnabled()
+                    )
+                );
         return ResponseEntity.ok().body(userResponses);
     }
 

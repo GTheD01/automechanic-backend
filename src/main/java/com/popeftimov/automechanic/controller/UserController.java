@@ -4,11 +4,11 @@ import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 @RestController
 @RequestMapping("api/v1")
@@ -29,7 +29,18 @@ public class UserController {
     }
 
     @GetMapping("/admin/users")
-    public ResponseEntity<List<UserResponse>> getAllUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<Page<UserResponse>> getAllUsers(
+            @RequestParam(value = "name", required = false) String name,
+            @RequestParam(value = "hasCars", required = false) Boolean hasCars,
+            @RequestParam(value = "hasAppointments", required = false) Boolean hasAppointments,
+            Pageable pageable
+    ) {
+
+        return userService.getAllUsers(name, hasCars, hasAppointments, pageable);
     }
+
+    @PostMapping("/verify-token")
+    public ResponseEntity<?> verifyToken() {
+        return ResponseEntity.ok().build();
+    };
 }

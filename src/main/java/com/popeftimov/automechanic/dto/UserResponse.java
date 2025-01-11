@@ -1,6 +1,5 @@
 package com.popeftimov.automechanic.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.popeftimov.automechanic.model.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,4 +20,5 @@ public class UserResponse {
     private String phoneNumber;
     private Long carsCount;
     private Long appointmentCount;
+    private boolean enabled;
 }

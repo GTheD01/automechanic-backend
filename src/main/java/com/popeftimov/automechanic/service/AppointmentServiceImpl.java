@@ -67,7 +67,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 user.getAvatar(),
                 user.getPhoneNumber(),
                 user.getCarsCount(),
-                user.getAppointmentsCount()
+                user.getAppointmentsCount(),
+                user.getEnabled()
         );
 
         return new AppointmentResponse(newAppointment.getId(), newAppointment.getDescription(), newAppointment.getAppointmentDate(),
