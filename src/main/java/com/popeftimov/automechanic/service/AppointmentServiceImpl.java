@@ -9,6 +9,8 @@ import com.popeftimov.automechanic.repository.AppointmentRepository;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -100,5 +102,22 @@ public class AppointmentServiceImpl implements AppointmentService {
         List<Appointment> userAppointments = appointmentRepository.findByUser(user);
 
         return convertToAppointmentDtoList(userAppointments);
+    }
+
+    @Override
+    public Page<AppointmentResponse> getAllApointments(Pageable pageable) {
+        Page<Appointment> appointments = appointmentRepository.findAll(pageable);
+        Page<AppointmentResponse> appointmentResponses = appointments
+                .map(appointment -> {
+                    UserResponse userResponse = userService.convertToUserResponse(appointment.getUser());
+                    return new AppointmentResponse(
+                            appointment.getId(),
+                            appointment.getDescription(),
+                            appointment.getAppointmentDate(),
+                            appointment.getAppointmentTime(),
+                            userResponse
+                    );
+                });
+        return appointmentResponses;
     }
 }
