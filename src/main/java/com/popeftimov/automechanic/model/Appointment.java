@@ -20,6 +20,9 @@ public class Appointment {
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
 
+    @Enumerated(EnumType.STRING)
+    private AppointmentStatus appointmentStatus;
+
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;

@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.dto;
 
+import com.popeftimov.automechanic.model.AppointmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -17,5 +18,6 @@ public class AppointmentResponse {
     private String description;
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
+    private AppointmentStatus appointmentStatus;
     private UserResponse user;
 }

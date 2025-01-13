@@ -5,6 +5,7 @@ import com.popeftimov.automechanic.dto.AppointmentResponse;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.exception.AppointmentExceptions;
 import com.popeftimov.automechanic.model.Appointment;
+import com.popeftimov.automechanic.model.AppointmentStatus;
 import com.popeftimov.automechanic.repository.AppointmentRepository;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.UserRepository;
@@ -57,24 +58,14 @@ public class AppointmentServiceImpl implements AppointmentService {
         newAppointment.setAppointmentDate(appointment.getAppointmentDate());
         newAppointment.setAppointmentTime(appointment.getAppointmentTime());
         newAppointment.setDescription(appointment.getDescription());
+        newAppointment.setAppointmentStatus(AppointmentStatus.UPCOMING);
 
         appointmentRepository.save(newAppointment);
 
-        UserResponse userResponse = new UserResponse(
-                user.getId(),
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getUserRole(),
-                user.getAvatar(),
-                user.getPhoneNumber(),
-                user.getCarsCount(),
-                user.getAppointmentsCount(),
-                user.getEnabled()
-        );
+        UserResponse userResponse = userService.convertToUserResponse(user);
 
         return new AppointmentResponse(newAppointment.getId(), newAppointment.getDescription(), newAppointment.getAppointmentDate(),
-                newAppointment.getAppointmentTime(), userResponse);
+                newAppointment.getAppointmentTime(), AppointmentStatus.UPCOMING, userResponse);
     }
 
     public List<AppointmentResponse> convertToAppointmentDtoList(List<Appointment> appointments) {
@@ -115,6 +106,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                             appointment.getDescription(),
                             appointment.getAppointmentDate(),
                             appointment.getAppointmentTime(),
+                            appointment.getAppointmentStatus(),
                             userResponse
                     );
                 });
