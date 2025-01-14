@@ -64,8 +64,10 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         UserResponse userResponse = userService.convertToUserResponse(user);
 
-        return new AppointmentResponse(newAppointment.getId(), newAppointment.getDescription(), newAppointment.getAppointmentDate(),
-                newAppointment.getAppointmentTime(), AppointmentStatus.UPCOMING, userResponse);
+        return new AppointmentResponse(newAppointment.getId(), newAppointment.getDescription(),
+                newAppointment.getAppointmentDate(), newAppointment.getAppointmentTime(),
+                AppointmentStatus.UPCOMING, userResponse, newAppointment.getCreatedDate(),
+                newAppointment.getLastModifiedDate());
     }
 
     public List<AppointmentResponse> convertToAppointmentDtoList(List<Appointment> appointments) {
@@ -107,7 +109,9 @@ public class AppointmentServiceImpl implements AppointmentService {
                             appointment.getAppointmentDate(),
                             appointment.getAppointmentTime(),
                             appointment.getAppointmentStatus(),
-                            userResponse
+                            userResponse,
+                            appointment.getCreatedDate(),
+                            appointment.getLastModifiedDate()
                     );
                 });
         return appointmentResponses;
