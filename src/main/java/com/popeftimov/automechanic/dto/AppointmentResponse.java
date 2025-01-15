@@ -19,16 +19,16 @@ public class AppointmentResponse {
     private Long id;
     private String description;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate appointmentDate;
 
     private LocalTime appointmentTime;
     private AppointmentStatus appointmentStatus;
     private UserResponse user;
 
-    @JsonFormat(pattern = "HH:mm / dd-MM-yyyy")
+    @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
     private LocalDateTime createdDate;
 
-    @JsonFormat(pattern = "HH:mm / dd-MM-yyyy")
+    @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
     private LocalDateTime lastModifiedDate;
 }

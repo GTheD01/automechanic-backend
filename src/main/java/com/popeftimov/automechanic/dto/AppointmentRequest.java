@@ -13,7 +13,7 @@ import java.time.LocalTime;
 public class AppointmentRequest {
     private String description;
 
-    @JsonFormat(pattern = "dd-MM-yyyy")
+    @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate appointmentDate;
 
     private LocalTime appointmentTime;
