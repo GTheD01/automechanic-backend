@@ -16,6 +16,8 @@ public class AppointmentRequest {
     @JsonFormat(pattern = "dd.MM.yyyy")
     private LocalDate appointmentDate;
 
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime appointmentTime;
+
     private User user;
 }

@@ -102,28 +102,16 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<Page<UserResponse>> getAllUsers(String name,
-                                                          Boolean minCarCount,
-                                                          Boolean minAppointmentCount,
+                                                          Boolean hasCars,
+                                                          Boolean hasAppointments,
                                                           Pageable pageable) {
-        UserFilter filter = new UserFilter(name, minCarCount, minAppointmentCount);
+        UserFilter filter = new UserFilter(name, hasCars, hasAppointments);
         Specification<User> spec = UserSpecification.applyFilters(filter);
 
         Page<User> users = userRepository.findAll(spec, (org.springframework.data.domain.Pageable) pageable);
 
         Page<UserResponse> userResponses = users
-                .map(user -> new UserResponse(
-                            user.getId(),
-                            user.getFirstName(),
-                            user.getLastName(),
-                            user.getEmail(),
-                            user.getUserRole(),
-                            user.getAvatar(),
-                            user.getPhoneNumber(),
-                            user.getCarsCount(),
-                            user.getAppointmentsCount(),
-                            user.getEnabled()
-                    )
-                );
+                .map(this::convertToUserResponse);
         return ResponseEntity.ok().body(userResponses);
     }
 
