@@ -2,6 +2,8 @@ package com.popeftimov.automechanic.controller;
 
 import com.popeftimov.automechanic.dto.AppointmentRequest;
 import com.popeftimov.automechanic.dto.AppointmentResponse;
+import com.popeftimov.automechanic.dto.AppointmentUpdateRequest;
+import com.popeftimov.automechanic.model.AppointmentStatus;
 import com.popeftimov.automechanic.service.AppointmentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -20,8 +22,11 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
 
     @GetMapping("/admin")
-    public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(Pageable pageable) {
-        Page<AppointmentResponse> appointmentPage = appointmentService.getAllApointments(pageable);
+    public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(
+            Pageable pageable,
+            @RequestParam(value = "search", required = false) String search
+    ) {
+        Page<AppointmentResponse> appointmentPage = appointmentService.getAllApointments(pageable, search);
         return ResponseEntity.ok().body(appointmentPage);
     }
 
@@ -38,5 +43,12 @@ public class AppointmentController {
         List<AppointmentResponse> appointments = appointmentService.getAppointmentsByUser();
 
         return ResponseEntity.ok(appointments);
+    }
+
+    @PatchMapping("/{appointmentId}")
+    public ResponseEntity<AppointmentResponse> updateAppointment(@PathVariable("appointmentId") Long appointmentId,
+                                                                 @RequestBody AppointmentUpdateRequest appointmentUpdateRequest) {
+        AppointmentStatus appointmentStatus = appointmentUpdateRequest.getAppointmentStatus();
+        return appointmentService.updateAppointment(appointmentId, appointmentStatus);
     }
 }

@@ -55,6 +55,7 @@ public class UserServiceImpl implements UserService {
                 .appointmentCount(user.getAppointmentsCount())
                 .carsCount(user.getCarsCount())
                 .phoneNumber(user.getPhoneNumber())
+                .enabled(user.getEnabled())
                 .build();
     }
 
@@ -108,7 +109,7 @@ public class UserServiceImpl implements UserService {
         UserFilter filter = new UserFilter(name, hasCars, hasAppointments);
         Specification<User> spec = UserSpecification.applyFilters(filter);
 
-        Page<User> users = userRepository.findAll(spec, (org.springframework.data.domain.Pageable) pageable);
+        Page<User> users = userRepository.findAll(spec, pageable);
 
         Page<UserResponse> userResponses = users
                 .map(this::convertToUserResponse);
