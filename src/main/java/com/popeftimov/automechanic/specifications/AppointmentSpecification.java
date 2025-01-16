@@ -12,16 +12,26 @@ public class AppointmentSpecification {
         return (root, query, criteriaBuilder) -> {
             if (search == null || search.isEmpty()) return criteriaBuilder.conjunction();
 
+            String[] searchTerms = search.split("\\s+");
+
             Predicate description = criteriaBuilder.like(root.get("description"), "%" + search + "%");
 
             var userJoin = root.join("user");
 
-            Predicate firstNamePredicate = criteriaBuilder.like(userJoin.get("firstName"), "%" + search + "%");
-            Predicate lastNamePredicate = criteriaBuilder.like(userJoin.get("lastName"), "%" + search + "%");
+            if (searchTerms.length == 1) {
+                Predicate firstNamePredicate = criteriaBuilder.like(userJoin.get("firstName"), "%" + search + "%");
+                Predicate lastNamePredicate = criteriaBuilder.like(userJoin.get("lastName"), "%" + search + "%");
+                Predicate namePredicate = criteriaBuilder.or(firstNamePredicate, lastNamePredicate);
 
-            Predicate fullNamePredicate = criteriaBuilder.or(firstNamePredicate, lastNamePredicate);
+                return criteriaBuilder.or(description, namePredicate);
+            } else {
+                Predicate firstNamePredicate = criteriaBuilder.like(userJoin.get("firstName"), "%" + searchTerms[0] + "%");
+                Predicate lastNamePredicate = criteriaBuilder.like(userJoin.get("lastName"), "%" + searchTerms[1] + "%");
 
-            return criteriaBuilder.or(description, fullNamePredicate);
+                Predicate fullNamePredicate = criteriaBuilder.and(firstNamePredicate, lastNamePredicate);
+
+                return criteriaBuilder.or(description, fullNamePredicate);
+            }
         };
     }
 
