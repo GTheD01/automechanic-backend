@@ -15,13 +15,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/appointments")
+@RequestMapping("/api/v1")
 @RequiredArgsConstructor
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
 
-    @GetMapping("/admin")
+    @GetMapping("/admin/appointments")
     public ResponseEntity<Page<AppointmentResponse>> getAllAppointments(
             Pageable pageable,
             @RequestParam(value = "search", required = false) String search
@@ -30,7 +30,7 @@ public class AppointmentController {
         return ResponseEntity.ok().body(appointmentPage);
     }
 
-    @PostMapping("")
+    @PostMapping("/appointments")
     public ResponseEntity<?> createAppointment(@RequestBody AppointmentRequest appointmentRequest) {
         AppointmentResponse appointment = appointmentService.createAppointment(appointmentRequest);
 
@@ -38,17 +38,18 @@ public class AppointmentController {
                 .body(appointment);
     }
 
-    @GetMapping("/me")
+    @GetMapping("/appointments/me")
     public ResponseEntity<List<AppointmentResponse>> getAppointmentsForLoggedInUser() {
         List<AppointmentResponse> appointments = appointmentService.getAppointmentsByUser();
 
         return ResponseEntity.ok(appointments);
     }
 
-    @PatchMapping("/{appointmentId}")
+    @PatchMapping("/admin/appointments/{appointmentId}")
     public ResponseEntity<AppointmentResponse> updateAppointment(@PathVariable("appointmentId") Long appointmentId,
                                                                  @RequestBody AppointmentUpdateRequest appointmentUpdateRequest) {
         AppointmentStatus appointmentStatus = appointmentUpdateRequest.getAppointmentStatus();
+        System.out.println(appointmentStatus);
         return appointmentService.updateAppointment(appointmentId, appointmentStatus);
     }
 }
