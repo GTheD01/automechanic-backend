@@ -35,7 +35,6 @@ public class UserController {
             @RequestParam(value = "hasAppointments", required = false) Boolean hasAppointments,
             Pageable pageable
     ) {
-
         return userService.getAllUsers(name, hasCars, hasAppointments, pageable);
     }
 

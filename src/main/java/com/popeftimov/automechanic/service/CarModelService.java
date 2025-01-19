@@ -1,7 +1,6 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.CarModelResponse;
-import com.popeftimov.automechanic.dto.CarModelYearsResponse;
 import com.popeftimov.automechanic.model.CarBrand;
 import com.popeftimov.automechanic.model.CarModel;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
@@ -33,29 +32,10 @@ public class CarModelService {
         return ResponseEntity.status(HttpStatus.CREATED).body(carModel);
     }
 
-    public ResponseEntity<?> addYearToCarModel(String modelName, int year) {
-        CarModel carModel = carModelRepository.findByName(modelName);
-        if (carModel == null) {
-            return ResponseEntity.notFound().build();
-        }
-        carModel.addYear(year);
-        carModelRepository.save(carModel);
-        return ResponseEntity.status(HttpStatus.CREATED).body(carModel);
-    }
-
     public List<CarModelResponse> getAllCarModelsByBrand(String brand) {
         CarBrand carBrand = carBrandRepository.findByName(brand);
         return carModelRepository.findByBrand(carBrand)
                 .stream().map(carModel -> new CarModelResponse(carModel.getId(), carModel.getName()))
                 .collect(Collectors.toList());
-    }
-
-    public CarModelYearsResponse getModelYearsByName(String modelName) {
-        CarModel carModel = carModelRepository.findByName(modelName);
-        if (carModel != null) {
-            return new CarModelYearsResponse(carModel.getYears());
-        } else {
-            return null;
-        }
     }
 }

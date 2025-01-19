@@ -3,7 +3,6 @@ package com.popeftimov.automechanic.controller;
 import com.popeftimov.automechanic.dto.CarBrandRequest;
 import com.popeftimov.automechanic.dto.CarBrandResponse;
 import com.popeftimov.automechanic.dto.CarModelResponse;
-import com.popeftimov.automechanic.dto.CarModelYearsResponse;
 import com.popeftimov.automechanic.service.CarModelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -28,11 +27,6 @@ public class CarController {
     @GetMapping("/public/{brand}/models")
     public List<CarModelResponse> getCarModelsByBrand(@PathVariable String brand) {
         return carModelService.getAllCarModelsByBrand(brand.toUpperCase());
-    }
-
-    @GetMapping("/public/{brand}/models/{modelName}/years")
-    public CarModelYearsResponse getModelYears(@PathVariable String brand, @PathVariable String modelName) {
-        return carModelService.getModelYearsByName(modelName);
     }
 
     @PostMapping("/admin/brands")

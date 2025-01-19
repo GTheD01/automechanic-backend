@@ -25,4 +25,6 @@ public class Car {
     @ManyToOne
     @JoinColumn(nullable = false)
     private CarModel model;
+
+    private Integer year;
 }

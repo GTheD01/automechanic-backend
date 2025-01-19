@@ -24,16 +24,8 @@ public class CarModel {
     @JoinColumn(nullable = false)
     private CarBrand brand;
 
-    @ElementCollection
-    private List<Integer> years;
-
     public CarModel(String modelName, CarBrand makeName) {
         this.name = modelName;
         this.brand = makeName;
-        this.years = new ArrayList<>();
-    }
-
-    public void addYear(int year) {
-        this.years.add(year);
     }
 }

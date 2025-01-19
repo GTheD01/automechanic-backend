@@ -30,9 +30,6 @@ public class CarService {
         if (carModel == null) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Car model not found");
         }
-        if(!carModel.getYears().contains(year)) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Model year not found");
-        }
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
@@ -40,7 +37,7 @@ public class CarService {
         car.setBrand(carBrand);
         car.setModel(carModel);
         car.setUser(user);
-//        car.setYear(year); TODO: Add user field for the car year
+        car.setYear(year);
         car = carRepository.save(car);
         return ResponseEntity.ok(car);
     }
