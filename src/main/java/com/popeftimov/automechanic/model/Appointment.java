@@ -40,5 +40,4 @@ public class Appointment {
         this.lastModifiedDate = LocalDateTime.now();
     }
 
-
 }
