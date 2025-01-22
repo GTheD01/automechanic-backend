@@ -3,17 +3,19 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.dto.UserFilter;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
+import com.popeftimov.automechanic.exception.UserExceptions;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
+import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.specifications.UserSpecification;
+import com.popeftimov.automechanic.validator.UserPhoneNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -32,6 +34,7 @@ public class UserServiceImpl implements UserService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final static String USER_NOT_FOUND_MSG = "User with email %s not found";
     private final PasswordEncoder passwordEncoder;
+    private final UserPhoneNumberValidator userPhoneNumberValidator;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -61,12 +64,20 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        boolean isValidPhone = userPhoneNumberValidator.test(
+                userData.getPhoneNumber()
+        );
+
+        if (!isValidPhone) {
+            throw new UserExceptions.InvalidPhoneNumber();
+        }
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String email = user.getEmail();
+        UserRole userRole = user.getUserRole();
         User fetchedUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
-        if (!fetchedUser.getEmail().equals(email)) {
+        if (!userRole.equals(UserRole.ADMIN) && !fetchedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You are not authorized to update this profile.");
         }
@@ -115,5 +126,4 @@ public class UserServiceImpl implements UserService {
                 .map(this::convertToUserResponse);
         return ResponseEntity.ok().body(userResponses);
     }
-
 }

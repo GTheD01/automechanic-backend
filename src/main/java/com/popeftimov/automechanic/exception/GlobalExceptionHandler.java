@@ -142,4 +142,16 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiError, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(UserExceptions.InvalidPhoneNumber.class)
+    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(UserExceptions.InvalidPhoneNumber ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }
