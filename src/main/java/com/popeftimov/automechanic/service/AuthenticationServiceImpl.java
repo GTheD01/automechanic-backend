@@ -166,9 +166,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         response.addCookie(jwtCookie);
 
-        return AuthenticationResponse.builder()
-                .accessToken(jwtToken)
-                .build();
+        return new AuthenticationResponse(jwtToken);
     }
 
     public void sendVerificationEmail(String email, String link) throws MessagingException{

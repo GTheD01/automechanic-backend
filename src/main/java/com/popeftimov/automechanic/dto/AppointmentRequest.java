@@ -2,13 +2,11 @@ package com.popeftimov.automechanic.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.popeftimov.automechanic.model.User;
-import lombok.Builder;
 import lombok.Data;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
-@Builder
 @Data
 public class AppointmentRequest {
     private String description;

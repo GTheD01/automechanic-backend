@@ -49,17 +49,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponse convertToUserResponse(User user) {
-        return UserResponse.builder()
-                .id(user.getId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .userRole(user.getUserRole())
-                .appointmentCount(user.getAppointmentsCount())
-                .carsCount(user.getCarsCount())
-                .phoneNumber(user.getPhoneNumber())
-                .enabled(user.getEnabled())
-                .build();
+        return new UserResponse(
+                user.getId(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getUserRole(),
+                user.getAvatar(),
+                user.getPhoneNumber(),
+                user.getAppointmentsCount(),
+                user.getCarsCount(),
+                user.getEnabled()
+        );
     }
 
     @Override

@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -16,10 +15,17 @@ public class CarBrandService {
 
     private final CarBrandRepository carBrandRepository;
 
+    public CarBrandResponse convertCarBrandToCarBrandResponse(CarBrand carBrand) {
+        return new CarBrandResponse(
+                carBrand.getId(),
+                carBrand.getName()
+        );
+    };
+
     public List<CarBrandResponse> getAllCarBrands() {
         return carBrandRepository.findAll().stream()
-                .map(carBrand -> new CarBrandResponse(carBrand.getId(), carBrand.getName()))
-                .collect(Collectors.toList());
+                .map(this::convertCarBrandToCarBrandResponse)
+                .toList();
     }
 
     public ResponseEntity<?> createCarBrand(String brandName) {
@@ -28,7 +34,7 @@ public class CarBrandService {
         }
         CarBrand carBrand = new CarBrand(brandName);
         carBrandRepository.save(carBrand);
-        CarBrandResponse carBrandResponse = new CarBrandResponse(carBrand.getId(), carBrand.getName());
+        CarBrandResponse carBrandResponse = this.convertCarBrandToCarBrandResponse(carBrand);
         return ResponseEntity.ok(carBrandResponse);
     }
 }

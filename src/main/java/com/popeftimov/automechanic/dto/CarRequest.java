@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationRequest {
-
-    private String email;
-    private String password;
+public class CarRequest {
+    private String brandName;
+    private String modelName;
+    private Integer year;
 }

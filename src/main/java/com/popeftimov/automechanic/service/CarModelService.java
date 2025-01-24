@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +19,13 @@ public class CarModelService {
 
     private final CarModelRepository carModelRepository;
     private final CarBrandRepository carBrandRepository;
+
+    public CarModelResponse convertCarModelToCarModelResponse(CarModel carModel) {
+        return new CarModelResponse(
+                carModel.getId(),
+                carModel.getName()
+        );
+    }
 
     public ResponseEntity<?> createModel(@PathVariable String brandName, String modelName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
@@ -35,7 +41,7 @@ public class CarModelService {
     public List<CarModelResponse> getAllCarModelsByBrand(String brand) {
         CarBrand carBrand = carBrandRepository.findByName(brand);
         return carModelRepository.findByBrand(carBrand)
-                .stream().map(carModel -> new CarModelResponse(carModel.getId(), carModel.getName()))
-                .collect(Collectors.toList());
+                .stream().map(this::convertCarModelToCarModelResponse)
+                .toList();
     }
 }
