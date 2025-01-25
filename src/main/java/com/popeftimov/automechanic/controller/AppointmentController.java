@@ -39,10 +39,15 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointments/me")
-    public ResponseEntity<List<AppointmentResponse>> getAppointmentsForLoggedInUser() {
-        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByUser();
+    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByLoggedInUser() {
+        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByLoggedInUser();
 
         return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/admin/appointments/{userId}")
+    public ResponseEntity<?> getUserAppointments(@PathVariable("userId") Long userId) {
+        return appointmentService.getUserAppointments(userId);
     }
 
     @PatchMapping("/admin/appointments/{appointmentId}")

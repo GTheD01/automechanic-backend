@@ -28,6 +28,11 @@ public class UserController {
         return userService.updateUserProfile(userId, userData);
     }
 
+    @GetMapping("admin/users/{userId}")
+    public ResponseEntity<?> getUser(@PathVariable("userId") Long userId) {
+        return userService.getUser(userId);
+    }
+
     @GetMapping("/admin/users")
     public ResponseEntity<Page<UserResponse>> getAllUsers(
             @RequestParam(value = "name", required = false) String name,

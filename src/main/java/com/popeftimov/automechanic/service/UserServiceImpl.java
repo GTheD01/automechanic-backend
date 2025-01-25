@@ -57,8 +57,8 @@ public class UserServiceImpl implements UserService {
                 user.getUserRole(),
                 user.getAvatar(),
                 user.getPhoneNumber(),
-                user.getAppointmentsCount(),
                 user.getCarsCount(),
+                user.getAppointmentsCount(),
                 user.getEnabled()
         );
     }
@@ -82,9 +82,15 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You are not authorized to update this profile.");
         }
-        fetchedUser.setFirstName(userData.getFirstName() != null && !userData.getFirstName().isEmpty() ? userData.getFirstName() : fetchedUser.getFirstName());
-        fetchedUser.setLastName(userData.getLastName() != null && !userData.getLastName().isEmpty() ? userData.getLastName() : fetchedUser.getLastName());
-        fetchedUser.setPhoneNumber(userData.getPhoneNumber() != null && !userData.getPhoneNumber().isEmpty() ? userData.getPhoneNumber() : fetchedUser.getPhoneNumber());
+        fetchedUser.setFirstName(userData.getFirstName() != null 
+                && !userData.getFirstName().isEmpty() ?
+                userData.getFirstName() : fetchedUser.getFirstName());
+        fetchedUser.setLastName(userData.getLastName() != null
+                && !userData.getLastName().isEmpty() ?
+                userData.getLastName() : fetchedUser.getLastName());
+        fetchedUser.setPhoneNumber(userData.getPhoneNumber() != null
+                && !userData.getPhoneNumber().isEmpty() ?
+                userData.getPhoneNumber() : fetchedUser.getPhoneNumber());
 
         userRepository.save(fetchedUser);
 
@@ -126,5 +132,14 @@ public class UserServiceImpl implements UserService {
         Page<UserResponse> userResponses = users
                 .map(this::convertToUserResponse);
         return ResponseEntity.ok().body(userResponses);
+    }
+
+    @Override
+    public ResponseEntity<?> getUser(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(
+                () -> new UsernameNotFoundException("User with ID: " + userId + " does not exist.")
+        );
+
+        return ResponseEntity.ok(this.convertToUserResponse(user));
     }
 }

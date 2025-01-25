@@ -49,6 +49,16 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
+    public ResponseEntity<?> getUserAppointments(Long userId) {
+        User user = userRepository.findById(userId).orElseThrow(() ->
+                new UsernameNotFoundException("User with ID: " + userId + " does not exist"));
+        List<Appointment> userAppointments = appointmentRepository.findByUser(user);
+        List<AppointmentResponse> userAppointmentsResponse = userAppointments
+                .stream().map(this::convertToAppointmentResponse).toList();
+        return ResponseEntity.ok(userAppointmentsResponse);
+    }
+
+    @Override
     public AppointmentResponse createAppointment(AppointmentRequest appointment) {
         LocalDateTime requestedDateTime = LocalDateTime.of(appointment.getAppointmentDate(), appointment.getAppointmentTime());
 
@@ -97,7 +107,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentResponse> getAppointmentsByUser() {
+    public List<AppointmentResponse> getAppointmentsByLoggedInUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Appointment> userAppointments = appointmentRepository.findByUser(user);
         List<AppointmentResponse> appointmentResponseList = userAppointments

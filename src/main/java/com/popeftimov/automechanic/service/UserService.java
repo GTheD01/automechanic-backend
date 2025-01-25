@@ -16,4 +16,6 @@ public interface UserService {
     void resetPassword(String email, String token, String newPassword, String repeatNewPassword);
 
     ResponseEntity<Page<UserResponse>> getAllUsers(String name, Boolean hasCars, Boolean hasAppointments, Pageable pageable);
+
+    ResponseEntity<?> getUser(Long userId);
 }
