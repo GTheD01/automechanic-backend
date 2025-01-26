@@ -82,4 +82,11 @@ public class CarService {
 
         return ResponseEntity.ok(userCarsResponse);
     }
+
+    public ResponseEntity<?> getLoggedInUserCars() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        List<Car> loggedInUserCars = carRepository.findByUser(user);
+
+        return ResponseEntity.ok(loggedInUserCars);
+    }
 }

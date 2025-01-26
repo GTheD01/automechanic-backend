@@ -22,12 +22,12 @@ public class CarController {
     private final CarModelService carModelService;
     private final CarService carService;
 
-    @GetMapping("/public/brands")
+    @GetMapping("/brands")
     public List<CarBrandResponse> getCarBrands() {
         return carBrandService.getAllCarBrands();
     }
 
-    @GetMapping("/public/{brand}/models")
+    @GetMapping("/{brand}/models")
     public List<CarModelResponse> getCarModelsByBrand(@PathVariable String brand) {
         return carModelService.getAllCarModelsByBrand(brand.toUpperCase());
     }
@@ -47,8 +47,13 @@ public class CarController {
         return carService.addCar(carRequest);
     }
 
-    @GetMapping("/cars/user/{userId}")
+    @GetMapping("admin/cars/user/{userId}")
     public ResponseEntity<?> getUserCars(@PathVariable Long userId) {
         return carService.getUserCars(userId);
+    }
+
+    @GetMapping("/cars")
+    public ResponseEntity<?> getLoggedInUserCars() {
+        return carService.getLoggedInUserCars();
     }
 }
