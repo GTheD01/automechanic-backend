@@ -27,4 +27,5 @@ public class Car {
     private CarModel model;
 
     private Integer year;
+    private String version;
 }

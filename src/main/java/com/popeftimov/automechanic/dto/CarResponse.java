@@ -12,4 +12,5 @@ public class CarResponse {
     private CarBrandResponse carBrand;
     private CarModelResponse model;
     private Integer year;
+    private String version;
 }

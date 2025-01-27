@@ -40,7 +40,8 @@ public class CarService {
                 car.getId(),
                 carBrandResponse,
                 carModelResponse,
-                car.getYear()
+                car.getYear(),
+                car.getVersion()
         );
     }
 
@@ -48,9 +49,9 @@ public class CarService {
         String brandName = carRequest.getBrandName();
         String modelName = carRequest.getModelName();
         Integer year = carRequest.getYear();
+        String version = carRequest.getVersion();
 
         CarBrand carBrand = carBrandRepository.findByName(brandName);
-        System.out.println(modelName);
         if (carBrand == null) {
             throw new CarExceptions.CarBrandNotFound();
         }
@@ -69,6 +70,7 @@ public class CarService {
         car.setModel(carModel);
         car.setUser(user);
         car.setYear(year);
+        car.setVersion(version);
         carRepository.save(car);
         CarResponse carResponse = this.convertCarToCarResponse(car);
         return ResponseEntity.ok(carResponse);
@@ -86,7 +88,8 @@ public class CarService {
     public ResponseEntity<?> getLoggedInUserCars() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Car> loggedInUserCars = carRepository.findByUser(user);
+        List<CarResponse> userCarsResponse = loggedInUserCars.stream().map(this::convertCarToCarResponse).toList();
 
-        return ResponseEntity.ok(loggedInUserCars);
+        return ResponseEntity.ok(userCarsResponse);
     }
 }

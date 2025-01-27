@@ -11,4 +11,5 @@ public class CarRequest {
     private String brandName;
     private String modelName;
     private Integer year;
+    private String version;
 }
