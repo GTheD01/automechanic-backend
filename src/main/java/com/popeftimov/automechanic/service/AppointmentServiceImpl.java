@@ -110,10 +110,9 @@ public class AppointmentServiceImpl implements AppointmentService {
     public List<AppointmentResponse> getAppointmentsByLoggedInUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Appointment> userAppointments = appointmentRepository.findByUser(user);
-        List<AppointmentResponse> appointmentResponseList = userAppointments
-                .stream().map(this::convertToAppointmentResponse).toList();
 
-        return appointmentResponseList;
+        return userAppointments
+                .stream().map(this::convertToAppointmentResponse).toList();
     }
 
     @Override
@@ -123,8 +122,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
         Page<Appointment> appointments = appointmentRepository.findAll(spec, pageable);
 
-        Page<AppointmentResponse> appointmentResponses = appointments
+        return appointments
                 .map(this::convertToAppointmentResponse);
-        return appointmentResponses;
     }
 }

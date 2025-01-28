@@ -19,4 +19,10 @@ public class CarExceptions {
             super("Invalid car year. Must be between 1950-2025.");
         }
     }
+
+    public static class CarNotFound  extends RuntimeException {
+        public CarNotFound(Long carId) {
+            super("Car with ID: " + carId + " not found");
+        }
+    }
 }

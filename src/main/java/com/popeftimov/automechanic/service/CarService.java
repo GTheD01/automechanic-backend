@@ -5,15 +5,14 @@ import com.popeftimov.automechanic.dto.CarModelResponse;
 import com.popeftimov.automechanic.dto.CarRequest;
 import com.popeftimov.automechanic.dto.CarResponse;
 import com.popeftimov.automechanic.exception.CarExceptions;
-import com.popeftimov.automechanic.model.Car;
-import com.popeftimov.automechanic.model.CarBrand;
-import com.popeftimov.automechanic.model.CarModel;
+import com.popeftimov.automechanic.model.*;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import com.popeftimov.automechanic.repository.CarModelRepository;
 import com.popeftimov.automechanic.repository.CarRepository;
-import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.UserRepository;
+import com.popeftimov.automechanic.utils.PermissionUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -91,5 +90,54 @@ public class CarService {
         List<CarResponse> userCarsResponse = loggedInUserCars.stream().map(this::convertCarToCarResponse).toList();
 
         return ResponseEntity.ok(userCarsResponse);
+    }
+
+    public ResponseEntity<?> updateCar(Long carId, CarRequest carRequest) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (PermissionUtils.notOwnerOrAdmin(user, car)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+        }
+
+        String brandName = carRequest.getBrandName();
+        String modelName = carRequest.getModelName();
+        Integer year = carRequest.getYear();
+        String version = carRequest.getVersion();
+
+        CarBrand carBrand = carBrandRepository.findByName(brandName);
+        if (carBrand == null) {
+            throw new CarExceptions.CarBrandNotFound();
+        }
+        CarModel carModel = carModelRepository.findByName(modelName);
+        if (carModel == null) {
+            throw new CarExceptions.CarModelNotFound();
+        }
+        if (year == null || (1950 > year || year > 2025)) {
+            throw new CarExceptions.CarYearInvalid();
+        }
+
+        car.setBrand(carBrand);
+        car.setModel(carModel);
+        car.setYear(year);
+        car.setVersion(version);
+        carRepository.save(car);
+        CarResponse carResponse = this.convertCarToCarResponse(car);
+        return ResponseEntity.ok(carResponse);
+    }
+
+    public ResponseEntity<?> deleteCar(Long carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (PermissionUtils.notOwnerOrAdmin(user, car)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+        }
+
+        carRepository.delete(car);
+
+        return ResponseEntity.noContent().build();
     }
 }

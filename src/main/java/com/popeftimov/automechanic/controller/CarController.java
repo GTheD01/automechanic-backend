@@ -28,7 +28,7 @@ public class CarController {
     }
 
     @GetMapping("/{brand}/models")
-    public List<CarModelResponse> getCarModelsByBrand(@PathVariable String brand) {
+    public List<CarModelResponse> getCarModelsByBrand(@PathVariable("brand") String brand) {
         return carModelService.getAllCarModelsByBrand(brand.toUpperCase());
     }
 
@@ -38,7 +38,7 @@ public class CarController {
     }
 
     @GetMapping("/admin/{brandName}/create-model")
-    public ResponseEntity<?> createCarModel(@PathVariable String brandName, String modelName) {
+    public ResponseEntity<?> createCarModel(@PathVariable("brandName") String brandName, String modelName) {
         return carModelService.createModel(brandName, modelName);
     }
 
@@ -48,12 +48,22 @@ public class CarController {
     }
 
     @GetMapping("admin/cars/user/{userId}")
-    public ResponseEntity<?> getUserCars(@PathVariable Long userId) {
+    public ResponseEntity<?> getUserCars(@PathVariable("userId") Long userId) {
         return carService.getUserCars(userId);
     }
 
     @GetMapping("/cars")
     public ResponseEntity<?> getLoggedInUserCars() {
         return carService.getLoggedInUserCars();
+    }
+
+    @PutMapping("/cars/{carId}")
+    public ResponseEntity<?> updateCar(@PathVariable("carId") Long carId, @RequestBody CarRequest carRequest) {
+        return carService.updateCar(carId, carRequest);
+    }
+
+    @DeleteMapping("/cars/{carId}")
+    public ResponseEntity<?> deleteCar(@PathVariable("carId") Long carId) {
+        return carService.deleteCar(carId);
     }
 }

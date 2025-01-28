@@ -190,4 +190,22 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CarExceptions.CarNotFound.class)
+    public ResponseEntity<ApiError> handleCarNotFoundException(CarExceptions.CarNotFound ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "NOT FOUND",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }

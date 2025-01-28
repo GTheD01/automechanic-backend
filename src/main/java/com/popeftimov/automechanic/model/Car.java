@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-public class Car {
+public class Car implements Ownable{
     @Id
     @GeneratedValue
     private Long id;
