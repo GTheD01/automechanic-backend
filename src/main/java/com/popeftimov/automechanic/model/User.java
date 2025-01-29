@@ -38,14 +38,17 @@ public class User implements UserDetails {
     @Formula("(SELECT COUNT(*) FROM Appointment a WHERE a.user_id = id)")
     private Long appointmentsCount;
 
+    @Formula("(SELECT COUNT(*) FROM Report r WHERE r.user_id = id)")
+    private Long reportsCount;
+
     @Enumerated(EnumType.STRING)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Appointment> appointments;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Car> cars;
 
     private String avatar;

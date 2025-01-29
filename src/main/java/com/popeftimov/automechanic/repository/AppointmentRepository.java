@@ -16,4 +16,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
     List<Appointment> findByUser(User user);
     boolean existsByAppointmentDateAndAppointmentTime(LocalDate appointmentDate, LocalTime appointmentTime);
     Optional<Appointment> findFirstByOrderByAppointmentDateAscAppointmentTimeAsc();
+    Optional<Appointment> findFirstByUserOrderByAppointmentDateAscAppointmentTimeAsc(User user);
+
 }

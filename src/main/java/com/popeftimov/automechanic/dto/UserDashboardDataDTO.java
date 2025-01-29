@@ -4,13 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AdminDashboardDataDTO {
+public class UserDashboardDataDTO {
     private Long totalAppointments;
     private Long totalCars;
     private AppointmentResponse upcomingAppointment;
-    private Long totalReports;
+    private Long totalUserReports;
 }
