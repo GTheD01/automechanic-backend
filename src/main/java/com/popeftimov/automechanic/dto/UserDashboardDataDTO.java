@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserDashboardDataDTO {
-    private Long totalAppointments;
-    private Long totalCars;
-    private AppointmentResponse upcomingAppointment;
+    private Long totalUserAppointments;
+    private Long totalUserCars;
+    private AppointmentResponse upcomingUserAppointment;
     private Long totalUserReports;
 }
