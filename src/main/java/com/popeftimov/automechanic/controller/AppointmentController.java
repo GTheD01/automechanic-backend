@@ -12,7 +12,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -39,15 +38,16 @@ public class AppointmentController {
     }
 
     @GetMapping("/appointments/me")
-    public ResponseEntity<List<AppointmentResponse>> getAppointmentsByLoggedInUser() {
-        List<AppointmentResponse> appointments = appointmentService.getAppointmentsByLoggedInUser();
+    public ResponseEntity<Page<AppointmentResponse>> getAppointmentsByLoggedInUser(Pageable pageable) {
+        Page<AppointmentResponse> appointments = appointmentService.getAppointmentsByLoggedInUser(pageable);
 
-        return ResponseEntity.ok(appointments);
+        return ResponseEntity.ok().body(appointments);
     }
 
     @GetMapping("/admin/appointments/{userId}")
-    public ResponseEntity<?> getUserAppointments(@PathVariable("userId") Long userId) {
-        return appointmentService.getUserAppointments(userId);
+    public ResponseEntity<?> getUserAppointments(@PathVariable("userId") Long userId, Pageable pageable) {
+        Page<AppointmentResponse> userAppointments = appointmentService.getUserAppointments(userId, pageable);
+        return ResponseEntity.ok().body(userAppointments);
     }
 
     @PatchMapping("/admin/appointments/{appointmentId}")

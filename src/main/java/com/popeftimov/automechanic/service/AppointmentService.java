@@ -10,15 +10,14 @@ import org.springframework.http.ResponseEntity;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.List;
 
 public interface AppointmentService {
-    List<AppointmentResponse> getAppointmentsByLoggedInUser();
+    Page<AppointmentResponse> getAppointmentsByLoggedInUser(Pageable pageable);
     Page<AppointmentResponse> getAllApointments(Pageable pageable, String search);
     AppointmentResponse createAppointment(AppointmentRequest appointment);
     boolean isAppointmentAtTimeExists(LocalDate appointmentDate, LocalTime appointmentTime);
     AppointmentResponse convertToAppointmentResponse(Appointment appointment);
     ResponseEntity<AppointmentResponse> updateAppointment(Long appointmentId, AppointmentStatus appointmentStatus);
 
-    ResponseEntity<?> getUserAppointments(Long userId);
+    Page<AppointmentResponse> getUserAppointments(Long userId, Pageable pageable);
 }

@@ -23,7 +23,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.util.List;
 
 
 @Service
@@ -49,13 +48,13 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public ResponseEntity<?> getUserAppointments(Long userId) {
+    public Page<AppointmentResponse> getUserAppointments(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(() ->
                 new UsernameNotFoundException("User with ID: " + userId + " does not exist"));
-        List<Appointment> userAppointments = appointmentRepository.findByUser(user);
-        List<AppointmentResponse> userAppointmentsResponse = userAppointments
-                .stream().map(this::convertToAppointmentResponse).toList();
-        return ResponseEntity.ok(userAppointmentsResponse);
+        Page<Appointment> userAppointments = appointmentRepository.findByUserOrderByAppointmentDateAscAppointmentTimeAsc(user, pageable);
+        Page<AppointmentResponse> userAppointmentsResponse = userAppointments
+                .map(this::convertToAppointmentResponse);
+        return userAppointmentsResponse;
     }
 
     @Override
@@ -107,12 +106,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public List<AppointmentResponse> getAppointmentsByLoggedInUser() {
+    public Page<AppointmentResponse> getAppointmentsByLoggedInUser(Pageable pageable) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Appointment> userAppointments = appointmentRepository.findByUser(user);
+        Page<Appointment> userAppointments = appointmentRepository.findByUserOrderByAppointmentDateAscAppointmentTimeAsc(user, pageable);
 
         return userAppointments
-                .stream().map(this::convertToAppointmentResponse).toList();
+                .map(this::convertToAppointmentResponse);
     }
 
     @Override
