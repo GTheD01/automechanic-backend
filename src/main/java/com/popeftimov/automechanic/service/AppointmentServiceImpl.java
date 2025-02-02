@@ -1,14 +1,13 @@
 package com.popeftimov.automechanic.service;
 
-import com.popeftimov.automechanic.dto.AppointmentFilter;
-import com.popeftimov.automechanic.dto.AppointmentRequest;
-import com.popeftimov.automechanic.dto.AppointmentResponse;
-import com.popeftimov.automechanic.dto.UserResponse;
+import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.exception.AppointmentExceptions;
 import com.popeftimov.automechanic.model.Appointment;
 import com.popeftimov.automechanic.model.AppointmentStatus;
+import com.popeftimov.automechanic.model.Car;
 import com.popeftimov.automechanic.repository.AppointmentRepository;
 import com.popeftimov.automechanic.model.User;
+import com.popeftimov.automechanic.repository.CarRepository;
 import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.specifications.AppointmentSpecification;
 import lombok.RequiredArgsConstructor;
@@ -32,6 +31,8 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
     private final UserService userService;
+    private final CarService carService;
+    private final CarRepository carRepository;
 
     @Override
     public boolean isAppointmentAtTimeExists(LocalDate appointmentDate, LocalTime appointmentTime) {
@@ -70,6 +71,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AppointmentExceptions.AppointmentAtDateTimeExists();
         }
 
+        Car userCar = carRepository.findById(appointment.getCarId()).orElseThrow(
+                AppointmentExceptions.AppointmentNoCarSelected::new
+        );
+
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(email));
@@ -80,19 +85,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         newAppointment.setAppointmentTime(appointment.getAppointmentTime());
         newAppointment.setDescription(appointment.getDescription());
         newAppointment.setAppointmentStatus(AppointmentStatus.UPCOMING);
+        newAppointment.setCar(userCar);
 
         appointmentRepository.save(newAppointment);
 
-        UserResponse userResponse = userService.convertToUserResponse(user);
-
-        return new AppointmentResponse(newAppointment.getId(), newAppointment.getDescription(),
-                newAppointment.getAppointmentDate(), newAppointment.getAppointmentTime(),
-                AppointmentStatus.UPCOMING, userResponse, newAppointment.getCreatedDate(),
-                newAppointment.getLastModifiedDate());
+        return this.convertToAppointmentResponse(newAppointment);
     }
 
     public AppointmentResponse convertToAppointmentResponse(Appointment appointment) {
         UserResponse userResponse = userService.convertToUserResponse(appointment.getUser());
+        CarResponse carResponse = carService.convertCarToCarResponse(appointment.getCar());
         return new AppointmentResponse(
                 appointment.getId(),
                 appointment.getDescription(),
@@ -100,6 +102,7 @@ public class AppointmentServiceImpl implements AppointmentService {
                 appointment.getAppointmentTime(),
                 appointment.getAppointmentStatus(),
                 userResponse,
+                carResponse,
                 appointment.getCreatedDate(),
                 appointment.getLastModifiedDate()
         );

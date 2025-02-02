@@ -25,10 +25,12 @@ public class AppointmentResponse {
 
     private AppointmentStatus appointmentStatus;
     private UserResponse user;
+    private CarResponse car;
 
     @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
     private LocalDateTime createdDate;
 
     @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
     private LocalDateTime lastModifiedDate;
+
 }

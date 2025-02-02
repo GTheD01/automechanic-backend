@@ -27,6 +27,9 @@ public class Appointment {
     private AppointmentStatus appointmentStatus;
 
     @ManyToOne
+    private Car car;
+
+    @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 

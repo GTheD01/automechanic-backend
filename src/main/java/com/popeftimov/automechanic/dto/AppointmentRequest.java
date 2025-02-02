@@ -18,4 +18,6 @@ public class AppointmentRequest {
     private LocalTime appointmentTime;
 
     private User user;
+
+    private Long carId;
 }

@@ -238,4 +238,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AppointmentExceptions.AppointmentNoCarSelected.class)
+    public ResponseEntity<ApiError> handleAppointmentNoCarSelected(AppointmentExceptions.AppointmentNoCarSelected ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }

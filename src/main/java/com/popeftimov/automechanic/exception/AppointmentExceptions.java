@@ -13,4 +13,8 @@ public class AppointmentExceptions {
             super("Invalid date/time cannot schedule in the past");
         }
     }
+
+    public static class AppointmentNoCarSelected extends  RuntimeException {
+        public AppointmentNoCarSelected() { super("No car selected.");}
+    }
 }
