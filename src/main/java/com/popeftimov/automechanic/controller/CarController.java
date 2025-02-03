@@ -57,6 +57,11 @@ public class CarController {
         return carService.getLoggedInUserCars();
     }
 
+    @GetMapping("/cars/{carId}")
+    public ResponseEntity<?> getCar(@PathVariable("carId") Long carId) {
+        return carService.getCar(carId);
+    }
+
     @PutMapping("/cars/{carId}")
     public ResponseEntity<?> updateCar(@PathVariable("carId") Long carId, @RequestBody CarRequest carRequest) {
         return carService.updateCar(carId, carRequest);

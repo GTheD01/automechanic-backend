@@ -7,10 +7,10 @@ import com.popeftimov.automechanic.model.UserRole;
 public class PermissionUtils {
 
     public static <T extends Ownable> boolean notOwnerOrAdmin(User user, T object) {
-        if (user.getUserRole() != UserRole.ADMIN) {
-            return true;
-        }
+        boolean isOwner = object.getUser().equals(user);
 
-        return !object.getUser().equals(user);
+        boolean isAdmin = user.getUserRole() == UserRole.ADMIN;
+
+        return !isOwner && !isAdmin;
     }
 }

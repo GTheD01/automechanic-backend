@@ -140,4 +140,21 @@ public class CarService {
 
         return ResponseEntity.noContent().build();
     }
+
+    public ResponseEntity<?> getCar(Long carId) {
+        Car car = carRepository.findById(carId)
+                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
+
+        if (PermissionUtils.notOwnerOrAdmin(user, car)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+        }
+
+        CarResponse carResponse = this.convertCarToCarResponse(car);
+
+        return ResponseEntity.ok(carResponse);
+    }
 }
