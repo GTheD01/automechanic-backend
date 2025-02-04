@@ -1,9 +1,6 @@
 package com.popeftimov.automechanic.service;
 
-import com.popeftimov.automechanic.dto.CarBrandResponse;
-import com.popeftimov.automechanic.dto.CarModelResponse;
-import com.popeftimov.automechanic.dto.CarRequest;
-import com.popeftimov.automechanic.dto.CarResponse;
+import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.exception.CarExceptions;
 import com.popeftimov.automechanic.model.*;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
@@ -35,13 +32,14 @@ public class CarService {
     public CarResponse convertCarToCarResponse(Car car) {
         CarBrandResponse carBrandResponse = carBrandService.convertCarBrandToCarBrandResponse(car.getBrand());
         CarModelResponse carModelResponse = carModelService.convertCarModelToCarModelResponse(car.getModel());
-        return new CarResponse(
-                car.getId(),
-                carBrandResponse,
-                carModelResponse,
-                car.getYear(),
-                car.getVersion()
-        );
+        return CarResponse
+                .builder()
+                .id(car.getId())
+                .carBrand(carBrandResponse)
+                .model(carModelResponse)
+                .year(car.getYear())
+                .version(car.getVersion())
+                .build();
     }
 
     public ResponseEntity<?> addCar(@RequestBody CarRequest carRequest) {
@@ -153,7 +151,33 @@ public class CarService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
         }
 
-        CarResponse carResponse = this.convertCarToCarResponse(car);
+        CarBrandResponse carBrandResponse = carBrandService.convertCarBrandToCarBrandResponse(car.getBrand());
+        CarModelResponse carModelResponse = carModelService.convertCarModelToCarModelResponse(car.getModel());
+        List<AppointmentResponse> appointmentResponses = car
+                .getAppointments()
+                .stream()
+                .map((appointment -> AppointmentResponse
+                        .builder()
+                        .id(appointment.getId())
+                        .description(appointment.getDescription())
+                        .appointmentDate(appointment.getAppointmentDate())
+                        .appointmentTime(appointment.getAppointmentTime())
+                        .appointmentStatus(appointment.getAppointmentStatus())
+                        .createdDate(appointment.getCreatedDate())
+                        .lastModifiedDate(appointment.getLastModifiedDate())
+                        .build()
+                ))
+                .toList();
+
+        CarResponse carResponse = CarResponse
+                .builder()
+                .id(car.getId())
+                .carBrand(carBrandResponse)
+                .model(carModelResponse)
+                .year(car.getYear())
+                .version(car.getVersion())
+                .appointments(appointmentResponses)
+                .build();
 
         return ResponseEntity.ok(carResponse);
     }

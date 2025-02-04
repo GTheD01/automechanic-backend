@@ -30,7 +30,6 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
     private final UserRepository userRepository;
-    private final UserService userService;
     private final CarService carService;
     private final CarRepository carRepository;
 
@@ -93,19 +92,27 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     public AppointmentResponse convertToAppointmentResponse(Appointment appointment) {
-        UserResponse userResponse = userService.convertToUserResponse(appointment.getUser());
+        UserResponse userResponse = UserResponse
+                .builder()
+                .firstName(appointment.getUser().getFirstName())
+                .lastName(appointment.getUser().getLastName())
+                .phoneNumber(appointment.getUser().getPhoneNumber())
+                .build();
+
         CarResponse carResponse = carService.convertCarToCarResponse(appointment.getCar());
-        return new AppointmentResponse(
-                appointment.getId(),
-                appointment.getDescription(),
-                appointment.getAppointmentDate(),
-                appointment.getAppointmentTime(),
-                appointment.getAppointmentStatus(),
-                userResponse,
-                carResponse,
-                appointment.getCreatedDate(),
-                appointment.getLastModifiedDate()
-        );
+
+        return AppointmentResponse
+                .builder()
+                .id(appointment.getId())
+                .description(appointment.getDescription())
+                .appointmentDate(appointment.getAppointmentDate())
+                .appointmentTime(appointment.getAppointmentTime())
+                .appointmentStatus(appointment.getAppointmentStatus())
+                .user(userResponse)
+                .car(carResponse)
+                .createdDate(appointment.getCreatedDate())
+                .lastModifiedDate(appointment.getLastModifiedDate())
+                .build();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.popeftimov.automechanic.dto;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.popeftimov.automechanic.model.AppointmentStatus;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -11,6 +12,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppointmentResponse {

@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,6 +27,9 @@ public class Car implements Ownable{
     @ManyToOne
     @JoinColumn(nullable = false)
     private CarModel model;
+
+    @OneToMany(mappedBy = "car")
+    private List<Appointment> appointments;
 
     private Integer year;
     private String version;
