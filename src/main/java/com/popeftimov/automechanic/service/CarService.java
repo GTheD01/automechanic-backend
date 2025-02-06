@@ -128,7 +128,10 @@ public class CarService {
     public ResponseEntity<?> deleteCar(Long carId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String email = SecurityContextHolder.getContext().getAuthentication().getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(email));
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
