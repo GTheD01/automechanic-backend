@@ -169,8 +169,8 @@ public class CarService {
                         .appointmentDate(appointment.getAppointmentDate())
                         .appointmentTime(appointment.getAppointmentTime())
                         .appointmentStatus(appointment.getAppointmentStatus())
-                        .createdDate(appointment.getCreatedDate())
-                        .lastModifiedDate(appointment.getLastModifiedDate())
+                        .createdAt(appointment.getCreatedAt())
+                        .lastModifiedAt(appointment.getLastModifiedAt())
                         .build()
                 ))
                 .toList();

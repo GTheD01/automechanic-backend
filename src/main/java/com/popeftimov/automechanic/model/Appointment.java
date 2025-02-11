@@ -20,8 +20,8 @@ public class Appointment {
     private String description;
     private LocalDate appointmentDate;
     private LocalTime appointmentTime;
-    private LocalDateTime createdDate;
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
 
     @Enumerated(EnumType.STRING)
     private AppointmentStatus appointmentStatus;
@@ -36,12 +36,12 @@ public class Appointment {
 
     @PrePersist
     public void prePersist() {
-        this.createdDate = LocalDateTime.now();
+        this.createdAt = LocalDateTime.now();
     }
 
     @PreUpdate
     public void preUpdate() {
-        this.lastModifiedDate = LocalDateTime.now();
+        this.lastModifiedAt = LocalDateTime.now();
     }
 
 }

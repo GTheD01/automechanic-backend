@@ -30,9 +30,9 @@ public class AppointmentResponse {
     private CarResponse car;
 
     @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
-    private LocalDateTime createdDate;
+    private LocalDateTime createdAt;
 
     @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
-    private LocalDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedAt;
 
 }

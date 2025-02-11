@@ -20,6 +20,7 @@ public class Report {
     private String description;
     private String answer;
     private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -28,5 +29,10 @@ public class Report {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModifiedAt = LocalDateTime.now();
     }
 }

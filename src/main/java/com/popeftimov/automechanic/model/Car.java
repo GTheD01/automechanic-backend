@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -33,4 +34,16 @@ public class Car implements Ownable{
 
     private Integer year;
     private String version;
+    private LocalDateTime createdAt;
+    private LocalDateTime lastModifiedAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        this.lastModifiedAt = LocalDateTime.now();
+    }
 }

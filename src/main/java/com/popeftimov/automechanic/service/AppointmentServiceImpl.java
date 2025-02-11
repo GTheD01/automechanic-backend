@@ -110,8 +110,8 @@ public class AppointmentServiceImpl implements AppointmentService {
                 .appointmentStatus(appointment.getAppointmentStatus())
                 .user(userResponse)
                 .car(carResponse)
-                .createdDate(appointment.getCreatedDate())
-                .lastModifiedDate(appointment.getLastModifiedDate())
+                .createdAt(appointment.getCreatedAt())
+                .lastModifiedAt(appointment.getLastModifiedAt())
                 .build();
     }
 

@@ -27,4 +27,9 @@ public class PasswordResetToken {
     private LocalDateTime expiryDate;
 
     private LocalDateTime createdAt;
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
+    }
 }

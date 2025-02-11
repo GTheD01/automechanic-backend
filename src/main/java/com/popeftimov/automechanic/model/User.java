@@ -11,6 +11,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,6 +35,7 @@ public class User implements UserDetails {
     private String password;
     private String phoneNumber;
     private Boolean enabled = false;
+    private LocalDateTime createdAt;
 
     @Formula("(SELECT COUNT(*) FROM Car c WHERE c.user_id = id)")
     private Long carsCount;
@@ -80,5 +82,10 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return enabled;
+    }
+
+    @PrePersist
+    public void prePersist() {
+        this.createdAt = LocalDateTime.now();
     }
 }
