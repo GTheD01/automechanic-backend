@@ -25,6 +25,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
@@ -171,23 +172,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public void sendVerificationEmail(String email, String link) throws MessagingException{
         String subject = "Account verification";
-        String htmlMessage = "<html>"
-                + "<body style=\"font-family: Arial, sans-serif; margin: 0; padding: 0; background-color: #f7f7f7;\">"
-                + "<div style=\"max-width: 600px; margin: 30px auto; background-color: #ffffff; padding: 20px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);\">"
-                + "<h2 style=\"color: #333; text-align: center; font-size: 24px; margin-bottom: 20px;\">Welcome to Our App!</h2>"
-                + "<p style=\"font-size: 16px; color: #555; line-height: 1.6;\">Hi there,</p>"
-                + "<p style=\"font-size: 16px; color: #555; line-height: 1.6;\">Thank you for registering with us. To complete your account activation, please click the verification link below:</p>"
-                + "<div style=\"background-color: #f9f9f9; padding: 20px; border-radius: 5px; box-shadow: 0 0 8px rgba(0,0,0,0.1); margin-top: 20px;\">"
-                + "<h3 style=\"color: #333; font-size: 18px; margin-bottom: 10px;\">Your Verification Link:</h3>"
-                + "<p style=\"font-size: 18px; font-weight: bold; color: #007bff; word-wrap: break-word; text-align: center;\">" + link + "</p>"
-                + "</div>"
-                + "<p style=\"font-size: 16px; color: #555; line-height: 1.6; margin-top: 20px;\">If you didn't request this, please ignore this email.</p>"
-                + "<p style=\"font-size: 16px; color: #555; line-height: 1.6;\">Best regards,<br/>The Automechanic Team</p>"
-                + "</div>"
-                + "</body>"
-                + "</html>";
+        Context context = new Context();
+        context.setVariable("subject", subject);
+        context.setVariable("link", link);
         try {
-            emailService.sendEmail(email, subject, htmlMessage);
+            emailService.sendEmail(email, subject, "AccountVerification", context);
         } catch (MessagingException e) {
             throw new MessagingException();
         }

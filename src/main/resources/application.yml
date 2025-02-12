@@ -31,6 +31,8 @@ spring:
           auth: true
           starttls:
             enable: true
+  thymeleaf:
+    prefix: classpath:/templates/email_templates/
   web:
     resources:
       static-locations: classpath:/static/, file:/uploads/avatars/
