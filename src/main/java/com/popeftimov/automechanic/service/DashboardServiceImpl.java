@@ -18,9 +18,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class DashboardServiceImpl implements DashboardService {
 
+    private final AppointmentService appointmentService;
     private final AppointmentRepository appointmentRepository;
     private final CarRepository carRepository;
-    private final AppointmentService appointmentService;
     private final ReportRepository reportRepository;
 
     public AdminDashboardDataDTO getAdminDashboardData() {

@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -29,7 +28,7 @@ import java.time.LocalTime;
 public class AppointmentServiceImpl implements AppointmentService {
 
     private final AppointmentRepository appointmentRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final CarService carService;
     private final CarRepository carRepository;
 
@@ -49,8 +48,7 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Page<AppointmentResponse> getUserAppointments(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new UsernameNotFoundException("User with ID: " + userId + " does not exist"));
+        User user = userService.loadUserById(userId);
         Page<Appointment> userAppointments = appointmentRepository.findByUserOrderByAppointmentDateAscAppointmentTimeAsc(user, pageable);
         Page<AppointmentResponse> userAppointmentsResponse = userAppointments
                 .map(this::convertToAppointmentResponse);
@@ -75,8 +73,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userService.loadUserByEmail(email);
 
         Appointment newAppointment = new Appointment();
         newAppointment.setUser(user);

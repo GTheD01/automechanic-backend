@@ -30,16 +30,27 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
+    private final static String USER_EMAIL_NOT_FOUND_MSG = "User with email %s not found";
+    private final static String USER_ID_NOT_FOUND_MSG = "User with id %d not found";
     private final UserRepository userRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final static String USER_NOT_FOUND_MSG = "User with email %s not found";
     private final PasswordEncoder passwordEncoder;
     private final UserPhoneNumberValidator userPhoneNumberValidator;
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_NOT_FOUND_MSG, email)));
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
+    }
+
+    public User loadUserByEmail(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
+    }
+    
+    public User loadUserById(Long id) throws  UsernameNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, id)));
     }
 
     @Override

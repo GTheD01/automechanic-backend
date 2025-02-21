@@ -6,10 +6,8 @@ import com.popeftimov.automechanic.exception.ReportExceptions;
 import com.popeftimov.automechanic.model.Report;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.ReportRepository;
-import com.popeftimov.automechanic.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,7 +18,6 @@ public class ReportServiceImpl implements ReportService{
 
     private final ReportRepository reportRepository;
     private final UserService userService;
-    private final UserRepository userRepository;
 
     public ReportDTO convertReportToReportDTO(Report report) {
         UserResponse userResponse = userService.convertToUserResponse(report.getUser());
@@ -45,13 +42,11 @@ public class ReportServiceImpl implements ReportService{
         String description = reportData.getDescription();
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userService.loadUserByEmail(email);
 
         if (description == null || description.trim().isEmpty()) {
             throw new ReportExceptions.InvalidReportDescriptionException();
         }
-
 
         Report report = new Report();
         report.setDescription(reportData.getDescription());

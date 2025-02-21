@@ -84,7 +84,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
         user.setPassword(encodedPassword);
 
-
         try {
             userRepository.save(user);
 
@@ -156,8 +155,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
 
-        var user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        var user = userService.loadUserByEmail(request.getEmail());
         var jwtToken = jwtService.generateToken(user);
         Cookie jwtCookie = new Cookie("accessToken", jwtToken);
         jwtCookie.setHttpOnly(true);

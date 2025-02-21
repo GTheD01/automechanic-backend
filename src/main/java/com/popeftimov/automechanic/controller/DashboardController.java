@@ -2,7 +2,7 @@ package com.popeftimov.automechanic.controller;
 
 import com.popeftimov.automechanic.dto.AdminDashboardDataDTO;
 import com.popeftimov.automechanic.dto.UserDashboardDataDTO;
-import com.popeftimov.automechanic.service.DashboardServiceImpl;
+import com.popeftimov.automechanic.service.DashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -16,18 +16,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class DashboardController {
 
     @Autowired
-    private final DashboardServiceImpl dashboardServiceImpl;
+    private final DashboardService dashboardService;
 
     @GetMapping("/admin/dashboard")
     public ResponseEntity<AdminDashboardDataDTO> getAdminDashboardData() {
-        AdminDashboardDataDTO adminDashboardData = dashboardServiceImpl.getAdminDashboardData();
+        AdminDashboardDataDTO adminDashboardData = dashboardService.getAdminDashboardData();
 
         return ResponseEntity.ok(adminDashboardData);
     }
 
     @GetMapping("/dashboard")
     public ResponseEntity<UserDashboardDataDTO> getUserDashboardData() {
-        UserDashboardDataDTO userDashboardData = dashboardServiceImpl.getUserDashboardData();
+        UserDashboardDataDTO userDashboardData = dashboardService.getUserDashboardData();
         return ResponseEntity.ok(userDashboardData);
     }
 }

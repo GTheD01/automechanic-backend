@@ -25,9 +25,9 @@ public class CarService {
     private final CarRepository carRepository;
     private final CarBrandRepository carBrandRepository;
     private final CarModelRepository carModelRepository;
-    private final UserRepository userRepository;
     private final CarBrandService carBrandService;
     private final CarModelService carModelService;
+    private final UserService userService;
 
     public CarResponse convertCarToCarResponse(Car car) {
         CarBrandResponse carBrandResponse = carBrandService.convertCarBrandToCarBrandResponse(car.getBrand());
@@ -74,8 +74,7 @@ public class CarService {
     }
 
     public ResponseEntity<?> getUserCars(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() ->
-                new UsernameNotFoundException("User with ID: " + userId + " not found"));
+        User user = userService.loadUserById(userId);
         List<Car> userCars = user.getCars();
         List<CarResponse> userCarsResponse = userCars.stream().map(this::convertCarToCarResponse).toList();
 
@@ -95,8 +94,7 @@ public class CarService {
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userService.loadUserByEmail(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
@@ -133,8 +131,7 @@ public class CarService {
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userService.loadUserByEmail(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
@@ -150,8 +147,7 @@ public class CarService {
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(email));
+        User user = userService.loadUserByEmail(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");

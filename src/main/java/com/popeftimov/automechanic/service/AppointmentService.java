@@ -18,6 +18,5 @@ public interface AppointmentService {
     boolean isAppointmentAtTimeExists(LocalDate appointmentDate, LocalTime appointmentTime);
     AppointmentResponse convertToAppointmentResponse(Appointment appointment);
     ResponseEntity<AppointmentResponse> updateAppointment(Long appointmentId, AppointmentStatus appointmentStatus);
-
     Page<AppointmentResponse> getUserAppointments(Long userId, Pageable pageable);
 }

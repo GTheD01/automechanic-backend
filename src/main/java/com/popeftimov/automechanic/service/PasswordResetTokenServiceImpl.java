@@ -19,20 +19,13 @@ import java.util.UUID;
 public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
-
-    private final UserRepository userRepository;
-
+    private final UserService userService;
     private final EmailService emailService;
 
     @Override
     public String generatePasswordResetToken(String email) {
-        Optional<User> userOpt = userRepository.findByEmail(email);
+        User user = userService.loadUserByEmail(email);
 
-        if (userOpt.isEmpty()) {
-            throw new UsernameNotFoundException("User with email " + email + " not found");
-        }
-
-        User user = userOpt.get();
 //        Delete all reset password tokens of the user
         deleteAllByUser(user);
 
@@ -54,14 +47,9 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
     @Override
     public boolean validatePasswordResetToken(String email, String token) {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+        User user = userService.loadUserByEmail(email);
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
-        if (userOptional.isEmpty() || passwordResetToken.isEmpty()) {
-            return false;
-        }
-
-        User user = userOptional.get();
         User tokenUser = passwordResetToken.get().getUser();
 
         if (!user.equals(tokenUser)) {
