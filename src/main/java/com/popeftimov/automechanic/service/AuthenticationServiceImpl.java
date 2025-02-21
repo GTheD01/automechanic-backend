@@ -155,7 +155,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 )
         );
 
-        var user = userService.loadUserByEmail(request.getEmail());
+        var user = userService.loadUser(request.getEmail());
         var jwtToken = jwtService.generateToken(user);
         Cookie jwtCookie = new Cookie("accessToken", jwtToken);
         jwtCookie.setHttpOnly(true);

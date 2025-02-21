@@ -10,8 +10,8 @@ import org.springframework.data.domain.Pageable;
 
 public interface UserService {
     UserDetails loadUserByUsername(String email);
-    User loadUserByEmail(String email);
-    User loadUserById(Long id);
+    User loadUser(String email);
+    User loadUser(Long id);
 
     int enableUser(String email);
     UserResponse convertToUserResponse(User user);

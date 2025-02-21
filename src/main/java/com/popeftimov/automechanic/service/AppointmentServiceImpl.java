@@ -48,7 +48,8 @@ public class AppointmentServiceImpl implements AppointmentService {
 
     @Override
     public Page<AppointmentResponse> getUserAppointments(Long userId, Pageable pageable) {
-        User user = userService.loadUserById(userId);
+        User user = userService.loadUser
+(userId);
         Page<Appointment> userAppointments = appointmentRepository.findByUserOrderByAppointmentDateAscAppointmentTimeAsc(user, pageable);
         Page<AppointmentResponse> userAppointmentsResponse = userAppointments
                 .map(this::convertToAppointmentResponse);
@@ -73,7 +74,7 @@ public class AppointmentServiceImpl implements AppointmentService {
         );
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
 
         Appointment newAppointment = new Appointment();
         newAppointment.setUser(user);

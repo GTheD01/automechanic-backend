@@ -42,7 +42,7 @@ public class ReportServiceImpl implements ReportService{
         String description = reportData.getDescription();
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
 
         if (description == null || description.trim().isEmpty()) {
             throw new ReportExceptions.InvalidReportDescriptionException();

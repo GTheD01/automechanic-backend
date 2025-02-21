@@ -74,7 +74,8 @@ public class CarService {
     }
 
     public ResponseEntity<?> getUserCars(Long userId) {
-        User user = userService.loadUserById(userId);
+        User user = userService.loadUser
+(userId);
         List<Car> userCars = user.getCars();
         List<CarResponse> userCarsResponse = userCars.stream().map(this::convertCarToCarResponse).toList();
 
@@ -94,7 +95,7 @@ public class CarService {
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
@@ -131,7 +132,7 @@ public class CarService {
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
@@ -147,7 +148,7 @@ public class CarService {
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");

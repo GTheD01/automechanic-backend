@@ -43,12 +43,12 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
     }
 
-    public User loadUserByEmail(String email) throws UsernameNotFoundException {
+    public User loadUser(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
     }
-    
-    public User loadUserById(Long id) throws  UsernameNotFoundException {
+
+    public User loadUser(Long id) throws  UsernameNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, id)));
     }
@@ -86,8 +86,7 @@ public class UserServiceImpl implements UserService {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         String email = user.getEmail();
         UserRole userRole = user.getUserRole();
-        User fetchedUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User fetchedUser = this.loadUser(userId);
 
         if (!userRole.equals(UserRole.ADMIN) && !fetchedUser.getEmail().equals(email)) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
@@ -147,9 +146,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseEntity<?> getUser(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(
-                () -> new UsernameNotFoundException("User with ID: " + userId + " does not exist.")
-        );
+        User user = this.loadUser(userId);
 
         return ResponseEntity.ok(this.convertToUserResponse(user));
     }

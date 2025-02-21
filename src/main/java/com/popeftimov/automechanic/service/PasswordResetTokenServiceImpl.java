@@ -24,7 +24,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
     @Override
     public String generatePasswordResetToken(String email) {
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
 
 //        Delete all reset password tokens of the user
         deleteAllByUser(user);
@@ -47,7 +47,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
     @Override
     public boolean validatePasswordResetToken(String email, String token) {
-        User user = userService.loadUserByEmail(email);
+        User user = userService.loadUser(email);
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
         User tokenUser = passwordResetToken.get().getUser();
