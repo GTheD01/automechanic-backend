@@ -13,7 +13,7 @@ public interface UserService {
     User loadUser(String email);
     User loadUser(Long id);
 
-    int enableUser(String email);
+    void enableUser(String email);
     UserResponse convertToUserResponse(User user);
     ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData);
     void resetPassword(String email, String token, String newPassword, String repeatNewPassword);
