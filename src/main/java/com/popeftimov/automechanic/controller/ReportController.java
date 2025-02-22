@@ -4,9 +4,9 @@ import com.popeftimov.automechanic.dto.ReportAnswerDTO;
 import com.popeftimov.automechanic.dto.ReportDTO;
 import com.popeftimov.automechanic.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -27,12 +27,7 @@ public class ReportController {
     @PostMapping("/reports")
     public ResponseEntity<?> createReport(@RequestBody ReportDTO reportData) {
         ReportDTO createdReportDTO = reportService.createReport(reportData);
-        URI location = ServletUriComponentsBuilder
-                .fromCurrentRequest()
-                .path("/{id}")
-                .buildAndExpand(createdReportDTO.getId())
-                .toUri();
-        return ResponseEntity.created(location).body(createdReportDTO);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdReportDTO);
     }
 
     @GetMapping("/reports/me")
