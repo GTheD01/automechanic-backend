@@ -3,10 +3,8 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.model.User;
-import com.popeftimov.automechanic.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 
@@ -49,6 +47,10 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
     public boolean validatePasswordResetToken(String email, String token) {
         User user = userService.loadUser(email);
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
+
+        if (passwordResetToken.isEmpty()){
+            return false;
+        }
 
         User tokenUser = passwordResetToken.get().getUser();
 
