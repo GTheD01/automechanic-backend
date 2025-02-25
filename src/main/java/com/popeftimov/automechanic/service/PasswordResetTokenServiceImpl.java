@@ -3,12 +3,12 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.model.User;
-import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -18,7 +18,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final UserService userService;
-    private final EmailService emailService;
+    private final EmailPublisher emailPublisher;
 
     @Override
     public String generatePasswordResetToken(String email) {
@@ -74,13 +74,9 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
     @Override
     public void sendPasswordResetEmail(String email, String code) {
         String subject = "Password reset";
-        Context context = new Context();
-        context.setVariable("subject", subject);
-        context.setVariable("code", code);
-        try {
-            emailService.sendEmail(email, subject, "PasswordReset", context);
-        } catch (MessagingException e) {
-            e.printStackTrace();
-        }
+        Map<String, Object> values = new HashMap<>();
+        values.put("subject", subject);
+        values.put("code", code);
+        emailPublisher.sendEmailRequest(email, subject, "PasswordReset", values);
     }
 }

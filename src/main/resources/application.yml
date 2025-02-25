@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5432/automechanic
+    url: ${DATABASE_URL}
     username:
     password:
     driver-class-name: org.postgresql.Driver
@@ -46,5 +46,27 @@ spring:
       enabled: true
       exclude: static/**,public/**
       additional-paths: src/main/java,src/main/resources
+  rabbitmq:
+    host: ${RABBITMQ_HOST}
+    port: ${RABBITMQ_PORT}
+    username: ${RABBITMQ_USERNAME}
+    password: ${RABBITMQ_PASSWORD}
+    virtual-host: /
+    listener:
+      simple:
+        concurrency: 1
+        max-concurrency: 5
+    connection-timeout: 3000
+    requested-heartbeat: 60
 upload:
   avatar-dir: uploads/avatars/
+rabbitmq:
+  queue:
+    email:
+      name: ${RABBITMQ_QUEUE_EMAIL}
+  exchange:
+    email:
+      name: ${RABBITMQ_EXCHANGE_EMAIL}
+  routingKey:
+    email:
+      name: ${RABBITMQ_ROUTING_KEY_EMAIL}

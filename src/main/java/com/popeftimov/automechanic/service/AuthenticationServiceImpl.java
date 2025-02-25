@@ -9,9 +9,9 @@ import com.popeftimov.automechanic.exception.PasswordExceptions;
 import com.popeftimov.automechanic.exception.RegisterExceptions;
 import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.model.UserRole;
+import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.validator.EmailValidator;
 import com.popeftimov.automechanic.validator.PasswordValidator;
-import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.security.JwtService;
 import jakarta.mail.MessagingException;
@@ -24,9 +24,10 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.thymeleaf.context.Context;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -42,7 +43,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordValidator passwordValidator;
     private final PasswordResetTokenService passwordResetTokenService;
     private final UserService userService;
-    private final EmailService emailService;
+    private final EmailPublisher emailPublisher;
 
     public ResponseEntity<?> register(RegisterRequest request) {
         boolean isValidEmail = emailValidator
@@ -97,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
             confirmationTokenService.saveConfirmationToken(confirmationToken);
 
-            String link = "http://localhost:5173/customer/verify-email?token=" + token;
+            String link = "http://localhost:5173/verify-email?token=" + token;
             sendVerificationEmail(user.getEmail(), link);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (MessagingException e) {
@@ -169,13 +170,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     public void sendVerificationEmail(String email, String link) throws MessagingException{
         String subject = "Account verification";
-        Context context = new Context();
-        context.setVariable("subject", subject);
-        context.setVariable("link", link);
-        try {
-            emailService.sendEmail(email, subject, "AccountVerification", context);
-        } catch (MessagingException e) {
-            throw new MessagingException();
-        }
+        Map<String, Object> values = new HashMap<>();
+        values.put("subject", subject);
+        values.put("link", link);
+        emailPublisher.sendEmailRequest(email, subject, "AccountVerification", values);
     }
 }
