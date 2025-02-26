@@ -19,14 +19,40 @@ public class RabbitMQConfig {
     @Value("${rabbitmq.routingKey.email.name}")
     private String emailRoutingKey;
 
+    @Value("${rabbitmq.queue.email.dlx-name}")
+    private String emailDLXQueue;
+
+    @Value("${rabbitmq.exchange.email.dlx-name}")
+    private String emailDLXExchange;
+
+    @Value("${rabbitmq.routingKey.email.dlx-name}")
+    private String emailDLXRoutingKey;
+
     @Bean
     public Queue emailQueue() {
-        return new Queue(emailQueue, true);
+        return QueueBuilder.durable(emailQueue)
+                .deadLetterExchange(emailDLXExchange)
+                .deadLetterRoutingKey(emailDLXRoutingKey)
+                .build();
     }
 
     @Bean
-    public TopicExchange emailExchange() {
-        return new TopicExchange(emailExchange);
+    public Queue emailDLXQueue() {
+        return QueueBuilder.durable(emailDLXQueue)
+                .ttl(300000)
+                .deadLetterExchange(emailExchange)
+                .deadLetterRoutingKey(emailRoutingKey)
+                .build();
+    }
+
+    @Bean
+    public DirectExchange emailExchange() {
+        return new DirectExchange(emailExchange);
+    }
+
+    @Bean
+    public DirectExchange emailDLXExchange() {
+        return new DirectExchange(emailDLXExchange);
     }
 
     @Bean
@@ -34,6 +60,13 @@ public class RabbitMQConfig {
         return BindingBuilder.bind(emailQueue())
                 .to(emailExchange())
                 .with(emailRoutingKey);
+    }
+
+    @Bean
+    public Binding emailDLXBinding() {
+        return BindingBuilder.bind(emailDLXQueue())
+                .to(emailDLXExchange())
+                .with(emailDLXRoutingKey);
     }
 
     @Bean

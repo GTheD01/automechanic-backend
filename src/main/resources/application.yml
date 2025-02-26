@@ -64,9 +64,12 @@ rabbitmq:
   queue:
     email:
       name: ${RABBITMQ_QUEUE_EMAIL}
+      dlx-name: ${RABBITMQ_EMAIL_DLX_QUEUE}
   exchange:
     email:
       name: ${RABBITMQ_EXCHANGE_EMAIL}
+      dlx-name: ${RABBITMQ_EMAIL_DLX_EXCHANGE}
   routingKey:
     email:
       name: ${RABBITMQ_ROUTING_KEY_EMAIL}
+      dlx-name: ${RABBITMQ_EMAIL_FAILED}
