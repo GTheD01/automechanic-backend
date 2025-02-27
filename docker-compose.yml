@@ -2,6 +2,8 @@ services:
   rabbitmq:
     container_name: rabbitmq-automechanic
     image: rabbitmq:management
+    env_file:
+      - .env.dev
     ports:
       - "5672:5672"
       - "15672:15672"

@@ -17,7 +17,8 @@ target/
 .springBeans
 .sts4-cache
 
-.env
+.env.prod
+.env.dev
 uploads
 
 ### IntelliJ IDEA ###
