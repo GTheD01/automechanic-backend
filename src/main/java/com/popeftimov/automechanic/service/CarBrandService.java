@@ -4,6 +4,8 @@ import com.popeftimov.automechanic.dto.CarBrandResponse;
 import com.popeftimov.automechanic.model.CarBrand;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +23,12 @@ public class CarBrandService {
                 carBrand.getName()
         );
     };
+
+    public Page<CarBrandResponse> getAdminCarBrands(Pageable pageable) {
+        Page<CarBrand> carBrands = carBrandRepository.findAll(pageable);
+
+        return carBrands.map(this::convertCarBrandToCarBrandResponse);
+    }
 
     public List<CarBrandResponse> getAllCarBrands() {
         return carBrandRepository.findAll().stream()

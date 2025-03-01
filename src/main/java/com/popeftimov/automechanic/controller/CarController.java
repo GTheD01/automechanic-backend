@@ -7,6 +7,8 @@ import com.popeftimov.automechanic.dto.CarRequest;
 import com.popeftimov.automechanic.service.CarModelService;
 import com.popeftimov.automechanic.service.CarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.popeftimov.automechanic.service.CarBrandService;
@@ -21,6 +23,12 @@ public class CarController {
     private final CarBrandService carBrandService;
     private final CarModelService carModelService;
     private final CarService carService;
+
+    @GetMapping("/admin/brands")
+    public ResponseEntity<Page<CarBrandResponse>> getAdminCarBrands(Pageable pageable) {
+        Page<CarBrandResponse> carBrandResponses = carBrandService.getAdminCarBrands(pageable);
+        return ResponseEntity.ok(carBrandResponses);
+    }
 
     @GetMapping("/brands")
     public List<CarBrandResponse> getCarBrands() {
