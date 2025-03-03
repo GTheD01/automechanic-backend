@@ -1,4 +1,14 @@
 services:
+  postgres:
+    image: postgres:15
+    container_name: automechanic-postgres
+    ports:
+      - "5432:5432"
+    env_file:
+      - .env.dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: always
   rabbitmq:
     container_name: rabbitmq-automechanic
     image: rabbitmq:management
@@ -10,3 +20,6 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+
+volumes:
+  postgres_data:
