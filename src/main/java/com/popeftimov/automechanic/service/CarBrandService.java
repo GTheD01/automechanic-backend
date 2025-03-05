@@ -1,6 +1,7 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.CarBrandResponse;
+import com.popeftimov.automechanic.exception.CarExceptions;
 import com.popeftimov.automechanic.model.CarBrand;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import lombok.RequiredArgsConstructor;
@@ -40,9 +41,19 @@ public class CarBrandService {
         if (brandName == null || brandName.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
+        CarBrand existingCarBrand = carBrandRepository.findByName(brandName);
+        if (existingCarBrand != null) {
+            throw new CarExceptions.CarBrandExists(brandName);
+        }
+
         CarBrand carBrand = new CarBrand(brandName);
         carBrandRepository.save(carBrand);
         CarBrandResponse carBrandResponse = this.convertCarBrandToCarBrandResponse(carBrand);
         return ResponseEntity.ok(carBrandResponse);
+    }
+
+    public void deleteCarBrand(String brandName) {
+        CarBrand carBrand = carBrandRepository.findByName(brandName);
+        carBrandRepository.delete(carBrand);
     }
 }

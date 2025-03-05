@@ -250,4 +250,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(CarExceptions.CarBrandExists.class)
+    public ResponseEntity<ApiError> handleCarBrandExists(CarExceptions.CarBrandExists ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.CONFLICT.value(),
+                "CONFLICT",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }

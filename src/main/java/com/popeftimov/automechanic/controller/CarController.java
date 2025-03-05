@@ -30,6 +30,12 @@ public class CarController {
         return ResponseEntity.ok(carBrandResponses);
     }
 
+    @DeleteMapping("/admin/brands/{brandName}")
+    public ResponseEntity<?> deleteCarBrand(@PathVariable("brandName") String brandName) {
+        carBrandService.deleteCarBrand(brandName);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/brands")
     public List<CarBrandResponse> getCarBrands() {
         return carBrandService.getAllCarBrands();
@@ -42,7 +48,7 @@ public class CarController {
 
     @PostMapping("/admin/brands")
     public ResponseEntity<?> createCarBrand(@RequestBody CarBrandRequest carBrandRequest) {
-        return carBrandService.createCarBrand(carBrandRequest.getBrand());
+        return carBrandService.createCarBrand(carBrandRequest.getBrandName());
     }
 
     @GetMapping("/admin/{brandName}/create-model")

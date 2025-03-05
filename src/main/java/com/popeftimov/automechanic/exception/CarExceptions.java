@@ -25,4 +25,10 @@ public class CarExceptions {
             super("Car with ID: " + carId + " not found");
         }
     }
+
+    public static class CarBrandExists  extends RuntimeException {
+        public CarBrandExists(String brandName) {
+            super("Car Brand with name: " + brandName + " already exists");
+        }
+    }
 }

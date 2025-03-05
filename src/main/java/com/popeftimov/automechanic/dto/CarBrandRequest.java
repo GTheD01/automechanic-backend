@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class CarBrandRequest {
-    private String brand;
+    private String brandName;
 }

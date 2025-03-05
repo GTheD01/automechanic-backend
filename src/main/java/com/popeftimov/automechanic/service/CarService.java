@@ -182,6 +182,7 @@ public class CarService {
                 .appointments(appointmentResponses)
                 .build();
 
-        return ResponseEntity.ok(carResponse);
+
+        return ResponseEntity.noContent().build();
     }
 }
