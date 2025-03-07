@@ -1,6 +1,7 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.CarModelResponse;
+import com.popeftimov.automechanic.exception.CarExceptions;
 import com.popeftimov.automechanic.model.CarBrand;
 import com.popeftimov.automechanic.model.CarModel;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
@@ -27,15 +28,23 @@ public class CarModelService {
         );
     }
 
-    public ResponseEntity<?> createModel(@PathVariable String brandName, String modelName) {
+    public ResponseEntity<? extends CarModelResponse> createCarBrandModel(@PathVariable String brandName, String modelName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
-            return ResponseEntity.notFound().build();
+            throw new CarExceptions.CarBrandNotFound();
         }
+        CarModel existingCarModel = carModelRepository.findByName(modelName);
+
+        if (existingCarModel != null) {
+            throw new CarExceptions.CarModelExists(modelName);
+        }
+
         CarModel carModel = new CarModel(modelName, carBrand);
         carModelRepository.save(carModel);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(carModel);
+        CarModelResponse carModelResponse = this.convertCarModelToCarModelResponse(carModel);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(carModelResponse);
     }
 
     public List<CarModelResponse> getAllCarModelsByBrand(String brand) {

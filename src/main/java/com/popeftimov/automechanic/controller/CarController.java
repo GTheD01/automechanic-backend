@@ -1,9 +1,6 @@
 package com.popeftimov.automechanic.controller;
 
-import com.popeftimov.automechanic.dto.CarBrandRequest;
-import com.popeftimov.automechanic.dto.CarBrandResponse;
-import com.popeftimov.automechanic.dto.CarModelResponse;
-import com.popeftimov.automechanic.dto.CarRequest;
+import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.service.CarModelService;
 import com.popeftimov.automechanic.service.CarService;
 import lombok.RequiredArgsConstructor;
@@ -52,8 +49,9 @@ public class CarController {
     }
 
     @GetMapping("/admin/{brandName}/create-model")
-    public ResponseEntity<?> createCarModel(@PathVariable("brandName") String brandName, String modelName) {
-        return carModelService.createModel(brandName, modelName);
+    public ResponseEntity<? extends CarModelResponse> createCarBrandModel(
+            @PathVariable("brandName") String brandName, @RequestBody CarModelRequest modelNameRequest) {
+        return carModelService.createCarBrandModel(brandName, modelNameRequest.getModelName());
     }
 
     @PostMapping("/cars")

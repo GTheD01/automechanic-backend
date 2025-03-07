@@ -14,15 +14,15 @@ public class CarModel {
     @GeneratedValue
     private Long id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String name;
 
     @ManyToOne
     @JoinColumn(nullable = false)
     private CarBrand brand;
 
-    public CarModel(String modelName, CarBrand makeName) {
+    public CarModel(String modelName, CarBrand brandName) {
         this.name = modelName;
-        this.brand = makeName;
+        this.brand = brandName;
     }
 }

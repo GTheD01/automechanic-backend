@@ -31,4 +31,10 @@ public class CarExceptions {
             super("Car Brand with name: " + brandName + " already exists");
         }
     }
+
+    public static class CarModelExists  extends RuntimeException {
+        public CarModelExists(String modelName) {
+            super("Car Brand with name: " + modelName + " already exists");
+        }
+    }
 }
