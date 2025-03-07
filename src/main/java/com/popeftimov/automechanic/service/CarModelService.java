@@ -28,7 +28,7 @@ public class CarModelService {
         );
     }
 
-    public ResponseEntity<? extends CarModelResponse> createCarBrandModel(@PathVariable String brandName, String modelName) {
+    public ResponseEntity<CarModelResponse> createCarBrandModel(@PathVariable String brandName, String modelName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
             throw new CarExceptions.CarBrandNotFound();

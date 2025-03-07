@@ -30,7 +30,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/appointments")
-    public ResponseEntity<?> createAppointment(@RequestBody AppointmentRequest appointmentRequest) {
+    public ResponseEntity<AppointmentResponse> createAppointment(@RequestBody AppointmentRequest appointmentRequest) {
         AppointmentResponse appointment = appointmentService.createAppointment(appointmentRequest);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -45,7 +45,7 @@ public class AppointmentController {
     }
 
     @GetMapping("/admin/appointments/{userId}")
-    public ResponseEntity<?> getUserAppointments(@PathVariable("userId") Long userId, Pageable pageable) {
+    public ResponseEntity<Page<AppointmentResponse>> getUserAppointments(@PathVariable("userId") Long userId, Pageable pageable) {
         Page<AppointmentResponse> userAppointments = appointmentService.getUserAppointments(userId, pageable);
         return ResponseEntity.ok().body(userAppointments);
     }

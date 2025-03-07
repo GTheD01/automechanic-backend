@@ -42,7 +42,7 @@ public class CarService {
                 .build();
     }
 
-    public ResponseEntity<?> addCar(@RequestBody CarRequest carRequest) {
+    public ResponseEntity<CarResponse> addCar(@RequestBody CarRequest carRequest) {
         String brandName = carRequest.getBrandName();
         String modelName = carRequest.getModelName();
         Integer year = carRequest.getYear();
@@ -73,7 +73,7 @@ public class CarService {
         return ResponseEntity.ok(carResponse);
     }
 
-    public ResponseEntity<?> getUserCars(Long userId) {
+    public ResponseEntity<List<CarResponse>> getUserCars(Long userId) {
         User user = userService.loadUser
 (userId);
         List<Car> userCars = user.getCars();
@@ -82,7 +82,7 @@ public class CarService {
         return ResponseEntity.ok(userCarsResponse);
     }
 
-    public ResponseEntity<?> getLoggedInUserCars() {
+    public ResponseEntity<List<CarResponse>> getLoggedInUserCars() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Car> loggedInUserCars = carRepository.findByUser(user);
         List<CarResponse> userCarsResponse = loggedInUserCars.stream().map(this::convertCarToCarResponse).toList();
@@ -183,6 +183,6 @@ public class CarService {
                 .build();
 
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(carResponse);
     }
 }

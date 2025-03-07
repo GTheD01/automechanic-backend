@@ -37,7 +37,7 @@ public class CarBrandService {
                 .toList();
     }
 
-    public ResponseEntity<?> createCarBrand(String brandName) {
+    public ResponseEntity<CarBrandResponse> createCarBrand(String brandName) {
         if (brandName == null || brandName.isEmpty()) {
             return ResponseEntity.badRequest().build();
         }
@@ -54,6 +54,9 @@ public class CarBrandService {
 
     public void deleteCarBrand(String brandName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
+        if (carBrand == null) {
+            throw new CarExceptions.CarBrandNotFound();
+        }
         carBrandRepository.delete(carBrand);
     }
 }

@@ -19,32 +19,32 @@ public class ReportController {
     private final ReportService reportService;
 
     @GetMapping("/admin/reports")
-    public ResponseEntity<?> getAllReports() {
+    public ResponseEntity<List<ReportDTO>> getAllReports() {
         List<ReportDTO> reports = reportService.getAllReports();
         return ResponseEntity.ok(reports);
     }
 
     @PostMapping("/reports")
-    public ResponseEntity<?> createReport(@RequestBody ReportDTO reportData) {
+    public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportData) {
         ReportDTO createdReportDTO = reportService.createReport(reportData);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdReportDTO);
     }
 
     @GetMapping("/reports/me")
-    public ResponseEntity<?> getLoggedInUserReports() {
+    public ResponseEntity<List<ReportDTO>> getLoggedInUserReports() {
         List<ReportDTO> reports = reportService.getLoggedInUserReports();
         return ResponseEntity.ok(reports);
     }
 
     @PutMapping("/admin/reports/{reportId}")
-    public ResponseEntity<?> answerUserReport(@PathVariable("reportId") Long reportId, @RequestBody ReportAnswerDTO reportAnswerDTO) {
+    public ResponseEntity<ReportDTO> answerUserReport(@PathVariable("reportId") Long reportId, @RequestBody ReportAnswerDTO reportAnswerDTO) {
         ReportDTO reportDTO = reportService.answerUserReport(reportId, reportAnswerDTO.getAnswer());
 
         return ResponseEntity.ok(reportDTO);
     }
 
     @DeleteMapping("/admin/reports/{reportId}")
-    public ResponseEntity<?> deleteUserReport(@PathVariable("reportId") Long reportId) {
+    public ResponseEntity<Void> deleteUserReport(@PathVariable("reportId") Long reportId) {
         reportService.deleteUserReport(reportId);
         return ResponseEntity.noContent().build();
     }

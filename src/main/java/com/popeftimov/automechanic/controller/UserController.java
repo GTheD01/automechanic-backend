@@ -29,7 +29,7 @@ public class UserController {
     }
 
     @GetMapping("admin/users/{userId}")
-    public ResponseEntity<?> getUser(@PathVariable("userId") Long userId) {
+    public ResponseEntity<UserResponse> getUser(@PathVariable("userId") Long userId) {
         return userService.getUser(userId);
     }
 
@@ -44,7 +44,7 @@ public class UserController {
     }
 
     @PostMapping("/verify-token")
-    public ResponseEntity<?> verifyToken() {
+    public ResponseEntity<Void> verifyToken() {
         return ResponseEntity.ok().build();
     };
 }

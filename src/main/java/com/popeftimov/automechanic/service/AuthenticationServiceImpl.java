@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final EmailPublisher emailPublisher;
 
-    public ResponseEntity<?> register(RegisterRequest request) {
+    public ResponseEntity<Void> register(RegisterRequest request) {
         boolean isValidEmail = emailValidator
                 .test(request.getEmail());
 
@@ -116,7 +116,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity<?> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword) {
+    public ResponseEntity<Void> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword) {
         boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(email, token);
 
         if (!isValidToken) {

@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> getUser(Long userId) {
+    public ResponseEntity<UserResponse> getUser(Long userId) {
         User user = this.loadUser(userId);
 
         return ResponseEntity.ok(this.convertToUserResponse(user));

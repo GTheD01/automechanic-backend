@@ -20,10 +20,10 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     @Transactional
-    public ResponseEntity<?> register(
+    public ResponseEntity<Void> register(
             @RequestBody RegisterRequest request
     ) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        return authenticationService.register(request);
     }
 
     @GetMapping(path = "/register/confirm-email")
@@ -51,7 +51,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/reset-password")
-    public ResponseEntity<?> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
+    public ResponseEntity<Void> resetPassword(@RequestBody PasswordResetDTO passwordResetDTO) {
         String email = passwordResetDTO.getEmail();
         String token = passwordResetDTO.getToken();
         String newPassword = passwordResetDTO.getNewPassword();

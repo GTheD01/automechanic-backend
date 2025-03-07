@@ -8,10 +8,10 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
 
 public interface AuthenticationService {
-    ResponseEntity<?> register(RegisterRequest request);
+    ResponseEntity<Void> register(RegisterRequest request);
     AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response);
     String requestPasswordReset(String email);
     void sendVerificationEmail(String email, String link) throws MessagingException;
-    ResponseEntity<?> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
+    ResponseEntity<Void> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
     void logout(HttpServletResponse response);
 }
