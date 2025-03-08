@@ -2,6 +2,7 @@ package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.AuthenticationRequest;
 import com.popeftimov.automechanic.dto.AuthenticationResponse;
+import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.dto.RegisterRequest;
 import com.popeftimov.automechanic.exception.ConfirmationExceptions;
 import com.popeftimov.automechanic.exception.EmailExceptions;
@@ -173,6 +174,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         Map<String, Object> values = new HashMap<>();
         values.put("subject", subject);
         values.put("link", link);
-        emailPublisher.sendEmailRequest(email, subject, "AccountVerification", values);
+        EmailRequest emailRequest = new EmailRequest(email, subject, "AccountVerification", values);
+        emailPublisher.publishEmailRequest(emailRequest);
     }
 }

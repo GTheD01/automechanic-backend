@@ -1,28 +1,30 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.EmailRequest;
-import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
-@Service
-@RequiredArgsConstructor
-public class EmailPublisher {
-
-    private final RabbitTemplate rabbitTemplate;
-
-    @Value("${rabbitmq.exchange.email.name}")
-    private String emailExchange;
-
-    @Value("${rabbitmq.routingKey.email.name}")
-    private String emailRoutingKey;
-
-    public void sendEmailRequest(String to, String subject, String templateName, Map<String, Object> contextValues) {
-        EmailRequest emailRequest = new EmailRequest(to, subject, templateName, contextValues);
-
-        rabbitTemplate.convertAndSend(emailExchange, emailRoutingKey, emailRequest);
-    }
+/**
+ * Interface for publishing email requests to a messaging system.
+ * <p>
+ * This interface defines the contract for publishing email requests to different
+ * messaging systems (e.g., RabbitMQ, Kafka). Implementations of this interface
+ * will handle the actual communication with the chosen messaging platform.
+ * <p>
+ * Use this interface to decouple the email sending logic from the underlying
+ * messaging infrastructure, enabling easier testing, extension, and modification
+ * of the messaging system without affecting business logic.
+ *
+ * Implementing classes should define the logic for serializing the {@link EmailRequest}
+ * object and sending it to the appropriate destination using the corresponding
+ * messaging platform (e.g., RabbitMQ, Kafka).
+ *
+ * Example use case:
+ *
+ * <pre>
+ *     emailPublisher.publishEmailRequest(new EmailRequest(...));
+ * </pre>
+ *
+ * @see RabbitMqEmailPublisher
+ */
+public interface EmailPublisher {
+    void publishEmailRequest(EmailRequest emailRequest);
 }

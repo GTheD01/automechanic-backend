@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.service;
 
+import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.model.User;
@@ -24,8 +25,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
     public String generatePasswordResetToken(String email) {
         User user = userService.loadUser(email);
 
-//        Delete all reset password tokens of the user
-        deleteAllByUser(user);
+        this.deleteAllPasswordResetTokensOfUser(user);
 
         String token = UUID.randomUUID().toString();
 
@@ -62,12 +62,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
     }
 
     @Override
-    public void deletePasswordResetToken(String token) {
-        passwordResetTokenRepository.deleteByToken(token);
-    }
-
-    @Override
-    public void deleteAllByUser(User user) {
+    public void deleteAllPasswordResetTokensOfUser(User user) {
         passwordResetTokenRepository.deleteAllByUser(user);
     }
 
@@ -77,6 +72,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
         Map<String, Object> values = new HashMap<>();
         values.put("subject", subject);
         values.put("code", code);
-        emailPublisher.sendEmailRequest(email, subject, "PasswordReset", values);
+        EmailRequest emailRequest = new EmailRequest(email, subject, "PasswordReset", values);
+        emailPublisher.publishEmailRequest(emailRequest);
     }
 }
