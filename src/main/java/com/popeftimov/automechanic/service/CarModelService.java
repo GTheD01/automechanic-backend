@@ -7,6 +7,8 @@ import com.popeftimov.automechanic.model.CarModel;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import com.popeftimov.automechanic.repository.CarModelRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -52,5 +54,10 @@ public class CarModelService {
         return carModelRepository.findByBrand(carBrand)
                 .stream().map(this::convertCarModelToCarModelResponse)
                 .toList();
+    }
+
+    public Page<CarModelResponse> getAllCarModels(Pageable pageable) {
+        Page<CarModel> carModelList = carModelRepository.findAll(pageable);
+        return carModelList.map(this::convertCarModelToCarModelResponse);
     }
 }

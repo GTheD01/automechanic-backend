@@ -27,10 +27,32 @@ public class CarController {
         return ResponseEntity.ok(carBrandResponses);
     }
 
+    @PostMapping("/admin/brands")
+    public ResponseEntity<CarBrandResponse> addCarBrand(@RequestBody CarBrandRequest carBrandRequest) {
+        return carBrandService.createCarBrand(carBrandRequest.getBrandName());
+    }
+
     @DeleteMapping("/admin/brands/{brandName}")
     public ResponseEntity<Void> deleteCarBrand(@PathVariable("brandName") String brandName) {
         carBrandService.deleteCarBrand(brandName);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/admin/{brandName}/create-model")
+    public ResponseEntity<CarModelResponse> addCarBrandModel(
+            @PathVariable("brandName") String brandName, @RequestBody CarModelRequest modelNameRequest) {
+        return carModelService.createCarBrandModel(brandName, modelNameRequest.getModelName());
+    }
+
+    @GetMapping("admin/cars/user/{userId}")
+    public ResponseEntity<List<CarResponse>> getUserCars(@PathVariable("userId") Long userId) {
+        return carService.getUserCars(userId);
+    }
+
+    @GetMapping("/admin/car-models")
+    public ResponseEntity<Page<CarModelResponse>> getCarModels(Pageable pageable) {
+        Page<CarModelResponse> carModelResponseList = carModelService.getAllCarModels(pageable);
+        return ResponseEntity.ok(carModelResponseList);
     }
 
     @GetMapping("/brands")
@@ -43,25 +65,9 @@ public class CarController {
         return carModelService.getAllCarModelsByBrand(brand.toUpperCase());
     }
 
-    @PostMapping("/admin/brands")
-    public ResponseEntity<CarBrandResponse> createCarBrand(@RequestBody CarBrandRequest carBrandRequest) {
-        return carBrandService.createCarBrand(carBrandRequest.getBrandName());
-    }
-
-    @GetMapping("/admin/{brandName}/create-model")
-    public ResponseEntity<CarModelResponse> createCarBrandModel(
-            @PathVariable("brandName") String brandName, @RequestBody CarModelRequest modelNameRequest) {
-        return carModelService.createCarBrandModel(brandName, modelNameRequest.getModelName());
-    }
-
     @PostMapping("/cars")
     public ResponseEntity<CarResponse> addCar(@RequestBody CarRequest carRequest) {
         return carService.addCar(carRequest);
-    }
-
-    @GetMapping("admin/cars/user/{userId}")
-    public ResponseEntity<List<CarResponse>> getUserCars(@PathVariable("userId") Long userId) {
-        return carService.getUserCars(userId);
     }
 
     @GetMapping("/cars")
