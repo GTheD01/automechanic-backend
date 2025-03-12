@@ -38,10 +38,10 @@ public class CarController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/admin/{brandName}/create-model")
-    public ResponseEntity<CarModelResponse> addCarBrandModel(
-            @PathVariable("brandName") String brandName, @RequestBody CarModelRequest modelNameRequest) {
-        return carModelService.createCarBrandModel(brandName, modelNameRequest.getModelName());
+    @PostMapping("/admin/{brandName}/create-model")
+    public ResponseEntity<CarModelResponse> createCarBrandModel(
+            @PathVariable("brandName") String brandName, @RequestBody CarModelRequest carModelRequest) {
+        return carModelService.createCarBrandModel(brandName, carModelRequest.getModelName());
     }
 
     @GetMapping("admin/cars/user/{userId}")
