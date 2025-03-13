@@ -44,6 +44,11 @@ public class CarController {
         return carModelService.createCarBrandModel(brandName, carModelRequest.getModelName());
     }
 
+    @DeleteMapping("/admin/car-models/{modelName}")
+    public ResponseEntity<?> deleteCarModel(@PathVariable("modelName") String modelName) {
+        return carModelService.deleteCarModel(modelName);
+    }
+
     @GetMapping("admin/cars/user/{userId}")
     public ResponseEntity<List<CarResponse>> getUserCars(@PathVariable("userId") Long userId) {
         return carService.getUserCars(userId);

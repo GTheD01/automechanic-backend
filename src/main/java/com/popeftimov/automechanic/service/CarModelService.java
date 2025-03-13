@@ -60,4 +60,13 @@ public class CarModelService {
         Page<CarModel> carModelList = carModelRepository.findAll(pageable);
         return carModelList.map(this::convertCarModelToCarModelResponse);
     }
+
+    public ResponseEntity<?> deleteCarModel(String modelName) {
+        CarModel carModel = carModelRepository.findByName(modelName);
+        if (carModel == null) {
+            throw new CarExceptions.CarModelNotFound();
+        }
+        carModelRepository.delete(carModel);
+        return ResponseEntity.noContent().build();
+    }
 }
