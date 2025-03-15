@@ -49,8 +49,10 @@ public class CarModelService {
         return ResponseEntity.status(HttpStatus.CREATED).body(carModelResponse);
     }
 
-    public List<CarModelResponse> getAllCarModelsByBrand(String brand) {
-        CarBrand carBrand = carBrandRepository.findByName(brand);
+    public List<CarModelResponse> getAllCarModelsByBrand(String brandName) {
+
+        CarBrand carBrand = carBrandRepository.findByName(brandName);
+
         return carModelRepository.findByBrand(carBrand)
                 .stream().map(this::convertCarModelToCarModelResponse)
                 .toList();

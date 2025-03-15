@@ -66,8 +66,8 @@ public class CarController {
     }
 
     @GetMapping("/{brand}/models")
-    public List<CarModelResponse> getCarModelsByBrand(@PathVariable("brand") String brand) {
-        return carModelService.getAllCarModelsByBrand(brand.toUpperCase());
+    public List<CarModelResponse> getCarModelsByBrand(@PathVariable("brand") String brandName) {
+        return carModelService.getAllCarModelsByBrand(brandName);
     }
 
     @PostMapping("/cars")
