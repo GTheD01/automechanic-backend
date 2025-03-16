@@ -18,6 +18,6 @@ public interface UserService {
     ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData);
     void resetPassword(String email, String token, String newPassword, String repeatNewPassword);
 
-    ResponseEntity<Page<UserResponse>> getAllUsers(String name, Boolean hasCars, Boolean hasAppointments, Pageable pageable);
-    ResponseEntity<UserResponse> getUser(Long userId);
+    Page<UserResponse> getAllUsers(String name, Boolean hasCars, Boolean hasAppointments, Pageable pageable);
+    UserResponse getUser(Long userId);
 }

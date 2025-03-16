@@ -48,7 +48,7 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
     }
 
-    public User loadUser(Long id) throws  UsernameNotFoundException {
+    public User loadUser(Long id) throws UsernameNotFoundException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, id)));
     }
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                     .body("You are not authorized to update this profile.");
         }
-        fetchedUser.setFirstName(userData.getFirstName() != null 
+        fetchedUser.setFirstName(userData.getFirstName() != null
                 && !userData.getFirstName().isEmpty() ?
                 userData.getFirstName() : fetchedUser.getFirstName());
         fetchedUser.setLastName(userData.getLastName() != null
@@ -130,24 +130,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<Page<UserResponse>> getAllUsers(String name,
-                                                          Boolean hasCars,
-                                                          Boolean hasAppointments,
-                                                          Pageable pageable) {
+    public Page<UserResponse> getAllUsers(String name,
+                                          Boolean hasCars,
+                                          Boolean hasAppointments,
+                                          Pageable pageable) {
+        String loggedInUserEmail = SecurityContextHolder.getContext().getAuthentication().getName();
+
         UserFilter filter = new UserFilter(name, hasCars, hasAppointments);
-        Specification<User> spec = UserSpecification.applyFilters(filter);
+        Specification<User> spec = UserSpecification.applyFilters(filter, loggedInUserEmail);
 
         Page<User> users = userRepository.findAll(spec, pageable);
 
-        Page<UserResponse> userResponses = users
-                .map(this::convertToUserResponse);
-        return ResponseEntity.ok().body(userResponses);
+        return users.map(this::convertToUserResponse);
     }
 
     @Override
-    public ResponseEntity<UserResponse> getUser(Long userId) {
+    public UserResponse getUser(Long userId) {
         User user = this.loadUser(userId);
-
-        return ResponseEntity.ok(this.convertToUserResponse(user));
+        return this.convertToUserResponse(user);
     }
 }

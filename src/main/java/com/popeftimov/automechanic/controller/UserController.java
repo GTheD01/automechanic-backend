@@ -30,7 +30,8 @@ public class UserController {
 
     @GetMapping("admin/users/{userId}")
     public ResponseEntity<UserResponse> getUser(@PathVariable("userId") Long userId) {
-        return userService.getUser(userId);
+        UserResponse user = userService.getUser(userId);
+        return ResponseEntity.ok(user);
     }
 
     @GetMapping("/admin/users")
@@ -40,7 +41,8 @@ public class UserController {
             @RequestParam(value = "hasAppointments", required = false) Boolean hasAppointments,
             Pageable pageable
     ) {
-        return userService.getAllUsers(name, hasCars, hasAppointments, pageable);
+        Page<UserResponse> userResponses = userService.getAllUsers(name, hasCars, hasAppointments, pageable);
+        return ResponseEntity.ok(userResponses);
     }
 
     @PostMapping("/verify-token")

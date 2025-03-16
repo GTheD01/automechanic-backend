@@ -6,7 +6,12 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 
 public class UserSpecification {
-    public static Specification<User> hasName(String name) {
+
+    private static Specification<User> excludeLoggedInUser(String loggedInUserEmail) {
+        return ((root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("email"), loggedInUserEmail));
+    }
+
+    private static Specification<User> hasName(String name) {
         return (root, query, criteriaBuilder) -> {
             if (name == null || name.isEmpty()) return criteriaBuilder.conjunction();
             Predicate firstNamePredicate = criteriaBuilder.like(root.get("firstName"), "%" + name + "%");
@@ -24,7 +29,7 @@ public class UserSpecification {
     }
 
 
-    public static Specification<User> applyFilters(UserFilter filter) {
+    public static Specification<User> applyFilters(UserFilter filter, String loggedInUserEmail) {
         Specification<User> spec = Specification.where(null);
 
         if (filter.getName() != null) {
@@ -38,6 +43,8 @@ public class UserSpecification {
         if (filter.getHasAppointments() != null && filter.getHasAppointments()) {
             spec = spec.and(userHasAppointments());
         }
+
+        spec = spec.and(excludeLoggedInUser(loggedInUserEmail));
 
         return spec;
     }
