@@ -3,6 +3,7 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.dto.UserFilter;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
+import com.popeftimov.automechanic.exception.AuthenticationExceptions;
 import com.popeftimov.automechanic.exception.UserExceptions;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
@@ -14,8 +15,6 @@ import com.popeftimov.automechanic.validator.UserPhoneNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -75,7 +74,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ResponseEntity<?> updateUserProfile(Long userId, UserResponse userData) {
+    public UserUpdateProfileResponse updateUserProfile(Long userId, UserResponse userData) {
         boolean isValidPhone = userPhoneNumberValidator.test(
                 userData.getPhoneNumber()
         );
@@ -89,8 +88,7 @@ public class UserServiceImpl implements UserService {
         User fetchedUser = this.loadUser(userId);
 
         if (!userRole.equals(UserRole.ADMIN) && !fetchedUser.getEmail().equals(email)) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body("You are not authorized to update this profile.");
+            throw new AuthenticationExceptions.UserNotAuthorizedException();
         }
         fetchedUser.setFirstName(userData.getFirstName() != null
                 && !userData.getFirstName().isEmpty() ?
@@ -111,7 +109,8 @@ public class UserServiceImpl implements UserService {
                 fetchedUser.getAvatar(),
                 fetchedUser.getPhoneNumber()
         );
-        return ResponseEntity.ok(userResponse);
+
+        return userResponse;
     }
 
     @Override

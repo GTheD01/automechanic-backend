@@ -1,5 +1,6 @@
 package com.popeftimov.automechanic.controller;
 
+import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.service.UserService;
@@ -24,8 +25,9 @@ public class UserController {
     }
 
     @PutMapping("/users/{userId}")
-    public ResponseEntity<?> updateUserProfile(@PathVariable("userId") Long userId, @RequestBody UserResponse userData) {
-        return userService.updateUserProfile(userId, userData);
+    public ResponseEntity<UserUpdateProfileResponse> updateUserProfile(@PathVariable("userId") Long userId, @RequestBody UserResponse userData) {
+        UserUpdateProfileResponse userResponse = userService.updateUserProfile(userId, userData);
+        return ResponseEntity.ok(userResponse);
     }
 
     @GetMapping("admin/users/{userId}")

@@ -274,4 +274,16 @@ public class GlobalExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AuthenticationExceptions.UserNotAuthorizedException.class)
+    public ResponseEntity<ApiError> handleUserNotAuthorized(AuthenticationExceptions.UserNotAuthorizedException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                "UNAUTHORIZED",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
 }
