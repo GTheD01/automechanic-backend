@@ -12,6 +12,6 @@ public interface AuthenticationService {
     AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response);
     String requestPasswordReset(String email);
     void sendVerificationEmail(String email, String link) throws MessagingException;
-    ResponseEntity<Void> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
+    void resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
     void logout(HttpServletResponse response);
 }

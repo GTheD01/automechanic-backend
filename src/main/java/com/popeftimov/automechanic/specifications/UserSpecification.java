@@ -11,7 +11,7 @@ public class UserSpecification {
         return ((root, query, criteriaBuilder) -> criteriaBuilder.notEqual(root.get("email"), loggedInUserEmail));
     }
 
-    private static Specification<User> hasName(String name) {
+    private static Specification<User> nameIncludes(String name) {
         return (root, query, criteriaBuilder) -> {
             if (name == null || name.isEmpty()) return criteriaBuilder.conjunction();
             Predicate firstNamePredicate = criteriaBuilder.like(root.get("firstName"), "%" + name + "%");
@@ -33,7 +33,7 @@ public class UserSpecification {
         Specification<User> spec = Specification.where(null);
 
         if (filter.getName() != null) {
-            spec = spec.and(hasName(filter.getName()));
+            spec = spec.and(nameIncludes(filter.getName()));
         }
 
         if (filter.getHasCars() != null && filter.getHasCars()) {

@@ -56,7 +56,8 @@ public class AuthenticationController {
         String token = passwordResetDTO.getToken();
         String newPassword = passwordResetDTO.getNewPassword();
         String repeatNewPassword = passwordResetDTO.getRepeatNewPassword();
+        authenticationService.resetUserPassword(email, token, newPassword, repeatNewPassword);
 
-        return authenticationService.resetUserPassword(email, token, newPassword, repeatNewPassword);
+        return ResponseEntity.ok().build();
     }
 }

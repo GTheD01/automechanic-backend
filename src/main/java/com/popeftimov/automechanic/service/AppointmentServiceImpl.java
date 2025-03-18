@@ -8,13 +8,11 @@ import com.popeftimov.automechanic.model.Car;
 import com.popeftimov.automechanic.repository.AppointmentRepository;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.CarRepository;
-import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.specifications.AppointmentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -38,12 +36,12 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public ResponseEntity<AppointmentResponse> updateAppointment(Long appointmentId, AppointmentStatus appointmentStatus) {
+    public AppointmentResponse updateAppointment(Long appointmentId, AppointmentStatus appointmentStatus) {
         Appointment appointment = appointmentRepository.getReferenceById(appointmentId);
         appointment.setAppointmentStatus(appointmentStatus);
         appointmentRepository.save(appointment);
         AppointmentResponse appointmentResponse = convertToAppointmentResponse(appointment);
-        return ResponseEntity.ok().body(appointmentResponse);
+        return appointmentResponse;
     }
 
     @Override

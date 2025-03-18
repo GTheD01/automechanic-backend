@@ -117,7 +117,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public ResponseEntity<Void> resetUserPassword(String email, String token, String newPassword, String repeatNewPassword) {
+    public void resetUserPassword(String email, String token, String newPassword, String repeatNewPassword) {
         boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(email, token);
 
         if (!isValidToken) {
@@ -133,8 +133,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         userService.resetPassword(email, token, newPassword, repeatNewPassword);
-
-        return ResponseEntity.ok().build();
     }
 
     @Override

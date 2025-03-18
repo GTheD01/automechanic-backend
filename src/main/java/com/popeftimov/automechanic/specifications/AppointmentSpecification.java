@@ -8,7 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 
 public class AppointmentSpecification {
 
-    public static Specification<Appointment> search(String search) {
+    private static Specification<Appointment> search(String search) {
         return (root, query, criteriaBuilder) -> {
             if (search == null || search.isEmpty()) return criteriaBuilder.conjunction();
 

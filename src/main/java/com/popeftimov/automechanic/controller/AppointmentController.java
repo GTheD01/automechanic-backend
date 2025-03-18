@@ -54,6 +54,7 @@ public class AppointmentController {
     public ResponseEntity<AppointmentResponse> updateAppointment(@PathVariable("appointmentId") Long appointmentId,
                                                                  @RequestBody AppointmentUpdateRequest appointmentUpdateRequest) {
         AppointmentStatus appointmentStatus = appointmentUpdateRequest.getAppointmentStatus();
-        return appointmentService.updateAppointment(appointmentId, appointmentStatus);
+        AppointmentResponse appointmentResponse = appointmentService.updateAppointment(appointmentId, appointmentStatus);
+        return ResponseEntity.ok(appointmentResponse);
     }
 }
