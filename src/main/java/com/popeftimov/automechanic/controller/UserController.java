@@ -4,6 +4,8 @@ import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.service.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +27,18 @@ public class UserController {
     }
 
     @DeleteMapping("/users/me")
-    public ResponseEntity<Void> deleteCurrentUser() {
+    public ResponseEntity<Void> deleteCurrentUser(HttpServletResponse response) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         userService.deleteUser(user);
+
+        Cookie jwtCookie = new Cookie("accessToken", null);
+        jwtCookie.setHttpOnly(true);
+        jwtCookie.setSecure(true);
+        jwtCookie.setPath("/");
+        jwtCookie.setMaxAge(0);
+
+        response.addCookie(jwtCookie);
+
         return ResponseEntity.noContent().build();
     }
 
