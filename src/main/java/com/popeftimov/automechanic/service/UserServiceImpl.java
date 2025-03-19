@@ -148,4 +148,10 @@ public class UserServiceImpl implements UserService {
         User user = this.loadUser(userId);
         return this.convertToUserResponse(user);
     }
+
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
+
 }

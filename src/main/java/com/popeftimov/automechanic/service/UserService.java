@@ -20,4 +20,6 @@ public interface UserService {
 
     Page<UserResponse> getAllUsers(String name, Boolean hasCars, Boolean hasAppointments, Pageable pageable);
     UserResponse getUser(Long userId);
+    void deleteUser(User user);
+
 }

@@ -19,9 +19,16 @@ public class UserController {
     private final UserService userService;
 
     @GetMapping("/users/me")
-    public UserResponse findCurrentUser() {
+    public UserResponse getCurrentUser() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userService.convertToUserResponse(user);
+    }
+
+    @DeleteMapping("/users/me")
+    public ResponseEntity<Void> deleteCurrentUser() {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        userService.deleteUser(user);
+        return ResponseEntity.noContent().build();
     }
 
     @PutMapping("/users/{userId}")
