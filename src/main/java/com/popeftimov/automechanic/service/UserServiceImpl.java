@@ -3,11 +3,9 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.dto.UserFilter;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
-import com.popeftimov.automechanic.exception.AuthenticationExceptions;
 import com.popeftimov.automechanic.exception.UserExceptions;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
-import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.specifications.UserSpecification;
@@ -22,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.data.domain.Pageable;
+
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -116,23 +116,24 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserUpdateProfileResponse updateUserProfile(Long userId, UserUpdateProfileResponse userData) {
-        if (userData.getPhoneNumber() != null) {
-            boolean isValidPhone = userPhoneNumberValidator.test(
-                    userData.getPhoneNumber()
-            );
-
-            if (!isValidPhone) {
-                throw new UserExceptions.InvalidPhoneNumber();
-            }
-        }
-
         User fetchedUser = this.loadUser(userId);
 
-        fetchedUser.setFirstName(userData.getFirstName() != null && !userData.getFirstName().isEmpty() ?
-                userData.getFirstName() : fetchedUser.getFirstName());
-        fetchedUser.setLastName(userData.getLastName() != null && !userData.getLastName().isEmpty() ?
-                userData.getLastName() : fetchedUser.getLastName());
-        fetchedUser.setPhoneNumber(userData.getPhoneNumber() != null ? userData.getPhoneNumber() : fetchedUser.getPhoneNumber());
+        if (isUserDataUnchanged(fetchedUser, userData)) {
+            // If no changes, return the existing profile response
+            return new UserUpdateProfileResponse(
+                    fetchedUser.getFirstName(),
+                    fetchedUser.getLastName(),
+                    fetchedUser.getEmail(),
+                    fetchedUser.getAvatar(),
+                    fetchedUser.getPhoneNumber()
+            );
+        }
+
+        validatePhoneNumber(userData.getPhoneNumber());
+
+        Optional.ofNullable(userData.getFirstName()).ifPresent(fetchedUser::setFirstName);
+        Optional.ofNullable(userData.getLastName()).ifPresent(fetchedUser::setLastName);
+        Optional.ofNullable(userData.getPhoneNumber()).ifPresent(fetchedUser::setPhoneNumber);
 
         userRepository.save(fetchedUser);
 
@@ -149,21 +150,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserUpdateProfileResponse updateLoggedInUserProfile(User user, UserUpdateProfileResponse userData) {
-        if (userData.getPhoneNumber() != null) {
-            boolean isValidPhone = userPhoneNumberValidator.test(
-                    userData.getPhoneNumber()
+        if (isUserDataUnchanged(user, userData)) {
+            // If no changes, return the existing profile response
+            return new UserUpdateProfileResponse(
+                    user.getFirstName(),
+                    user.getLastName(),
+                    user.getEmail(),
+                    user.getAvatar(),
+                    user.getPhoneNumber()
             );
-
-            if (!isValidPhone) {
-                throw new UserExceptions.InvalidPhoneNumber();
-            }
         }
+        validatePhoneNumber(userData.getPhoneNumber());
 
-        user.setFirstName(userData.getFirstName() != null && !userData.getFirstName().isEmpty() ?
-                userData.getFirstName() : user.getFirstName());
-        user.setLastName(userData.getLastName() != null && !userData.getLastName().isEmpty() ?
-                userData.getLastName() : user.getLastName());
-        user.setPhoneNumber(userData.getPhoneNumber() != null ? userData.getPhoneNumber() : user.getPhoneNumber());
+        Optional.ofNullable(userData.getFirstName()).ifPresent(user::setFirstName);
+        Optional.ofNullable(userData.getLastName()).ifPresent(user::setLastName);
+        Optional.ofNullable(userData.getPhoneNumber()).ifPresent(user::setPhoneNumber);
 
         userRepository.save(user);
 
@@ -175,6 +176,22 @@ public class UserServiceImpl implements UserService {
                 user.getPhoneNumber()
         );
         return userResponse;
+    }
+
+    private void validatePhoneNumber(String phoneNumber) {
+        if (phoneNumber != null && !phoneNumber.isEmpty()) {
+            boolean isValidPhone = userPhoneNumberValidator.test(phoneNumber);
+            if (!isValidPhone) {
+                throw new UserExceptions.InvalidPhoneNumber();
+            }
+        }
+    }
+
+//    Helped method to check if the provided newly provided userData is unchanged
+    private boolean isUserDataUnchanged(User user, UserUpdateProfileResponse userData) {
+        return Objects.equals(userData.getFirstName(), user.getFirstName()) &&
+                Objects.equals(userData.getLastName(), user.getLastName()) &&
+                Objects.equals(userData.getPhoneNumber(), user.getPhoneNumber());
     }
 
 }
