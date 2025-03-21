@@ -74,46 +74,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserUpdateProfileResponse updateUserProfile(Long userId, UserResponse userData) {
-        boolean isValidPhone = userPhoneNumberValidator.test(
-                userData.getPhoneNumber()
-        );
-
-        if (!isValidPhone) {
-            throw new UserExceptions.InvalidPhoneNumber();
-        }
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String email = user.getEmail();
-        UserRole userRole = user.getUserRole();
-        User fetchedUser = this.loadUser(userId);
-
-        if (!userRole.equals(UserRole.ADMIN) && !fetchedUser.getEmail().equals(email)) {
-            throw new AuthenticationExceptions.UserNotAuthorizedException();
-        }
-        fetchedUser.setFirstName(userData.getFirstName() != null
-                && !userData.getFirstName().isEmpty() ?
-                userData.getFirstName() : fetchedUser.getFirstName());
-        fetchedUser.setLastName(userData.getLastName() != null
-                && !userData.getLastName().isEmpty() ?
-                userData.getLastName() : fetchedUser.getLastName());
-        fetchedUser.setPhoneNumber(userData.getPhoneNumber() != null
-                && !userData.getPhoneNumber().isEmpty() ?
-                userData.getPhoneNumber() : fetchedUser.getPhoneNumber());
-
-        userRepository.save(fetchedUser);
-
-        UserUpdateProfileResponse userResponse = new UserUpdateProfileResponse(
-                fetchedUser.getFirstName(),
-                fetchedUser.getLastName(),
-                fetchedUser.getEmail(),
-                fetchedUser.getAvatar(),
-                fetchedUser.getPhoneNumber()
-        );
-
-        return userResponse;
-    }
-
-    @Override
     public void resetPassword(String email, String token, String newPassword, String repeatNewPassword) {
         Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
         if (passwordResetTokenOptional.isEmpty()) {
@@ -152,6 +112,69 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(User user) {
         userRepository.delete(user);
+    }
+
+    @Override
+    public UserUpdateProfileResponse updateUserProfile(Long userId, UserUpdateProfileResponse userData) {
+        if (userData.getPhoneNumber() != null) {
+            boolean isValidPhone = userPhoneNumberValidator.test(
+                    userData.getPhoneNumber()
+            );
+
+            if (!isValidPhone) {
+                throw new UserExceptions.InvalidPhoneNumber();
+            }
+        }
+
+        User fetchedUser = this.loadUser(userId);
+
+        fetchedUser.setFirstName(userData.getFirstName() != null && !userData.getFirstName().isEmpty() ?
+                userData.getFirstName() : fetchedUser.getFirstName());
+        fetchedUser.setLastName(userData.getLastName() != null && !userData.getLastName().isEmpty() ?
+                userData.getLastName() : fetchedUser.getLastName());
+        fetchedUser.setPhoneNumber(userData.getPhoneNumber() != null ? userData.getPhoneNumber() : fetchedUser.getPhoneNumber());
+
+        userRepository.save(fetchedUser);
+
+        UserUpdateProfileResponse userResponse = new UserUpdateProfileResponse(
+                fetchedUser.getFirstName(),
+                fetchedUser.getLastName(),
+                fetchedUser.getEmail(),
+                fetchedUser.getAvatar(),
+                fetchedUser.getPhoneNumber()
+        );
+
+        return userResponse;
+    }
+
+    @Override
+    public UserUpdateProfileResponse updateLoggedInUserProfile(User user, UserUpdateProfileResponse userData) {
+        if (userData.getPhoneNumber() != null) {
+            boolean isValidPhone = userPhoneNumberValidator.test(
+                    userData.getPhoneNumber()
+            );
+
+            if (!isValidPhone) {
+                throw new UserExceptions.InvalidPhoneNumber();
+            }
+        }
+
+        user.setFirstName(userData.getFirstName() != null && !userData.getFirstName().isEmpty() ?
+                userData.getFirstName() : user.getFirstName());
+        user.setLastName(userData.getLastName() != null && !userData.getLastName().isEmpty() ?
+                userData.getLastName() : user.getLastName());
+        user.setPhoneNumber(userData.getPhoneNumber() != null ? userData.getPhoneNumber() : user.getPhoneNumber());
+
+        userRepository.save(user);
+
+        UserUpdateProfileResponse userResponse = new UserUpdateProfileResponse(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getAvatar(),
+                user.getPhoneNumber()
+        );
+        return userResponse;
     }
 
 }

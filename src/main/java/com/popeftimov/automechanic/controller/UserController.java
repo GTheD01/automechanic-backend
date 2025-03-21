@@ -42,8 +42,16 @@ public class UserController {
         return ResponseEntity.noContent().build();
     }
 
-    @PutMapping("/users/{userId}")
-    public ResponseEntity<UserUpdateProfileResponse> updateUserProfile(@PathVariable("userId") Long userId, @RequestBody UserResponse userData) {
+    @PutMapping("/users/me")
+    public ResponseEntity<UserUpdateProfileResponse> updateLoggedInUserProfile(@RequestBody UserUpdateProfileResponse userData) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        UserUpdateProfileResponse userResponse = userService.updateLoggedInUserProfile(user, userData);
+        return ResponseEntity.ok(userResponse);
+    }
+
+    @PutMapping("/admin/users/{userId}")
+    public ResponseEntity<UserUpdateProfileResponse> updateUserProfile(@PathVariable("userId") Long userId,
+                                                                       @RequestBody UserUpdateProfileResponse userData) {
         UserUpdateProfileResponse userResponse = userService.updateUserProfile(userId, userData);
         return ResponseEntity.ok(userResponse);
     }
