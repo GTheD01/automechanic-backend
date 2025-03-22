@@ -56,10 +56,16 @@ public class UserController {
         return ResponseEntity.ok(userResponse);
     }
 
-    @GetMapping("admin/users/{userId}")
+    @GetMapping("/admin/users/{userId}")
     public ResponseEntity<UserResponse> getUser(@PathVariable("userId") Long userId) {
         UserResponse user = userService.getUser(userId);
         return ResponseEntity.ok(user);
+    }
+
+    @DeleteMapping("/admin/users/{userId}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("userId") Long userId) {
+        userService.deleteUserById(userId);
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/admin/users")

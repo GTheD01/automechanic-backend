@@ -114,6 +114,11 @@ public class UserServiceImpl implements UserService {
         userRepository.delete(user);
     }
 
+    public void deleteUserById(Long userId) {
+        User user = this.loadUser(userId);
+        userRepository.delete(user);
+    }
+
     @Override
     public UserUpdateProfileResponse updateUserProfile(Long userId, UserUpdateProfileResponse userData) {
         User fetchedUser = this.loadUser(userId);
