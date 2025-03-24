@@ -16,6 +16,7 @@ public class ReportDTO {
     private Long id;
     private String description;
     private String answer;
+    private String reportType;
 
     @JsonFormat(pattern = "HH:mm / dd.MM.yyyy")
     private LocalDateTime createdAt;

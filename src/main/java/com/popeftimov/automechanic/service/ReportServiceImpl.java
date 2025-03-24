@@ -2,8 +2,9 @@ package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.ReportDTO;
 import com.popeftimov.automechanic.dto.UserResponse;
-import com.popeftimov.automechanic.exception.ReportExceptions;
+import com.popeftimov.automechanic.exception.report.ReportExceptions;
 import com.popeftimov.automechanic.model.Report;
+import com.popeftimov.automechanic.model.ReportType;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class ReportServiceImpl implements ReportService{
                 report.getId(),
                 report.getDescription(),
                 report.getAnswer(),
+                report.getReportType().toString(),
                 report.getCreatedAt(),
                 userResponse
         );
@@ -41,16 +43,29 @@ public class ReportServiceImpl implements ReportService{
     public ReportDTO createReport(ReportDTO reportData) {
         String description = reportData.getDescription();
 
-        String email = SecurityContextHolder.getContext().getAuthentication().getName();
-        User user = userService.loadUser(email);
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        String reportTypeString = reportData.getReportType();
+
+        if (reportTypeString == null) {
+            throw new ReportExceptions.ReportTypeNotProvided();
+        }
+
+        ReportType reportType;
+        try {
+            reportType = ReportType.valueOf(reportTypeString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new ReportExceptions.InvalidReportTypeException();
+        }
 
         if (description == null || description.trim().isEmpty()) {
             throw new ReportExceptions.InvalidReportDescriptionException();
         }
 
         Report report = new Report();
-        report.setDescription(reportData.getDescription());
+        report.setDescription(description);
         report.setUser(user);
+        report.setReportType(reportType);
         reportRepository.save(report);
 
         return this.convertReportToReportDTO(report);

@@ -22,6 +22,9 @@ public class Report {
     private LocalDateTime createdAt;
     private LocalDateTime lastModifiedAt;
 
+    @Enumerated(EnumType.STRING)
+    private ReportType reportType;
+
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
