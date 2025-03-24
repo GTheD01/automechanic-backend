@@ -3,7 +3,7 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.dto.UserFilter;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
-import com.popeftimov.automechanic.exception.UserExceptions;
+import com.popeftimov.automechanic.exception.user.UserExceptions;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;

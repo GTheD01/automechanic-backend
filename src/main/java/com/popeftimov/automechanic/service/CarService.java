@@ -1,18 +1,16 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.*;
-import com.popeftimov.automechanic.exception.CarExceptions;
+import com.popeftimov.automechanic.exception.car.CarExceptions;
 import com.popeftimov.automechanic.model.*;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import com.popeftimov.automechanic.repository.CarModelRepository;
 import com.popeftimov.automechanic.repository.CarRepository;
-import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.utils.PermissionUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 

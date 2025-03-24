@@ -4,10 +4,10 @@ import com.popeftimov.automechanic.dto.AuthenticationRequest;
 import com.popeftimov.automechanic.dto.AuthenticationResponse;
 import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.dto.RegisterRequest;
-import com.popeftimov.automechanic.exception.ConfirmationExceptions;
-import com.popeftimov.automechanic.exception.EmailExceptions;
-import com.popeftimov.automechanic.exception.PasswordExceptions;
-import com.popeftimov.automechanic.exception.RegisterExceptions;
+import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
+import com.popeftimov.automechanic.exception.email.EmailExceptions;
+import com.popeftimov.automechanic.exception.password.PasswordExceptions;
+import com.popeftimov.automechanic.exception.register.RegisterExceptions;
 import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.model.User;
@@ -121,7 +121,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(email, token);
 
         if (!isValidToken) {
-            throw new ConfirmationExceptions.TokenInvalidExpired();
+            throw new ConfirmationTokenExceptions.TokenInvalidExpired();
         }
 
         if (!passwordValidator.test(newPassword)) {

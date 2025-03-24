@@ -1,7 +1,7 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.CarBrandResponse;
-import com.popeftimov.automechanic.exception.CarExceptions;
+import com.popeftimov.automechanic.exception.car.CarExceptions;
 import com.popeftimov.automechanic.model.CarBrand;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import lombok.RequiredArgsConstructor;

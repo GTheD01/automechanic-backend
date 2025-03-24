@@ -1,6 +1,6 @@
-package com.popeftimov.automechanic.exception;
+package com.popeftimov.automechanic.exception.confirmationtoken;
 
-public class ConfirmationExceptions {
+public class ConfirmationTokenExceptions {
     public static class EmailAlreadyConfirmed extends RuntimeException {
         public EmailAlreadyConfirmed() {
             super("Email already confirmed");

@@ -1,4 +1,4 @@
-package com.popeftimov.automechanic.exception;
+package com.popeftimov.automechanic.exception.car;
 
 public class CarExceptions {
 

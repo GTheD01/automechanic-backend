@@ -1,6 +1,6 @@
 package com.popeftimov.automechanic.service;
 
-import com.popeftimov.automechanic.exception.ConfirmationExceptions;
+import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
 import com.popeftimov.automechanic.dto.ConfirmationTokenResponse;
 import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.repository.ConfirmationTokenRepository;
@@ -37,16 +37,16 @@ public class ConfirmationTokenService {
     @Transactional
     public ResponseEntity<ConfirmationTokenResponse> confirmToken(String token) {
         ConfirmationToken confirmationToken = getToken(token)
-                .orElseThrow(ConfirmationExceptions.TokenNotFound::new);
+                .orElseThrow(ConfirmationTokenExceptions.TokenNotFound::new);
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new ConfirmationExceptions.EmailAlreadyConfirmed();
+            throw new ConfirmationTokenExceptions.EmailAlreadyConfirmed();
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new ConfirmationExceptions.TokenInvalidExpired();
+            throw new ConfirmationTokenExceptions.TokenInvalidExpired();
         }
 
         setConfirmedAt(token);

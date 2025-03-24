@@ -1,7 +1,7 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.*;
-import com.popeftimov.automechanic.exception.AppointmentExceptions;
+import com.popeftimov.automechanic.exception.appointment.AppointmentExceptions;
 import com.popeftimov.automechanic.model.Appointment;
 import com.popeftimov.automechanic.model.AppointmentStatus;
 import com.popeftimov.automechanic.model.Car;
