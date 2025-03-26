@@ -99,4 +99,11 @@ public class ReportServiceImpl implements ReportService{
         );
         reportRepository.delete(report);
     }
+
+    @Override
+    public List<ReportDTO> getUserReports(Long userId) {
+        User user = userService.loadUser(userId);
+        List<Report> userReports = reportRepository.findByUser(user);
+        return userReports.stream().map(this::convertReportToReportDTO).toList();
+    }
 }

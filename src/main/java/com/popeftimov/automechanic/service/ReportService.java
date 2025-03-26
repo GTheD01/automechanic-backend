@@ -13,4 +13,6 @@ public interface ReportService {
     List<ReportDTO> getLoggedInUserReports();
     List<ReportDTO> getAllReports();
     void deleteUserReport(Long reportId);
+
+    List<ReportDTO> getUserReports(Long userId);
 }

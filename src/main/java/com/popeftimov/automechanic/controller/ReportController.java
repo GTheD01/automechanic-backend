@@ -17,12 +17,6 @@ public class ReportController {
 
     private final ReportService reportService;
 
-    @GetMapping("/admin/reports")
-    public ResponseEntity<List<ReportDTO>> getAllReports() {
-        List<ReportDTO> reports = reportService.getAllReports();
-        return ResponseEntity.ok(reports);
-    }
-
     @PostMapping("/reports")
     public ResponseEntity<ReportDTO> createReport(@RequestBody ReportDTO reportData) {
         ReportDTO createdReportDTO = reportService.createReport(reportData);
@@ -33,6 +27,18 @@ public class ReportController {
     public ResponseEntity<List<ReportDTO>> getLoggedInUserReports() {
         List<ReportDTO> reports = reportService.getLoggedInUserReports();
         return ResponseEntity.ok(reports);
+    }
+
+    @GetMapping("/admin/reports")
+    public ResponseEntity<List<ReportDTO>> getAllReports() {
+        List<ReportDTO> reports = reportService.getAllReports();
+        return ResponseEntity.ok(reports);
+    }
+
+    @GetMapping("/admin/reports/user/{userId}")
+    public ResponseEntity<List<ReportDTO>> getUserReports(@PathVariable("userId") Long userId) {
+        List<ReportDTO> userReports = reportService.getUserReports(userId);
+        return ResponseEntity.ok(userReports);
     }
 
     @PutMapping("/admin/reports/{reportId}")
