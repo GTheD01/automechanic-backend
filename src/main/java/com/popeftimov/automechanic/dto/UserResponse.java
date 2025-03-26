@@ -16,7 +16,6 @@ public class UserResponse {
     private String lastName;
     private String email;
     private UserRole userRole;
-    private String avatar;
     private String phoneNumber;
     private Long carsCount;
     private Long appointmentCount;

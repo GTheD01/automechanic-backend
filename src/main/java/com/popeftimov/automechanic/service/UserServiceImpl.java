@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
                 user.getLastName(),
                 user.getEmail(),
                 user.getUserRole(),
-                user.getAvatar(),
                 user.getPhoneNumber(),
                 user.getCarsCount(),
                 user.getAppointmentsCount(),
@@ -129,7 +128,6 @@ public class UserServiceImpl implements UserService {
                     fetchedUser.getFirstName(),
                     fetchedUser.getLastName(),
                     fetchedUser.getEmail(),
-                    fetchedUser.getAvatar(),
                     fetchedUser.getPhoneNumber()
             );
         }
@@ -146,7 +144,6 @@ public class UserServiceImpl implements UserService {
                 fetchedUser.getFirstName(),
                 fetchedUser.getLastName(),
                 fetchedUser.getEmail(),
-                fetchedUser.getAvatar(),
                 fetchedUser.getPhoneNumber()
         );
 
@@ -161,7 +158,6 @@ public class UserServiceImpl implements UserService {
                     user.getFirstName(),
                     user.getLastName(),
                     user.getEmail(),
-                    user.getAvatar(),
                     user.getPhoneNumber()
             );
         }
@@ -177,7 +173,6 @@ public class UserServiceImpl implements UserService {
                 user.getFirstName(),
                 user.getLastName(),
                 user.getEmail(),
-                user.getAvatar(),
                 user.getPhoneNumber()
         );
         return userResponse;
