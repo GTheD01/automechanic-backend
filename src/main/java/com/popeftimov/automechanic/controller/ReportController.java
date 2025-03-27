@@ -4,6 +4,8 @@ import com.popeftimov.automechanic.dto.ReportAnswerDTO;
 import com.popeftimov.automechanic.dto.ReportDTO;
 import com.popeftimov.automechanic.service.ReportService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,8 +26,8 @@ public class ReportController {
     }
 
     @GetMapping("/reports/me")
-    public ResponseEntity<List<ReportDTO>> getLoggedInUserReports() {
-        List<ReportDTO> reports = reportService.getLoggedInUserReports();
+    public ResponseEntity<Page<ReportDTO>> getLoggedInUserReports(Pageable pageable) {
+        Page<ReportDTO> reports = reportService.getLoggedInUserReports(pageable);
         return ResponseEntity.ok(reports);
     }
 
@@ -36,8 +38,8 @@ public class ReportController {
     }
 
     @GetMapping("/admin/reports/user/{userId}")
-    public ResponseEntity<List<ReportDTO>> getUserReports(@PathVariable("userId") Long userId) {
-        List<ReportDTO> userReports = reportService.getUserReports(userId);
+    public ResponseEntity<Page<ReportDTO>> getUserReports(@PathVariable("userId") Long userId, Pageable pageable) {
+        Page<ReportDTO> userReports = reportService.getUserReports(userId, pageable);
         return ResponseEntity.ok(userReports);
     }
 

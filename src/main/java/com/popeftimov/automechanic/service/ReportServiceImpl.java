@@ -8,6 +8,8 @@ import com.popeftimov.automechanic.model.ReportType;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.ReportRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -72,10 +74,11 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public List<ReportDTO> getLoggedInUserReports() {
+    public Page<ReportDTO> getLoggedInUserReports(Pageable pageable) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Report> reportList = reportRepository.findByUser(user);
-        return reportList.stream().map(this::convertReportToReportDTO).toList();
+        Page<Report> reportList = reportRepository.findByUser(user, pageable);
+        Page<ReportDTO> reportDTOS = reportList.map(this::convertReportToReportDTO);
+        return reportDTOS;
     }
 
     @Override
@@ -101,9 +104,10 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public List<ReportDTO> getUserReports(Long userId) {
+    public Page<ReportDTO> getUserReports(Long userId, Pageable pageable) {
         User user = userService.loadUser(userId);
-        List<Report> userReports = reportRepository.findByUser(user);
-        return userReports.stream().map(this::convertReportToReportDTO).toList();
+        Page<Report> userReports = reportRepository.findByUser(user, pageable);
+        Page<ReportDTO> userReportsDTOs = userReports.map(this::convertReportToReportDTO);
+        return userReportsDTOs;
     }
 }
