@@ -13,7 +13,7 @@ public interface ReportService {
     ReportDTO createReport(ReportDTO reportData);
     ReportDTO answerUserReport(Long reportId, String answer);
     Page<ReportDTO> getLoggedInUserReports(Pageable pageable);
-    List<ReportDTO> getAllReports();
+    Page<ReportDTO> getAllReports(Pageable pageable);
     void deleteUserReport(Long reportId);
 
     Page<ReportDTO> getUserReports(Long userId, Pageable pageable);

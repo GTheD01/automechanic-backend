@@ -32,8 +32,8 @@ public class ReportController {
     }
 
     @GetMapping("/admin/reports")
-    public ResponseEntity<List<ReportDTO>> getAllReports() {
-        List<ReportDTO> reports = reportService.getAllReports();
+    public ResponseEntity<Page<ReportDTO>> getAllReports(Pageable pageable) {
+        Page<ReportDTO> reports = reportService.getAllReports(pageable);
         return ResponseEntity.ok(reports);
     }
 

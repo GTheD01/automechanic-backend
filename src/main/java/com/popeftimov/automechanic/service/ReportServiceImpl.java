@@ -35,10 +35,11 @@ public class ReportServiceImpl implements ReportService{
     }
 
     @Override
-    public List<ReportDTO> getAllReports() {
-        List<Report> reports = reportRepository.findAll();
+    public Page<ReportDTO> getAllReports(Pageable pageable) {
+        Page<Report> reports = reportRepository.findAll(pageable);
+        Page<ReportDTO> reportDTOS = reports.map(this::convertReportToReportDTO);
 
-        return reports.stream().map(this::convertReportToReportDTO).toList();
+        return reportDTOS;
     }
 
     @Override
