@@ -1,7 +1,6 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.AuthenticationRequest;
-import com.popeftimov.automechanic.dto.AuthenticationResponse;
 import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.dto.RegisterRequest;
 import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
@@ -146,7 +145,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         response.addCookie(jwtCookie);
     }
 
-    public AuthenticationResponse authenticate(AuthenticationRequest request, HttpServletResponse response) {
+    public void authenticate(AuthenticationRequest request, HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -155,16 +154,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         );
 
         var user = userService.loadUser(request.getEmail());
-        var jwtToken = jwtService.generateToken(user);
-        Cookie jwtCookie = new Cookie("accessToken", jwtToken);
-        jwtCookie.setHttpOnly(true);
-        jwtCookie.setSecure(true);
-        jwtCookie.setPath("/");
-        jwtCookie.setMaxAge(60*60*24);
+        var accessToken = jwtService.generateAccessToken(user);
 
-        response.addCookie(jwtCookie);
+        var refreshToken = jwtService.generateRefreshToken(user);
 
-        return new AuthenticationResponse(jwtToken);
+        jwtService.addJwtCookiesToResponse(response, accessToken, refreshToken);
     }
 
     public void sendVerificationEmail(String email, String link) throws MessagingException{

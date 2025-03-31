@@ -29,20 +29,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
-        final String jwt;
+        final String accessToken;
         final String userEmail;
 
-        jwt = jwtService.getJwtFromCookies(request);
+        accessToken = jwtService.getAccessTokenFromCookies(request);
 
-        if (jwt == null) {
+        if (accessToken == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        userEmail = jwtService.extractUsername(jwt);
+        userEmail = jwtService.extractUsername(accessToken);
         if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
+            if (jwtService.isTokenValid(accessToken, userDetails)) {
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails,
                         null,

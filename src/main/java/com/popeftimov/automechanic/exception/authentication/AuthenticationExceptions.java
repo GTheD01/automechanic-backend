@@ -8,4 +8,10 @@ public class AuthenticationExceptions {
         }
     }
 
+    public static class InvalidOrMissingRefreshToken extends RuntimeException {
+        public InvalidOrMissingRefreshToken() {
+            super("Invalid or missing refresh token.");
+        }
+    }
+
 }
