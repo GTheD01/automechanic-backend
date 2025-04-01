@@ -72,3 +72,8 @@ rabbitmq:
     email:
       name: ${RABBITMQ_ROUTING_KEY_EMAIL}
       dlx-name: ${RABBITMQ_EMAIL_FAILED}
+springdoc:
+  api-docs:
+    path: ${SPRINGDOC_API_DOCS_PATH}
+  swagger-ui:
+    path: ${SWAGGER_UI_PATH}
