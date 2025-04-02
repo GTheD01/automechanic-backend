@@ -1,6 +1,7 @@
 package com.popeftimov.automechanic.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.popeftimov.automechanic.exception.ApiError;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -10,8 +11,6 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 
 @Component
 public class AuthEntryPointJwt implements AuthenticationEntryPoint {
@@ -20,14 +19,15 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
-        final Map<String, Object> errors = new HashMap<>();
-        errors.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-        errors.put("error", "UNAUTHORIZED");
-        errors.put("message", authException.getMessage());
-        errors.put("path", request.getServletPath());
+        ApiError apiError = new ApiError(
+                401,
+                "UNAUTHORIZED",
+                authException.getMessage(),
+                request.getRequestURI()
+        );
 
         final ObjectMapper mapper = new ObjectMapper();
-        mapper.writeValue(response.getWriter(), errors);
+        mapper.writeValue(response.getWriter(), apiError);
 
     }
 
