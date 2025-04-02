@@ -10,6 +10,18 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class UserExceptionsHandler {
 
+    @ExceptionHandler(UserExceptions.UserNotFoundException.class)
+    public ResponseEntity<ApiError> handleUserNotFound(UserExceptions.UserNotFoundException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "NOT FOUND",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(UserExceptions.InvalidPhoneNumber.class)
     public ResponseEntity<ApiError> handleInvalidPhoneNumberException(UserExceptions.InvalidPhoneNumber ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(

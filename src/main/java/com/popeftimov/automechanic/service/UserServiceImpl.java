@@ -44,12 +44,12 @@ public class UserServiceImpl implements UserService {
 
     public User loadUser(String email) throws UsernameNotFoundException {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
+                .orElseThrow(() -> new UserExceptions.UserNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
     }
 
     public User loadUser(Long id) throws UsernameNotFoundException {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, id)));
+                .orElseThrow(() -> new UserExceptions.UserNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, id)));
     }
 
     @Override
