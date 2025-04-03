@@ -34,8 +34,22 @@ public class AuthenticationExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AuthenticationExceptions.InvalidOrMissingRefreshToken.class)
-    public ResponseEntity<ApiError> handleUserNotAuthorized(AuthenticationExceptions.InvalidOrMissingRefreshToken ex, HttpServletRequest request) {
+    @ExceptionHandler(AuthenticationExceptions.InvalidOrExpiredRefreshToken.class)
+    public ResponseEntity<ApiError> handleInvalidOrExpiredRefreshToken(
+            AuthenticationExceptions.InvalidOrExpiredRefreshToken ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.UNAUTHORIZED.value(),
+                "UNAUTHORIZED",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(AuthenticationExceptions.InvalidOrExpiredAccessToken.class)
+    public ResponseEntity<ApiError> handleInvalidOrExpiredAccessToken(
+            AuthenticationExceptions.InvalidOrExpiredAccessToken ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.UNAUTHORIZED.value(),
                 "UNAUTHORIZED",

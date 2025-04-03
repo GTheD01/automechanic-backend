@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,12 +70,12 @@ public class AuthenticationController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/jwt/refresh-token")
+    @PostMapping("/jwt/refresh-token")
     public void refreshAccessToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = jwtService.getRefreshTokenFromCookies(request);
 
         if (refreshToken == null) {
-            throw new AuthenticationExceptions.InvalidOrMissingRefreshToken();
+            throw new AuthenticationExceptions.InvalidOrExpiredRefreshToken();
         }
 
         String userEmail = jwtService.extractUsername(refreshToken);
@@ -87,7 +88,21 @@ public class AuthenticationController {
 
             jwtService.addJwtCookiesToResponse(response, newAccessToken, newRefreshToken);
         } else {
-            throw new AuthenticationExceptions.InvalidOrMissingRefreshToken();
+            throw new AuthenticationExceptions.InvalidOrExpiredRefreshToken();
         };
+    }
+
+    @PostMapping("/verify-token")
+    public ResponseEntity<Void> verifyToken(HttpServletRequest request) {
+        String userName = SecurityContextHolder.getContext().getAuthentication().getName();
+        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+
+        String accessToken = jwtService.getAccessTokenFromCookies(request);
+        boolean tokenIsValid = jwtService.isTokenValid(accessToken, userDetails);
+        if (!tokenIsValid) {
+            throw new AuthenticationExceptions.InvalidOrExpiredAccessToken();
+        }
+
+        return ResponseEntity.ok().build();
     }
 }
