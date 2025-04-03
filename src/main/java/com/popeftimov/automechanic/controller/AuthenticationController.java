@@ -1,17 +1,17 @@
 package com.popeftimov.automechanic.controller;
 
+import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.exception.authentication.AuthenticationExceptions;
 import com.popeftimov.automechanic.security.JwtService;
 import com.popeftimov.automechanic.service.AuthenticationService;
-import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.service.ConfirmationTokenService;
+import com.popeftimov.automechanic.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +24,9 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
     private final ConfirmationTokenService confirmationTokenService;
     private final JwtService jwtService;
-    private final UserDetailsService userDetailsService;
+    private final UserService userService;
 
-    @PostMapping("/register")
+    @PostMapping("/signup")
     @Transactional
     public ResponseEntity<Void> register(
             @RequestBody RegisterRequest request
@@ -79,7 +79,7 @@ public class AuthenticationController {
         }
 
         String userEmail = jwtService.extractUsername(refreshToken);
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userEmail);
+        UserDetails userDetails = userService.loadUserByUsername(userEmail);
 
         if(jwtService.isTokenValid(refreshToken, userDetails)) {
 
@@ -92,10 +92,10 @@ public class AuthenticationController {
         };
     }
 
-    @PostMapping("/verify-token")
+    @PostMapping("/jwt/verify-token")
     public ResponseEntity<Void> verifyToken(HttpServletRequest request) {
         String userName = SecurityContextHolder.getContext().getAuthentication().getName();
-        UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+        UserDetails userDetails = userService.loadUserByUsername(userName);
 
         String accessToken = jwtService.getAccessTokenFromCookies(request);
         boolean tokenIsValid = jwtService.isTokenValid(accessToken, userDetails);
