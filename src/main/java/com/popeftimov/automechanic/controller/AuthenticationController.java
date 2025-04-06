@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -27,11 +26,10 @@ public class AuthenticationController {
     private final UserService userService;
 
     @PostMapping("/signup")
-    @Transactional
-    public ResponseEntity<Void> register(
-            @RequestBody RegisterRequest request
+    public ResponseEntity<Void> signUp(
+            @RequestBody SignUpUserRequest request
     ) {
-        return authenticationService.register(request);
+        return authenticationService.signUp(request);
     }
 
     @GetMapping(path = "/register/confirm-email")

@@ -2,9 +2,9 @@ package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.AuthenticationRequest;
 import com.popeftimov.automechanic.dto.EmailRequest;
-import com.popeftimov.automechanic.dto.RegisterRequest;
+import com.popeftimov.automechanic.dto.SignUpUserRequest;
 import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
-import com.popeftimov.automechanic.exception.register.RegisterExceptions;
+import com.popeftimov.automechanic.exception.signup.SignUpExceptions;
 import com.popeftimov.automechanic.exception.user.UserExceptions;
 import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.model.User;
@@ -23,6 +23,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -44,8 +45,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final EmailPublisher emailPublisher;
 
+    @Transactional
     @Override
-    public ResponseEntity<Void> register(RegisterRequest request) {
+    public ResponseEntity<Void> signUp(SignUpUserRequest request) {
         boolean isValidEmail = emailValidator
                 .test(request.getEmail());
 
@@ -102,7 +104,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             sendVerificationEmail(user.getEmail(), link);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (MessagingException e) {
-            throw new RegisterExceptions.FailedToSendEmail();
+            throw new SignUpExceptions.FailedToSendVerificationEmail();
         }
     }
 

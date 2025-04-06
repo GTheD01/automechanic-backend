@@ -1,4 +1,4 @@
-package com.popeftimov.automechanic.exception.register;
+package com.popeftimov.automechanic.exception.signup;
 
 import com.popeftimov.automechanic.exception.ApiError;
 import jakarta.servlet.http.HttpServletRequest;
@@ -8,10 +8,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-public class RegisterExceptionsHandler {
+public class SignUpExceptionsHandler {
 
-    @ExceptionHandler(RegisterExceptions.FailedToSendEmail.class)
-    public ResponseEntity<ApiError> handleFailedToSendEmailException(RegisterExceptions.FailedToSendEmail ex, HttpServletRequest request) {
+    @ExceptionHandler(SignUpExceptions.FailedToSendVerificationEmail.class)
+    public ResponseEntity<ApiError> handleFailedToSendEmailException(SignUpExceptions.FailedToSendVerificationEmail ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_SERVER_ERROR",
