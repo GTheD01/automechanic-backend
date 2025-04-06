@@ -1,7 +1,6 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.AuthenticationRequest;
-import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.dto.SignUpUserRequest;
 import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
 import com.popeftimov.automechanic.exception.signup.SignUpExceptions;
@@ -26,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -43,7 +40,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final PasswordValidator passwordValidator;
     private final PasswordResetTokenService passwordResetTokenService;
     private final UserService userService;
-    private final EmailPublisher emailPublisher;
+    private final EmailService emailService;
 
     @Transactional
     @Override
@@ -101,7 +98,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             confirmationTokenService.saveConfirmationToken(confirmationToken);
 
             String link = "http://localhost:5173/verify-email?token=" + token;
-            sendVerificationEmail(user.getEmail(), link);
+            emailService.sendVerificationEmail(user.getEmail(), link);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (MessagingException e) {
             throw new SignUpExceptions.FailedToSendVerificationEmail();
@@ -169,15 +166,5 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         var refreshToken = jwtService.generateRefreshToken(user);
 
         jwtService.addJwtCookiesToResponse(response, accessToken, refreshToken);
-    }
-
-    @Override
-    public void sendVerificationEmail(String email, String link) throws MessagingException{
-        String subject = "Account verification";
-        Map<String, Object> values = new HashMap<>();
-        values.put("subject", subject);
-        values.put("link", link);
-        EmailRequest emailRequest = new EmailRequest(email, subject, "AccountVerification", values);
-        emailPublisher.publishEmailRequest(emailRequest);
     }
 }

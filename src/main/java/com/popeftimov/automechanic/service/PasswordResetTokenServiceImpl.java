@@ -1,15 +1,12 @@
 package com.popeftimov.automechanic.service;
 
-import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.model.PasswordResetToken;
-import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.model.User;
+import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -19,7 +16,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final UserService userService;
-    private final EmailPublisher emailPublisher;
+    private final EmailService emailService;
 
     @Override
     public String generatePasswordResetToken(String email) {
@@ -38,7 +35,7 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
 
         passwordResetTokenRepository.save(passwordResetToken);
 
-        sendPasswordResetEmail(email, token);
+        emailService.sendPasswordResetEmail(email, token);
 
         return token;
     }
@@ -64,15 +61,5 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
     @Override
     public void deleteAllPasswordResetTokensOfUser(User user) {
         passwordResetTokenRepository.deleteAllByUser(user);
-    }
-
-    @Override
-    public void sendPasswordResetEmail(String email, String code) {
-        String subject = "Password reset";
-        Map<String, Object> values = new HashMap<>();
-        values.put("subject", subject);
-        values.put("code", code);
-        EmailRequest emailRequest = new EmailRequest(email, subject, "PasswordReset", values);
-        emailPublisher.publishEmailRequest(emailRequest);
     }
 }
