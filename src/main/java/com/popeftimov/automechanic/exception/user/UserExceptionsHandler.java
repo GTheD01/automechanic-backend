@@ -33,4 +33,48 @@ public class UserExceptionsHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserExceptions.InvalidPasswordException.class)
+    public ResponseEntity<ApiError> handleInvalidPasswordException(UserExceptions.InvalidPasswordException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserExceptions.PasswordDoNotMatchException.class)
+    public ResponseEntity<ApiError> handlePasswordDoNotMatchException(UserExceptions.PasswordDoNotMatchException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserExceptions.EmailAlreadyTakenException.class)
+    public ResponseEntity<ApiError> handleEmailAlreadyTakenException(UserExceptions.EmailAlreadyTakenException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(UserExceptions.InvalidEmailException.class)
+    public ResponseEntity<ApiError> handleInvalidEmailException(UserExceptions.InvalidEmailException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }

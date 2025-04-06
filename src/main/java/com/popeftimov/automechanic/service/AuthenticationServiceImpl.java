@@ -4,16 +4,15 @@ import com.popeftimov.automechanic.dto.AuthenticationRequest;
 import com.popeftimov.automechanic.dto.EmailRequest;
 import com.popeftimov.automechanic.dto.RegisterRequest;
 import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
-import com.popeftimov.automechanic.exception.email.EmailExceptions;
-import com.popeftimov.automechanic.exception.password.PasswordExceptions;
 import com.popeftimov.automechanic.exception.register.RegisterExceptions;
+import com.popeftimov.automechanic.exception.user.UserExceptions;
 import com.popeftimov.automechanic.model.ConfirmationToken;
-import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.model.User;
-import com.popeftimov.automechanic.validator.EmailValidator;
-import com.popeftimov.automechanic.validator.PasswordValidator;
+import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.security.JwtService;
+import com.popeftimov.automechanic.validator.EmailValidator;
+import com.popeftimov.automechanic.validator.PasswordValidator;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -45,23 +44,24 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final UserService userService;
     private final EmailPublisher emailPublisher;
 
+    @Override
     public ResponseEntity<Void> register(RegisterRequest request) {
         boolean isValidEmail = emailValidator
                 .test(request.getEmail());
 
         if (!isValidEmail) {
-            throw new EmailExceptions.InvalidEmailException();
+            throw new UserExceptions.InvalidEmailException();
         }
 
         boolean passwordStrongEnough = passwordValidator
                 .test(request.getPassword());
 
         if (!passwordStrongEnough) {
-            throw new PasswordExceptions.InvalidPasswordException();
+            throw new UserExceptions.InvalidPasswordException();
         }
 
         if (!Objects.equals(request.getPassword(), request.getRepeatPassword())) {
-            throw new PasswordExceptions.PasswordDoNotMatchException();
+            throw new UserExceptions.PasswordDoNotMatchException();
         }
 
         boolean userExists = userRepository
@@ -69,7 +69,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .isPresent();
 
         if (userExists) {
-            throw new EmailExceptions.EmailAlreadyTakenException();
+            throw new UserExceptions.EmailAlreadyTakenException();
         }
 
         User user = new User(
@@ -109,7 +109,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     @Override
     public String requestPasswordReset(String email) {
         if (!emailValidator.test(email)) {
-            throw new EmailExceptions.InvalidEmailException();
+            throw new UserExceptions.InvalidEmailException();
         }
 
         return passwordResetTokenService.generatePasswordResetToken(email);
@@ -124,11 +124,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
 
         if (!passwordValidator.test(newPassword)) {
-            throw new PasswordExceptions.InvalidPasswordException();
+            throw new UserExceptions.InvalidPasswordException();
         }
 
         if (!newPassword.equals(repeatNewPassword)) {
-            throw new PasswordExceptions.PasswordDoNotMatchException();
+            throw new UserExceptions.PasswordDoNotMatchException();
         }
 
         userService.resetPassword(email, token, newPassword, repeatNewPassword);
@@ -152,6 +152,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         response.addCookie(refreshTokenCookie);
     }
 
+    @Override
     public void authenticate(AuthenticationRequest request, HttpServletResponse response) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -168,6 +169,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         jwtService.addJwtCookiesToResponse(response, accessToken, refreshToken);
     }
 
+    @Override
     public void sendVerificationEmail(String email, String link) throws MessagingException{
         String subject = "Account verification";
         Map<String, Object> values = new HashMap<>();

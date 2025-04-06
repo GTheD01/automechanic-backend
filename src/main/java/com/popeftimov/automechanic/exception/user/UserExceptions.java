@@ -13,4 +13,30 @@ public class UserExceptions {
             super("Invalid phone number.");
         }
     }
+
+    public static class InvalidPasswordException extends RuntimeException {
+        public InvalidPasswordException() {
+            super("Password must be at least 8 characters long, " +
+                    "contain at least one uppercase letter, one number, and one special character.");
+        }
+    }
+
+    public static class PasswordDoNotMatchException extends RuntimeException {
+        public PasswordDoNotMatchException() {
+            super("Passwords do not match.");
+        }
+    }
+
+    public static class EmailAlreadyTakenException extends RuntimeException {
+        public EmailAlreadyTakenException() {
+            super("Email already taken");
+        }
+    }
+
+
+    public static class InvalidEmailException extends RuntimeException {
+        public InvalidEmailException() {
+            super("Invalid email");
+        }
+    }
 }
