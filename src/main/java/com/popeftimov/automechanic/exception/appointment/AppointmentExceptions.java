@@ -14,7 +14,17 @@ public class AppointmentExceptions {
         }
     }
 
-    public static class AppointmentNoCarSelected extends  RuntimeException {
-        public AppointmentNoCarSelected() { super("No car selected.");}
+    public static class AppointmentNoCarSelected extends RuntimeException {
+        public AppointmentNoCarSelected() {
+            super("No car selected.");
+        }
+    }
+
+    public static class AppointmentNotFound extends RuntimeException {
+        public AppointmentNotFound(Long appointmentId) { super("Appointment with ID: " + appointmentId + " not found."); }
+    }
+
+    public static class AppointmentInvalidStatus extends RuntimeException {
+        public AppointmentInvalidStatus() { super("Invalid appointment status"); }
     }
 }

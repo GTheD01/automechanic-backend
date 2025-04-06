@@ -1,6 +1,5 @@
 package com.popeftimov.automechanic.dto;
 
-import com.popeftimov.automechanic.model.AppointmentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,5 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AppointmentUpdateRequest {
-    private AppointmentStatus appointmentStatus;
+    private String appointmentStatus;
+
 }

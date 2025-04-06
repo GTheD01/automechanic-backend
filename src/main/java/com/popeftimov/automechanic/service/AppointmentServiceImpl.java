@@ -5,8 +5,8 @@ import com.popeftimov.automechanic.exception.appointment.AppointmentExceptions;
 import com.popeftimov.automechanic.model.Appointment;
 import com.popeftimov.automechanic.model.AppointmentStatus;
 import com.popeftimov.automechanic.model.Car;
-import com.popeftimov.automechanic.repository.AppointmentRepository;
 import com.popeftimov.automechanic.model.User;
+import com.popeftimov.automechanic.repository.AppointmentRepository;
 import com.popeftimov.automechanic.repository.CarRepository;
 import com.popeftimov.automechanic.specifications.AppointmentSpecification;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,24 @@ public class AppointmentServiceImpl implements AppointmentService {
     }
 
     @Override
-    public AppointmentResponse updateAppointment(Long appointmentId, AppointmentStatus appointmentStatus) {
-        Appointment appointment = appointmentRepository.getReferenceById(appointmentId);
+    public AppointmentResponse updateAppointment(Long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest) {
+        Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(
+                () -> new AppointmentExceptions.AppointmentNotFound(appointmentId)
+        );
+
+        String appointmentStatusString = appointmentUpdateRequest.getAppointmentStatus();
+
+        if (appointmentStatusString == null) {
+            throw new AppointmentExceptions.AppointmentInvalidStatus();
+        }
+
+        AppointmentStatus appointmentStatus;
+        try {
+            appointmentStatus = AppointmentStatus.valueOf(appointmentStatusString.toUpperCase());
+        } catch (IllegalArgumentException e) {
+            throw new AppointmentExceptions.AppointmentInvalidStatus();
+        }
+
         appointment.setAppointmentStatus(appointmentStatus);
         appointmentRepository.save(appointment);
         AppointmentResponse appointmentResponse = convertToAppointmentResponse(appointment);

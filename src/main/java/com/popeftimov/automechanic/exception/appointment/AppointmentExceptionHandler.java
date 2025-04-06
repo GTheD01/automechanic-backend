@@ -43,4 +43,28 @@ public class AppointmentExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(AppointmentExceptions.AppointmentNotFound.class)
+    public ResponseEntity<ApiError> handleAppointmentNotFound(AppointmentExceptions.AppointmentNotFound ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "NOT FOUND",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AppointmentExceptions.AppointmentInvalidStatus.class)
+    public ResponseEntity<ApiError> handleAppointmentInvalidStatus(AppointmentExceptions.AppointmentInvalidStatus ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.NOT_FOUND.value(),
+                "NOT FOUND",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
 }
