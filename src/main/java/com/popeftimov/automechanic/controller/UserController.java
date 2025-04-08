@@ -144,7 +144,7 @@ public class UserController {
     public ResponseEntity<UserUpdateProfileResponse> updateUserProfile(
                                                                            @PathVariable("userId") Long userId,
                                                                        @RequestBody UserUpdateProfileResponse userData) {
-        UserUpdateProfileResponse userResponse = userService.updateUserProfile(userId, userData);
+        UserUpdateProfileResponse userResponse = userService.updateUserProfileById(userId, userData);
         return ResponseEntity.ok(userResponse);
     }
 
@@ -174,7 +174,7 @@ public class UserController {
     })
     @GetMapping("/admin/users/{userId}")
     public ResponseEntity<UserResponse> getUser(@PathVariable("userId") Long userId) {
-        UserResponse user = userService.getUser(userId);
+        UserResponse user = userService.getUserResponseByUserId(userId);
         return ResponseEntity.ok(user);
     }
 

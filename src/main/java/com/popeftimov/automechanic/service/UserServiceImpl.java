@@ -4,22 +4,18 @@ import com.popeftimov.automechanic.dto.UserFilter;
 import com.popeftimov.automechanic.dto.UserResponse;
 import com.popeftimov.automechanic.dto.UserUpdateProfileResponse;
 import com.popeftimov.automechanic.exception.user.UserExceptions;
-import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
-import com.popeftimov.automechanic.repository.PasswordResetTokenRepository;
 import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.specifications.UserSpecification;
 import com.popeftimov.automechanic.validator.UserPhoneNumberValidator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import org.springframework.data.domain.Pageable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -32,24 +28,42 @@ public class UserServiceImpl implements UserService {
     private final static String USER_EMAIL_NOT_FOUND_MSG = "User with email %s not found";
     private final static String USER_ID_NOT_FOUND_MSG = "User with id %d not found";
     private final UserRepository userRepository;
-    private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final PasswordEncoder passwordEncoder;
     private final UserPhoneNumberValidator userPhoneNumberValidator;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
     }
 
-    public User loadUser(String email) throws UsernameNotFoundException {
+    public Optional<User> findOptionalUserByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
+
+    public User loadUser(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserExceptions.UserNotFoundException(String.format(USER_EMAIL_NOT_FOUND_MSG, email)));
     }
 
-    public User loadUser(Long id) throws UsernameNotFoundException {
+    public User loadUser(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserExceptions.UserNotFoundException(String.format(USER_ID_NOT_FOUND_MSG, id)));
+    }
+
+    @Override
+    public UserResponse getUserResponseByUserId(Long userId) {
+        User user = this.loadUser(userId);
+        return this.convertToUserResponse(user);
+    }
+
+    @Override
+    public void deleteUser(User user) {
+        userRepository.delete(user);
+    }
+
+    public void deleteUserById(Long userId) {
+        User user = this.loadUser(userId);
+        userRepository.delete(user);
     }
 
     @Override
@@ -73,21 +87,6 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void resetPassword(String email, String token, String newPassword, String repeatNewPassword) {
-        Optional<PasswordResetToken> passwordResetTokenOptional = passwordResetTokenRepository.findByToken(token);
-        if (passwordResetTokenOptional.isEmpty()) {
-            return;
-        }
-        User user = passwordResetTokenOptional.get().getUser();
-
-        String encryptedPassword = passwordEncoder.encode(newPassword);
-        user.setPassword(encryptedPassword);
-
-        userRepository.save(user);
-        passwordResetTokenRepository.delete(passwordResetTokenOptional.get());
-    }
-
-    @Override
     public Page<UserResponse> getAllUsers(String name,
                                           Boolean hasCars,
                                           Boolean hasAppointments,
@@ -102,64 +101,31 @@ public class UserServiceImpl implements UserService {
         return users.map(this::convertToUserResponse);
     }
 
-    @Override
-    public UserResponse getUser(Long userId) {
-        User user = this.loadUser(userId);
-        return this.convertToUserResponse(user);
+    private UserUpdateProfileResponse convertToUserUpdateProfileResponse(User user) {
+        return new UserUpdateProfileResponse(
+                user.getFirstName(),
+                user.getLastName(),
+                user.getEmail(),
+                user.getPhoneNumber()
+        );
     }
 
     @Override
-    public void deleteUser(User user) {
-        userRepository.delete(user);
-    }
-
-    public void deleteUserById(Long userId) {
-        User user = this.loadUser(userId);
-        userRepository.delete(user);
-    }
-
-    @Override
-    public UserUpdateProfileResponse updateUserProfile(Long userId, UserUpdateProfileResponse userData) {
+    public UserUpdateProfileResponse updateUserProfileById(Long userId, UserUpdateProfileResponse userData) {
         User fetchedUser = this.loadUser(userId);
 
-        if (isUserDataUnchanged(fetchedUser, userData)) {
-            // If no changes, return the existing profile response
-            return new UserUpdateProfileResponse(
-                    fetchedUser.getFirstName(),
-                    fetchedUser.getLastName(),
-                    fetchedUser.getEmail(),
-                    fetchedUser.getPhoneNumber()
-            );
-        }
-
-        validatePhoneNumber(userData.getPhoneNumber());
-
-        Optional.ofNullable(userData.getFirstName()).ifPresent(fetchedUser::setFirstName);
-        Optional.ofNullable(userData.getLastName()).ifPresent(fetchedUser::setLastName);
-        Optional.ofNullable(userData.getPhoneNumber()).ifPresent(fetchedUser::setPhoneNumber);
-
-        userRepository.save(fetchedUser);
-
-        UserUpdateProfileResponse userResponse = new UserUpdateProfileResponse(
-                fetchedUser.getFirstName(),
-                fetchedUser.getLastName(),
-                fetchedUser.getEmail(),
-                fetchedUser.getPhoneNumber()
-        );
-
-        return userResponse;
+        return this.updateUserProfile(fetchedUser, userData);
     }
 
     @Override
     public UserUpdateProfileResponse updateLoggedInUserProfile(User user, UserUpdateProfileResponse userData) {
+        return this.updateUserProfile(user, userData);
+    }
+
+    private UserUpdateProfileResponse updateUserProfile(User user, UserUpdateProfileResponse userData) {
         if (isUserDataUnchanged(user, userData)) {
             // If no changes, return the existing profile response
-            return new UserUpdateProfileResponse(
-                    user.getFirstName(),
-                    user.getLastName(),
-                    user.getEmail(),
-                    user.getPhoneNumber()
-            );
+            return this.convertToUserUpdateProfileResponse(user);
         }
         validatePhoneNumber(userData.getPhoneNumber());
 
@@ -169,13 +135,7 @@ public class UserServiceImpl implements UserService {
 
         userRepository.save(user);
 
-        UserUpdateProfileResponse userResponse = new UserUpdateProfileResponse(
-                user.getFirstName(),
-                user.getLastName(),
-                user.getEmail(),
-                user.getPhoneNumber()
-        );
-        return userResponse;
+        return this.convertToUserUpdateProfileResponse(user);
     }
 
     private void validatePhoneNumber(String phoneNumber) {
@@ -187,7 +147,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-//    Helped method to check if the provided newly provided userData is unchanged
+//    Helper method to check if the provided newly provided userData is unchanged
     private boolean isUserDataUnchanged(User user, UserUpdateProfileResponse userData) {
         return Objects.equals(userData.getFirstName(), user.getFirstName()) &&
                 Objects.equals(userData.getLastName(), user.getLastName()) &&

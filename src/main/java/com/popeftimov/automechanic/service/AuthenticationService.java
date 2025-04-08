@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 public interface AuthenticationService {
     ResponseEntity<Void> signUp(SignUpUserRequest request);
     void authenticate(AuthenticationRequest request, HttpServletResponse response);
-    String requestPasswordReset(String email);
+    void requestPasswordReset(String email);
     void resetUserPassword(String email, String token, String newPassword, String repeatNewPassword);
     void logout(HttpServletResponse response);
 }

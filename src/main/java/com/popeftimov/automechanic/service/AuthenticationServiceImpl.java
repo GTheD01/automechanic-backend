@@ -6,6 +6,7 @@ import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationToken
 import com.popeftimov.automechanic.exception.signup.SignUpExceptions;
 import com.popeftimov.automechanic.exception.user.UserExceptions;
 import com.popeftimov.automechanic.model.ConfirmationToken;
+import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.model.UserRole;
 import com.popeftimov.automechanic.repository.UserRepository;
@@ -20,6 +21,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final EmailValidator emailValidator;
     private final PasswordValidator passwordValidator;
     private final PasswordResetTokenService passwordResetTokenService;
-    private final UserService userService;
     private final EmailService emailService;
 
     @Transactional
@@ -106,12 +107,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
-    public String requestPasswordReset(String email) {
+    public void requestPasswordReset(String email) {
         if (!emailValidator.test(email)) {
             throw new UserExceptions.InvalidEmailException();
         }
-
-        return passwordResetTokenService.generatePasswordResetToken(email);
+        passwordResetTokenService.generatePasswordResetToken(email);
     }
 
     @Override
@@ -130,7 +130,19 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new UserExceptions.PasswordDoNotMatchException();
         }
 
-        userService.resetPassword(email, token, newPassword, repeatNewPassword);
+        PasswordResetToken passwordResetToken = passwordResetTokenService.getPasswordResetToken(token);
+
+        if (passwordResetToken == null) {
+            return;
+        }
+
+        User user = passwordResetToken.getUser();
+
+        String encryptedPassword = passwordEncoder.encode(newPassword);
+        user.setPassword(encryptedPassword);
+
+        userRepository.save(user);
+        passwordResetTokenService.deletePasswordResetToken(passwordResetToken);
     }
 
     @Override
@@ -153,14 +165,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void authenticate(AuthenticationRequest request, HttpServletResponse response) {
-        authenticationManager.authenticate(
+        var authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
                         request.getPassword()
                 )
         );
 
-        var user = userService.loadUser(request.getEmail());
+        var user = (UserDetails) authenticate.getPrincipal();
         var accessToken = jwtService.generateAccessToken(user);
 
         var refreshToken = jwtService.generateRefreshToken(user);

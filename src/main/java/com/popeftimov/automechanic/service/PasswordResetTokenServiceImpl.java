@@ -19,8 +19,24 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
     private final EmailService emailService;
 
     @Override
-    public String generatePasswordResetToken(String email) {
-        User user = userService.loadUser(email);
+    public PasswordResetToken getPasswordResetToken(String token) {
+        return passwordResetTokenRepository.findByToken(token).orElse(null);
+    }
+
+    @Override
+    public void deletePasswordResetToken(PasswordResetToken passwordResetToken) {
+        passwordResetTokenRepository.deleteByToken(passwordResetToken);
+    }
+
+    @Override
+    public void generatePasswordResetToken(String email) {
+        Optional<User> userOptional = userService.findOptionalUserByEmail(email);
+
+        if (userOptional.isEmpty()) {
+            return;
+        }
+
+        User user = userOptional.get();
 
         this.deleteAllPasswordResetTokensOfUser(user);
 
@@ -36,19 +52,18 @@ public class PasswordResetTokenServiceImpl implements PasswordResetTokenService{
         passwordResetTokenRepository.save(passwordResetToken);
 
         emailService.sendPasswordResetEmail(email, token);
-
-        return token;
     }
 
     @Override
     public boolean validatePasswordResetToken(String email, String token) {
-        User user = userService.loadUser(email);
+        Optional<User> userOptional = userService.findOptionalUserByEmail(email);
         Optional<PasswordResetToken> passwordResetToken = passwordResetTokenRepository.findByToken(token);
 
-        if (passwordResetToken.isEmpty()){
+        if (passwordResetToken.isEmpty() || userOptional.isEmpty()) {
             return false;
         }
 
+        User user = userOptional.get();
         User tokenUser = passwordResetToken.get().getUser();
 
         if (!user.equals(tokenUser)) {
