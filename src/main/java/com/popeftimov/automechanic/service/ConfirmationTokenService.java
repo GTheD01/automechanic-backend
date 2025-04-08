@@ -1,7 +1,6 @@
 package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.exception.confirmationtoken.ConfirmationTokenExceptions;
-import com.popeftimov.automechanic.dto.ConfirmationTokenResponse;
 import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.repository.ConfirmationTokenRepository;
 import jakarta.transaction.Transactional;
@@ -27,17 +26,17 @@ public class ConfirmationTokenService {
         return confirmationTokenRepository.findByToken(token);
     }
 
-    public int setConfirmedAt(String token) {
-        return confirmationTokenRepository.updateConfirmedAt(
+    public void setConfirmedAt(String token) {
+        confirmationTokenRepository.updateConfirmedAt(
                 token,
                 LocalDateTime.now()
         );
     }
 
     @Transactional
-    public ResponseEntity<ConfirmationTokenResponse> confirmToken(String token) {
+    public ResponseEntity<Void> confirmToken(String token) {
         ConfirmationToken confirmationToken = getToken(token)
-                .orElseThrow(ConfirmationTokenExceptions.TokenNotFound::new);
+                .orElseThrow(ConfirmationTokenExceptions.TokenInvalidExpired::new);
 
         if (confirmationToken.getConfirmedAt() != null) {
             throw new ConfirmationTokenExceptions.EmailAlreadyConfirmed();
@@ -49,12 +48,9 @@ public class ConfirmationTokenService {
             throw new ConfirmationTokenExceptions.TokenInvalidExpired();
         }
 
-        setConfirmedAt(token);
+        this.setConfirmedAt(token);
         userService.enableUser(confirmationToken.getUser().getEmail());
 
-        ConfirmationTokenResponse confirmationTokenResponse =
-                new ConfirmationTokenResponse("Successfully confirmed. You can log in now.");
-
-        return  ResponseEntity.ok().body(confirmationTokenResponse);
+        return ResponseEntity.ok().build();
     }
 }

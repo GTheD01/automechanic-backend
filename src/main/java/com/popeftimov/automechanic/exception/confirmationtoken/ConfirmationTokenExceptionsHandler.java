@@ -21,7 +21,7 @@ public class ConfirmationTokenExceptionsHandler {
     }
 
     @ExceptionHandler(ConfirmationTokenExceptions.TokenInvalidExpired.class)
-    public ResponseEntity<ApiError> handleTokenExpired(ConfirmationTokenExceptions.TokenInvalidExpired ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleTokenInvalidExpired(ConfirmationTokenExceptions.TokenInvalidExpired ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -30,16 +30,4 @@ public class ConfirmationTokenExceptionsHandler {
         );
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
-
-    @ExceptionHandler(ConfirmationTokenExceptions.TokenNotFound.class)
-    public ResponseEntity<ApiError> handleTokenExpired(ConfirmationTokenExceptions.TokenNotFound ex, HttpServletRequest request) {
-        ApiError apiError = new ApiError(
-                HttpStatus.BAD_REQUEST.value(),
-                "BAD REQUEST",
-                ex.getMessage(),
-                request.getRequestURI()
-        );
-        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
-    }
-
 }

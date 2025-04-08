@@ -12,10 +12,4 @@ public class ConfirmationTokenExceptions {
             super("Invalid or expired token");
         }
     }
-
-    public static class TokenNotFound extends RuntimeException {
-        public TokenNotFound() {
-            super("Token not found");
-        }
-    }
 }
