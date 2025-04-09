@@ -2,6 +2,7 @@ package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.exception.car.CarExceptions;
+import com.popeftimov.automechanic.exception.user.UserExceptions;
 import com.popeftimov.automechanic.model.*;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import com.popeftimov.automechanic.repository.CarModelRepository;
@@ -68,12 +69,11 @@ public class CarService {
         car.setVersion(version);
         carRepository.save(car);
         CarResponse carResponse = this.convertCarToCarResponse(car);
-        return ResponseEntity.ok(carResponse);
+        return ResponseEntity.status(HttpStatus.CREATED).body(carResponse);
     }
 
     public ResponseEntity<List<CarResponse>> getUserCars(Long userId) {
-        User user = userService.loadUser
-(userId);
+        User user = userService.loadUser(userId);
         List<Car> userCars = user.getCars();
         List<CarResponse> userCarsResponse = userCars.stream().map(this::convertCarToCarResponse).toList();
 
@@ -88,7 +88,7 @@ public class CarService {
         return ResponseEntity.ok(userCarsResponse);
     }
 
-    public ResponseEntity<?> updateCar(Long carId, CarRequest carRequest) {
+    public ResponseEntity<CarResponse> updateCar(Long carId, CarRequest carRequest) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
@@ -96,7 +96,7 @@ public class CarService {
         User user = userService.loadUser(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            throw new UserExceptions.PermissionDeniedException();
         }
 
         String brandName = carRequest.getBrandName();
@@ -125,7 +125,7 @@ public class CarService {
         return ResponseEntity.ok(carResponse);
     }
 
-    public ResponseEntity<?> deleteCar(Long carId) {
+    public ResponseEntity<Void> deleteCar(Long carId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
@@ -133,7 +133,7 @@ public class CarService {
         User user = userService.loadUser(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            throw new UserExceptions.PermissionDeniedException();
         }
 
         carRepository.delete(car);
@@ -141,7 +141,7 @@ public class CarService {
         return ResponseEntity.noContent().build();
     }
 
-    public ResponseEntity<?> getCar(Long carId) {
+    public ResponseEntity<CarResponse> getCar(Long carId) {
         Car car = carRepository.findById(carId)
                 .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
 
@@ -149,7 +149,7 @@ public class CarService {
         User user = userService.loadUser(email);
 
         if (PermissionUtils.notOwnerOrAdmin(user, car)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("Permission denied");
+            throw new UserExceptions.PermissionDeniedException();
         }
 
         CarBrandResponse carBrandResponse = carBrandService.convertCarBrandToCarBrandResponse(car.getBrand());

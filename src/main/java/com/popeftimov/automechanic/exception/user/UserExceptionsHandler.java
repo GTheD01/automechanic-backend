@@ -77,4 +77,15 @@ public class UserExceptionsHandler {
         );
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(UserExceptions.PermissionDeniedException.class)
+    public ResponseEntity<ApiError> handlePermissionDeniedException(UserExceptions.PermissionDeniedException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.FORBIDDEN.value(),
+                "FORBIDDEN",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.FORBIDDEN);
+    }
 }

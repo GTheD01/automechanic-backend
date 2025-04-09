@@ -12,7 +12,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class CarModelService {
         );
     }
 
-    public ResponseEntity<CarModelResponse> createCarBrandModel(@PathVariable String brandName, String modelName) {
+    public ResponseEntity<CarModelResponse> createCarBrandModel(String brandName, String modelName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
             throw new CarExceptions.CarBrandNotFound();
@@ -53,6 +52,10 @@ public class CarModelService {
 
         CarBrand carBrand = carBrandRepository.findByName(brandName);
 
+        if (carBrand == null) {
+            throw new CarExceptions.CarBrandNotFound();
+        }
+
         return carModelRepository.findByBrand(carBrand)
                 .stream().map(this::convertCarModelToCarModelResponse)
                 .toList();
@@ -63,7 +66,7 @@ public class CarModelService {
         return carModelList.map(this::convertCarModelToCarModelResponse);
     }
 
-    public ResponseEntity<?> deleteCarModel(String modelName) {
+    public ResponseEntity<Void> deleteCarModel(String modelName) {
         CarModel carModel = carModelRepository.findByName(modelName);
         if (carModel == null) {
             throw new CarExceptions.CarModelNotFound();

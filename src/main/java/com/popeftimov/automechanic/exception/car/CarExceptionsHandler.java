@@ -61,8 +61,8 @@ public class CarExceptionsHandler {
     @ExceptionHandler(CarExceptions.CarBrandExists.class)
     public ResponseEntity<ApiError> handleCarBrandExists(CarExceptions.CarBrandExists ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
-                HttpStatus.CONFLICT.value(),
-                "CONFLICT",
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
                 ex.getMessage(),
                 request.getRequestURI()
         );
@@ -73,8 +73,19 @@ public class CarExceptionsHandler {
     @ExceptionHandler(CarExceptions.CarModelExists.class)
     public ResponseEntity<ApiError> handleCarModelExists(CarExceptions.CarModelExists ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
-                HttpStatus.CONFLICT.value(),
-                "CONFLICT",
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler(CarExceptions.CarBrandNotProvided.class)
+    public ResponseEntity<ApiError> handleCarBrandNotProvided(CarExceptions.CarBrandNotProvided ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
                 ex.getMessage(),
                 request.getRequestURI()
         );

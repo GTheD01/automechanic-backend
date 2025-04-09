@@ -11,6 +11,6 @@ public class PermissionUtils {
 
         boolean isAdmin = user.getUserRole() == UserRole.ADMIN;
 
-        return !isOwner && !isAdmin;
+        return !(isOwner || isAdmin);
     }
 }

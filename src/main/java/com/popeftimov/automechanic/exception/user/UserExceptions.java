@@ -8,6 +8,12 @@ public class UserExceptions {
         }
     }
 
+    public static class PermissionDeniedException extends RuntimeException {
+        public PermissionDeniedException() {
+            super("Permission denied");
+        }
+    }
+
     public static class InvalidPhoneNumber extends RuntimeException {
         public InvalidPhoneNumber() {
             super("Invalid phone number.");

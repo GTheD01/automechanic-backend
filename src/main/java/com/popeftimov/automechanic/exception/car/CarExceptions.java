@@ -37,4 +37,10 @@ public class CarExceptions {
             super("Car Model with name: " + modelName + " already exists");
         }
     }
+
+    public static class CarBrandNotProvided  extends RuntimeException {
+        public CarBrandNotProvided() {
+            super("Car Brand must be provided.");
+        }
+    }
 }

@@ -7,6 +7,7 @@ import com.popeftimov.automechanic.repository.CarBrandRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class CarBrandService {
 
     public ResponseEntity<CarBrandResponse> createCarBrand(String brandName) {
         if (brandName == null || brandName.isEmpty()) {
-            return ResponseEntity.badRequest().build();
+            throw new CarExceptions.CarBrandNotProvided();
         }
         CarBrand existingCarBrand = carBrandRepository.findByName(brandName);
         if (existingCarBrand != null) {
@@ -49,7 +50,8 @@ public class CarBrandService {
         CarBrand carBrand = new CarBrand(brandName);
         carBrandRepository.save(carBrand);
         CarBrandResponse carBrandResponse = this.convertCarBrandToCarBrandResponse(carBrand);
-        return ResponseEntity.ok(carBrandResponse);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(carBrandResponse);
     }
 
     public void deleteCarBrand(String brandName) {
