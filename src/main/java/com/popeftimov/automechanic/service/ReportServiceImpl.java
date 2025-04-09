@@ -13,8 +13,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 public class ReportServiceImpl implements ReportService{
@@ -28,7 +26,7 @@ public class ReportServiceImpl implements ReportService{
                 report.getId(),
                 report.getDescription(),
                 report.getAnswer(),
-                report.getReportType().toString(),
+                report.getReportType(),
                 report.getCreatedAt(),
                 userResponse
         );
@@ -37,9 +35,8 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public Page<ReportDTO> getAllReports(Pageable pageable) {
         Page<Report> reports = reportRepository.findAll(pageable);
-        Page<ReportDTO> reportDTOS = reports.map(this::convertReportToReportDTO);
 
-        return reportDTOS;
+        return reports.map(this::convertReportToReportDTO);
     }
 
     @Override
@@ -47,19 +44,7 @@ public class ReportServiceImpl implements ReportService{
         String description = reportData.getDescription();
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-
-        String reportTypeString = reportData.getReportType();
-
-        if (reportTypeString == null) {
-            throw new ReportExceptions.ReportTypeNotProvided();
-        }
-
-        ReportType reportType;
-        try {
-            reportType = ReportType.valueOf(reportTypeString.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new ReportExceptions.InvalidReportTypeException();
-        }
+        ReportType reportType = reportData.getReportType();
 
         if (description == null || description.trim().isEmpty()) {
             throw new ReportExceptions.InvalidReportDescriptionException();
@@ -78,8 +63,7 @@ public class ReportServiceImpl implements ReportService{
     public Page<ReportDTO> getLoggedInUserReports(Pageable pageable) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Page<Report> reportList = reportRepository.findByUser(user, pageable);
-        Page<ReportDTO> reportDTOS = reportList.map(this::convertReportToReportDTO);
-        return reportDTOS;
+        return reportList.map(this::convertReportToReportDTO);
     }
 
     @Override
@@ -108,7 +92,6 @@ public class ReportServiceImpl implements ReportService{
     public Page<ReportDTO> getUserReports(Long userId, Pageable pageable) {
         User user = userService.loadUser(userId);
         Page<Report> userReports = reportRepository.findByUser(user, pageable);
-        Page<ReportDTO> userReportsDTOs = userReports.map(this::convertReportToReportDTO);
-        return userReportsDTOs;
+        return userReports.map(this::convertReportToReportDTO);
     }
 }

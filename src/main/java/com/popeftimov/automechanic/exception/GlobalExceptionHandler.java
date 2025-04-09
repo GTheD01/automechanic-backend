@@ -20,4 +20,15 @@ public class GlobalExceptionHandler {
         );
         return new ResponseEntity<>(apiError, HttpStatus.METHOD_NOT_ALLOWED);
     }
+
+    @ExceptionHandler(GlobalException.InvalidEnumValueException.class)
+    public ResponseEntity<ApiError> handleInvalidEnumValue(GlobalException.InvalidEnumValueException ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }
