@@ -41,23 +41,11 @@ public class AppointmentServiceImpl implements AppointmentService {
                 () -> new AppointmentExceptions.AppointmentNotFound(appointmentId)
         );
 
-        String appointmentStatusString = appointmentUpdateRequest.getAppointmentStatus();
-
-        if (appointmentStatusString == null) {
-            throw new AppointmentExceptions.AppointmentInvalidStatus();
-        }
-
-        AppointmentStatus appointmentStatus;
-        try {
-            appointmentStatus = AppointmentStatus.valueOf(appointmentStatusString.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new AppointmentExceptions.AppointmentInvalidStatus();
-        }
+        AppointmentStatus appointmentStatus = appointmentUpdateRequest.getAppointmentStatus();
 
         appointment.setAppointmentStatus(appointmentStatus);
         appointmentRepository.save(appointment);
-        AppointmentResponse appointmentResponse = convertToAppointmentResponse(appointment);
-        return appointmentResponse;
+        return convertToAppointmentResponse(appointment);
     }
 
     @Override
@@ -65,9 +53,8 @@ public class AppointmentServiceImpl implements AppointmentService {
         User user = userService.loadUser
 (userId);
         Page<Appointment> userAppointments = appointmentRepository.findByUserOrderByAppointmentDateAscAppointmentTimeAsc(user, pageable);
-        Page<AppointmentResponse> userAppointmentsResponse = userAppointments
+        return userAppointments
                 .map(this::convertToAppointmentResponse);
-        return userAppointmentsResponse;
     }
 
     @Override
