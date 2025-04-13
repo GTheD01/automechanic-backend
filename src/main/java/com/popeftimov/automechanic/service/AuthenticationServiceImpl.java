@@ -9,7 +9,6 @@ import com.popeftimov.automechanic.model.ConfirmationToken;
 import com.popeftimov.automechanic.model.PasswordResetToken;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.model.UserRole;
-import com.popeftimov.automechanic.repository.UserRepository;
 import com.popeftimov.automechanic.security.JwtService;
 import com.popeftimov.automechanic.validator.EmailValidator;
 import com.popeftimov.automechanic.validator.PasswordValidator;
@@ -28,12 +27,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationServiceImpl implements AuthenticationService {
-    private final UserRepository userRepository;
+    private final UserService userService;
     private final ConfirmationTokenService confirmationTokenService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -64,11 +64,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             throw new UserExceptions.PasswordDoNotMatchException();
         }
 
-        boolean userExists = userRepository
-                .findByEmail(request.getEmail())
-                .isPresent();
+        Optional<User> userOptional = userService.findOptionalUserByEmail(request.getEmail());
 
-        if (userExists) {
+        if (userOptional.isPresent()) {
             throw new UserExceptions.EmailAlreadyTakenException();
         }
 
@@ -85,7 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         user.setPassword(encodedPassword);
 
         try {
-            userRepository.save(user);
+            userService.saveUser(user);
 
             String token = UUID.randomUUID().toString();
 
@@ -141,7 +139,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         String encryptedPassword = passwordEncoder.encode(newPassword);
         user.setPassword(encryptedPassword);
 
-        userRepository.save(user);
+        userService.saveUser(user);
         passwordResetTokenService.deletePasswordResetToken(passwordResetToken);
     }
 

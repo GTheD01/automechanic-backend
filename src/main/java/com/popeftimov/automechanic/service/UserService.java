@@ -22,6 +22,7 @@ public interface UserService {
     UserUpdateProfileResponse updateUserProfileById(Long userId, UserUpdateProfileResponse userData);
     UserUpdateProfileResponse updateLoggedInUserProfile(User user, UserUpdateProfileResponse userData);
     Page<UserResponse> getAllUsers(String name, Boolean hasCars, Boolean hasAppointments, Pageable pageable);
+    void saveUser(User user);
     void deleteUser(User user);
     void deleteUserById(Long userId);
 }
