@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Data
 @NoArgsConstructor
@@ -13,4 +15,5 @@ public class AdminDashboardDataDTO {
     private Long totalCars;
     private AppointmentResponse upcomingAppointment;
     private Long totalReports;
+    private List<AppointmentsPerYearDTO> appointmentsPerYear;
 }

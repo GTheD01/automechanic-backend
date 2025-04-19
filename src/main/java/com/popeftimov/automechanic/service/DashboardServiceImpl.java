@@ -2,6 +2,7 @@ package com.popeftimov.automechanic.service;
 
 import com.popeftimov.automechanic.dto.AdminDashboardDataDTO;
 import com.popeftimov.automechanic.dto.AppointmentResponse;
+import com.popeftimov.automechanic.dto.AppointmentsPerYearDTO;
 import com.popeftimov.automechanic.dto.UserDashboardDataDTO;
 import com.popeftimov.automechanic.model.Appointment;
 import com.popeftimov.automechanic.model.User;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -28,14 +30,15 @@ public class DashboardServiceImpl implements DashboardService {
         Long totalCars = carRepository.count();
         Optional<Appointment> upcomingAppointmentOpt = appointmentRepository.findFirstByOrderByAppointmentDateAscAppointmentTimeAsc();
         Long totalReports = reportRepository.count();
+        List<AppointmentsPerYearDTO> appointmentsPerYear = appointmentRepository.countAppointmentsPerYear();
 
         if (upcomingAppointmentOpt.isEmpty()) {
-            return new AdminDashboardDataDTO(totalAppointments, totalCars, null, totalReports);
+            return new AdminDashboardDataDTO(totalAppointments, totalCars, null, totalReports, appointmentsPerYear);
         }
 
         Appointment upcomingAppointment = upcomingAppointmentOpt.get();
         AppointmentResponse appointmentResponse = appointmentService.convertToAppointmentResponse(upcomingAppointment);
-        return new AdminDashboardDataDTO(totalAppointments,totalCars, appointmentResponse, totalReports);
+        return new AdminDashboardDataDTO(totalAppointments,totalCars, appointmentResponse, totalReports, appointmentsPerYear);
     }
 
     @Override
