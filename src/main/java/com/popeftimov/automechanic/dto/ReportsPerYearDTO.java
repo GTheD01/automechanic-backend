@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AppointmentsPerYearDTO {
+public class ReportsPerYearDTO {
     private Integer year;
-    private Long appointmentsCount;
+    private Long reportsCount;
 }

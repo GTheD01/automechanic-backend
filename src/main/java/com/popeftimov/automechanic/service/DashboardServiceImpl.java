@@ -1,9 +1,6 @@
 package com.popeftimov.automechanic.service;
 
-import com.popeftimov.automechanic.dto.AdminDashboardDataDTO;
-import com.popeftimov.automechanic.dto.AppointmentResponse;
-import com.popeftimov.automechanic.dto.AppointmentsPerYearDTO;
-import com.popeftimov.automechanic.dto.UserDashboardDataDTO;
+import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.model.Appointment;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.AppointmentRepository;
@@ -25,20 +22,21 @@ public class DashboardServiceImpl implements DashboardService {
     private final CarRepository carRepository;
     private final ReportRepository reportRepository;
 
+    @Override
     public AdminDashboardDataDTO getAdminDashboardData() {
         Long totalAppointments = appointmentRepository.count();
         Long totalCars = carRepository.count();
         Optional<Appointment> upcomingAppointmentOpt = appointmentRepository.findFirstByOrderByAppointmentDateAscAppointmentTimeAsc();
         Long totalReports = reportRepository.count();
         List<AppointmentsPerYearDTO> appointmentsPerYear = appointmentRepository.countAppointmentsPerYear();
-
+        List<ReportsPerYearDTO> reportsPerYear = reportRepository.countReportsPerYear();
         if (upcomingAppointmentOpt.isEmpty()) {
-            return new AdminDashboardDataDTO(totalAppointments, totalCars, null, totalReports, appointmentsPerYear);
+            return new AdminDashboardDataDTO(totalAppointments, totalCars, null, totalReports, appointmentsPerYear, reportsPerYear);
         }
 
         Appointment upcomingAppointment = upcomingAppointmentOpt.get();
         AppointmentResponse appointmentResponse = appointmentService.convertToAppointmentResponse(upcomingAppointment);
-        return new AdminDashboardDataDTO(totalAppointments,totalCars, appointmentResponse, totalReports, appointmentsPerYear);
+        return new AdminDashboardDataDTO(totalAppointments,totalCars, appointmentResponse, totalReports, appointmentsPerYear, reportsPerYear);
     }
 
     @Override

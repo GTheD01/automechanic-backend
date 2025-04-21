@@ -22,7 +22,6 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long>,
     Optional<Appointment> findFirstByOrderByAppointmentDateAscAppointmentTimeAsc();
     Optional<Appointment> findFirstByUserOrderByAppointmentDateAscAppointmentTimeAsc(User user);
 
-
     @Query("SELECT new com.popeftimov.automechanic.dto.AppointmentsPerYearDTO(" +
             "EXTRACT(YEAR FROM a.appointmentDate), COUNT(a)) " +
             "FROM Appointment a " +

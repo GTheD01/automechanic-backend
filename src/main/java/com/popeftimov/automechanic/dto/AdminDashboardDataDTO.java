@@ -15,5 +15,6 @@ public class AdminDashboardDataDTO {
     private Long totalCars;
     private AppointmentResponse upcomingAppointment;
     private Long totalReports;
-    private List<AppointmentsPerYearDTO> appointmentsPerYear;
+    private List<AppointmentsPerYearDTO> appointmentsPerYearCount;
+    private List<ReportsPerYearDTO> reportsPerYearCount;
 }
