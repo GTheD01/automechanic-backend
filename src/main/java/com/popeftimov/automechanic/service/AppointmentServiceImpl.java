@@ -7,7 +7,6 @@ import com.popeftimov.automechanic.model.AppointmentStatus;
 import com.popeftimov.automechanic.model.Car;
 import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.AppointmentRepository;
-import com.popeftimov.automechanic.repository.CarRepository;
 import com.popeftimov.automechanic.specifications.AppointmentSpecification;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -28,7 +27,6 @@ public class AppointmentServiceImpl implements AppointmentService {
     private final AppointmentRepository appointmentRepository;
     private final UserService userService;
     private final CarService carService;
-    private final CarRepository carRepository;
 
     @Override
     public boolean isAppointmentAtTimeExists(LocalDate appointmentDate, LocalTime appointmentTime) {
@@ -70,9 +68,7 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AppointmentExceptions.AppointmentAtDateTimeExists();
         }
 
-        Car userCar = carRepository.findById(appointment.getCarId()).orElseThrow(
-                AppointmentExceptions.AppointmentNoCarSelected::new
-        );
+        Car userCar = carService.findCar(appointment.getCarId());
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.loadUser(email);

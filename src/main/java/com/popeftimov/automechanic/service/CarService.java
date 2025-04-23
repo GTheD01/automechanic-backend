@@ -3,7 +3,10 @@ package com.popeftimov.automechanic.service;
 import com.popeftimov.automechanic.dto.*;
 import com.popeftimov.automechanic.exception.car.CarExceptions;
 import com.popeftimov.automechanic.exception.user.UserExceptions;
-import com.popeftimov.automechanic.model.*;
+import com.popeftimov.automechanic.model.Car;
+import com.popeftimov.automechanic.model.CarBrand;
+import com.popeftimov.automechanic.model.CarModel;
+import com.popeftimov.automechanic.model.User;
 import com.popeftimov.automechanic.repository.CarBrandRepository;
 import com.popeftimov.automechanic.repository.CarModelRepository;
 import com.popeftimov.automechanic.repository.CarRepository;
@@ -27,6 +30,11 @@ public class CarService {
     private final CarBrandService carBrandService;
     private final CarModelService carModelService;
     private final UserService userService;
+
+    public Car findCar(Long carId) {
+        return carRepository.findById(carId)
+                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+    }
 
     public CarResponse convertCarToCarResponse(Car car) {
         CarBrandResponse carBrandResponse = carBrandService.convertCarBrandToCarBrandResponse(car.getBrand());
