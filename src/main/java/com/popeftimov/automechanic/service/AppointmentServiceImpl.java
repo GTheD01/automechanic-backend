@@ -68,6 +68,10 @@ public class AppointmentServiceImpl implements AppointmentService {
             throw new AppointmentExceptions.AppointmentAtDateTimeExists();
         }
 
+        if (appointment.getCarId() == null) {
+            throw new AppointmentExceptions.AppointmentNoCarSelected();
+        }
+
         Car userCar = carService.findCar(appointment.getCarId());
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();

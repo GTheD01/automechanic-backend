@@ -21,4 +21,10 @@ public class AppointmentExceptions {
     public static class AppointmentInvalidStatus extends RuntimeException {
         public AppointmentInvalidStatus() { super("Invalid appointment status"); }
     }
+
+    public static class AppointmentNoCarSelected extends RuntimeException {
+        public AppointmentNoCarSelected() {
+            super("No car selected.");
+        }
+    }
 }

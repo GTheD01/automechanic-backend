@@ -78,6 +78,13 @@ public class AppointmentController {
                             mediaType = "application/json",
                             schema = @Schema(implementation = ApiError.class)
                     )
+            ),
+            @ApiResponse(responseCode = "404",
+                    description = "Not Found - The specified car was not found.",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ApiError.class)
+                    )
             )
     })
     @PostMapping("/appointments")

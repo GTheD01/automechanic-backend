@@ -55,4 +55,16 @@ public class AppointmentExceptionHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(AppointmentExceptions.AppointmentNoCarSelected.class)
+    public ResponseEntity<ApiError> handleAppointmentNoCarSelected(AppointmentExceptions.AppointmentNoCarSelected ex, HttpServletRequest request) {
+        ApiError apiError = new ApiError(
+                HttpStatus.BAD_REQUEST.value(),
+                "BAD REQUEST",
+                ex.getMessage(),
+                request.getRequestURI()
+        );
+
+        return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
+    }
 }
