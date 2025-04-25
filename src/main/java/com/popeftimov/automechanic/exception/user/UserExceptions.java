@@ -14,8 +14,8 @@ public class UserExceptions {
         }
     }
 
-    public static class InvalidPhoneNumber extends RuntimeException {
-        public InvalidPhoneNumber() {
+    public static class InvalidPhoneNumberException extends RuntimeException {
+        public InvalidPhoneNumberException() {
             super("Invalid phone number.");
         }
     }

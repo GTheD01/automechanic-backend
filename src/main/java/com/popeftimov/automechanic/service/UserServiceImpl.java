@@ -147,7 +147,7 @@ public class UserServiceImpl implements UserService {
         if (phoneNumber != null && !phoneNumber.isEmpty()) {
             boolean isValidPhone = userPhoneNumberValidator.test(phoneNumber);
             if (!isValidPhone) {
-                throw new UserExceptions.InvalidPhoneNumber();
+                throw new UserExceptions.InvalidPhoneNumberException();
             }
         }
     }

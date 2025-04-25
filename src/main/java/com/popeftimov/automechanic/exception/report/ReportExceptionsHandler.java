@@ -22,8 +22,8 @@ public class ReportExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ReportExceptions.ReportNotFound.class)
-    public ResponseEntity<ApiError> handleReportNotFound(ReportExceptions.ReportNotFound ex, HttpServletRequest request) {
+    @ExceptionHandler(ReportExceptions.ReportNotFoundException.class)
+    public ResponseEntity<ApiError> handleReportNotFoundException(ReportExceptions.ReportNotFoundException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.NOT_FOUND.value(),
                 "NOT FOUND",
@@ -35,7 +35,7 @@ public class ReportExceptionsHandler {
     }
 
     @ExceptionHandler(ReportExceptions.InvalidReportTypeException.class)
-    public ResponseEntity<ApiError> handleInvalidReportType(ReportExceptions.InvalidReportTypeException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleInvalidReportTypeException(ReportExceptions.InvalidReportTypeException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -46,8 +46,8 @@ public class ReportExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ReportExceptions.ReportTypeNotProvided.class)
-    public ResponseEntity<ApiError> handleInvalidReportType(ReportExceptions.ReportTypeNotProvided ex, HttpServletRequest request) {
+    @ExceptionHandler(ReportExceptions.ReportTypeNotProvidedException.class)
+    public ResponseEntity<ApiError> handleInvalidReportTypeException(ReportExceptions.ReportTypeNotProvidedException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -58,8 +58,8 @@ public class ReportExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ReportExceptions.ReportAlreadyAnswered.class)
-    public ResponseEntity<ApiError> handleReportAlreadyAnswered(ReportExceptions.ReportAlreadyAnswered ex, HttpServletRequest request) {
+    @ExceptionHandler(ReportExceptions.ReportAlreadyAnsweredException.class)
+    public ResponseEntity<ApiError> handleReportAlreadyAnsweredException(ReportExceptions.ReportAlreadyAnsweredException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",

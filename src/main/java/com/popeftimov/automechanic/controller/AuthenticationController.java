@@ -197,7 +197,7 @@ public class AuthenticationController {
         String refreshToken = jwtService.getRefreshTokenFromCookies(request);
 
         if (refreshToken == null) {
-            throw new AuthenticationExceptions.InvalidOrExpiredRefreshToken();
+            throw new AuthenticationExceptions.InvalidOrExpiredRefreshTokenException();
         }
 
         String userEmail = jwtService.extractUsername(refreshToken);
@@ -210,7 +210,7 @@ public class AuthenticationController {
 
             jwtService.addJwtCookiesToResponse(response, newAccessToken, newRefreshToken);
         } else {
-            throw new AuthenticationExceptions.InvalidOrExpiredRefreshToken();
+            throw new AuthenticationExceptions.InvalidOrExpiredRefreshTokenException();
         };
     }
 
@@ -246,7 +246,7 @@ public class AuthenticationController {
         String accessToken = jwtService.getAccessTokenFromCookies(request);
         boolean tokenIsValid = jwtService.isTokenValid(accessToken, userDetails);
         if (!tokenIsValid) {
-            throw new AuthenticationExceptions.InvalidOrExpiredAccessToken();
+            throw new AuthenticationExceptions.InvalidOrExpiredAccessTokenException();
         }
 
         return ResponseEntity.ok().build();

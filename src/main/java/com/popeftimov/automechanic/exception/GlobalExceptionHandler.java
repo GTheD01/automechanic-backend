@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
-    public ResponseEntity<ApiError> handleMethodNotAllowed(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleMethodNotAllowedException(HttpRequestMethodNotSupportedException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.METHOD_NOT_ALLOWED.value(),
                 "METHOD NOT ALLOWED",
@@ -22,7 +22,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(GlobalException.InvalidEnumValueException.class)
-    public ResponseEntity<ApiError> handleInvalidEnumValue(GlobalException.InvalidEnumValueException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleInvalidEnumValueException(GlobalException.InvalidEnumValueException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",

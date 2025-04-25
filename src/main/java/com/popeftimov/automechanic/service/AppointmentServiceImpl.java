@@ -36,7 +36,7 @@ public class AppointmentServiceImpl implements AppointmentService {
     @Override
     public AppointmentResponse updateAppointment(Long appointmentId, AppointmentUpdateRequest appointmentUpdateRequest) {
         Appointment appointment = appointmentRepository.findById(appointmentId).orElseThrow(
-                () -> new AppointmentExceptions.AppointmentNotFound(appointmentId)
+                () -> new AppointmentExceptions.AppointmentNotFoundException(appointmentId)
         );
 
         AppointmentStatus appointmentStatus = appointmentUpdateRequest.getAppointmentStatus();
@@ -60,16 +60,16 @@ public class AppointmentServiceImpl implements AppointmentService {
         LocalDateTime requestedDateTime = LocalDateTime.of(appointment.getAppointmentDate(), appointment.getAppointmentTime());
 
         if (requestedDateTime.isBefore(LocalDateTime.now())) {
-            throw new AppointmentExceptions.AppointmentCannotScheduleInThePast();
+            throw new AppointmentExceptions.AppointmentCannotScheduleInThePastException();
         }
 
         boolean appointmentExists = isAppointmentAtTimeExists(appointment.getAppointmentDate(), appointment.getAppointmentTime());
         if (appointmentExists) {
-            throw new AppointmentExceptions.AppointmentAtDateTimeExists();
+            throw new AppointmentExceptions.AppointmentAtDateTimeExistsException();
         }
 
         if (appointment.getCarId() == null) {
-            throw new AppointmentExceptions.AppointmentNoCarSelected();
+            throw new AppointmentExceptions.AppointmentNoCarSelectedException();
         }
 
         Car userCar = carService.findCar(appointment.getCarId());

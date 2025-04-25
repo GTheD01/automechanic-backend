@@ -40,11 +40,11 @@ public class CarBrandService {
 
     public ResponseEntity<CarBrandResponse> createCarBrand(String brandName) {
         if (brandName == null || brandName.isEmpty()) {
-            throw new CarExceptions.CarBrandNotProvided();
+            throw new CarExceptions.CarBrandNotProvidedException();
         }
         CarBrand existingCarBrand = carBrandRepository.findByName(brandName);
         if (existingCarBrand != null) {
-            throw new CarExceptions.CarBrandExists(brandName);
+            throw new CarExceptions.CarBrandExistsException(brandName);
         }
 
         CarBrand carBrand = new CarBrand(brandName);
@@ -57,7 +57,7 @@ public class CarBrandService {
     public void deleteCarBrand(String brandName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
-            throw new CarExceptions.CarBrandNotFound();
+            throw new CarExceptions.CarBrandNotFoundException();
         }
         carBrandRepository.delete(carBrand);
     }

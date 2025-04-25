@@ -32,12 +32,12 @@ public class CarModelService {
     public ResponseEntity<CarModelResponse> createCarBrandModel(String brandName, String modelName) {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
-            throw new CarExceptions.CarBrandNotFound();
+            throw new CarExceptions.CarBrandNotFoundException();
         }
         CarModel existingCarModel = carModelRepository.findByName(modelName);
 
         if (existingCarModel != null) {
-            throw new CarExceptions.CarModelExists(modelName);
+            throw new CarExceptions.CarModelExistsException(modelName);
         }
 
         CarModel carModel = new CarModel(modelName, carBrand);
@@ -53,7 +53,7 @@ public class CarModelService {
         CarBrand carBrand = carBrandRepository.findByName(brandName);
 
         if (carBrand == null) {
-            throw new CarExceptions.CarBrandNotFound();
+            throw new CarExceptions.CarBrandNotFoundException();
         }
 
         return carModelRepository.findByBrand(carBrand)
@@ -69,7 +69,7 @@ public class CarModelService {
     public ResponseEntity<Void> deleteCarModel(String modelName) {
         CarModel carModel = carModelRepository.findByName(modelName);
         if (carModel == null) {
-            throw new CarExceptions.CarModelNotFound();
+            throw new CarExceptions.CarModelNotFoundException();
         }
         carModelRepository.delete(carModel);
         return ResponseEntity.noContent().build();

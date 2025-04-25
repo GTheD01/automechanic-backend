@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ConfirmationTokenExceptionsHandler {
-    @ExceptionHandler(ConfirmationTokenExceptions.EmailAlreadyConfirmed.class)
-    public ResponseEntity<ApiError> handleEmailAlreadyConfirmed(ConfirmationTokenExceptions.EmailAlreadyConfirmed ex, HttpServletRequest request) {
+    @ExceptionHandler(ConfirmationTokenExceptions.EmailAlreadyConfirmedException.class)
+    public ResponseEntity<ApiError> handleEmailAlreadyConfirmedException(ConfirmationTokenExceptions.EmailAlreadyConfirmedException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -20,8 +20,8 @@ public class ConfirmationTokenExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(ConfirmationTokenExceptions.TokenInvalidExpired.class)
-    public ResponseEntity<ApiError> handleTokenInvalidExpired(ConfirmationTokenExceptions.TokenInvalidExpired ex, HttpServletRequest request) {
+    @ExceptionHandler(ConfirmationTokenExceptions.TokenInvalidExpiredException.class)
+    public ResponseEntity<ApiError> handleTokenInvalidExpiredException(ConfirmationTokenExceptions.TokenInvalidExpiredException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",

@@ -23,7 +23,7 @@ public class AuthenticationExceptionsHandler {
     }
 
     @ExceptionHandler(AuthenticationExceptions.UserNotAuthorizedException.class)
-    public ResponseEntity<ApiError> handleUserNotAuthorized(AuthenticationExceptions.UserNotAuthorizedException ex, HttpServletRequest request) {
+    public ResponseEntity<ApiError> handleUserNotAuthorizedException(AuthenticationExceptions.UserNotAuthorizedException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.UNAUTHORIZED.value(),
                 "UNAUTHORIZED",
@@ -34,9 +34,9 @@ public class AuthenticationExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AuthenticationExceptions.InvalidOrExpiredRefreshToken.class)
-    public ResponseEntity<ApiError> handleInvalidOrExpiredRefreshToken(
-            AuthenticationExceptions.InvalidOrExpiredRefreshToken ex, HttpServletRequest request) {
+    @ExceptionHandler(AuthenticationExceptions.InvalidOrExpiredRefreshTokenException.class)
+    public ResponseEntity<ApiError> handleInvalidOrExpiredRefreshTokenException(
+            AuthenticationExceptions.InvalidOrExpiredRefreshTokenException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.UNAUTHORIZED.value(),
                 "UNAUTHORIZED",
@@ -47,9 +47,9 @@ public class AuthenticationExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.UNAUTHORIZED);
     }
 
-    @ExceptionHandler(AuthenticationExceptions.InvalidOrExpiredAccessToken.class)
-    public ResponseEntity<ApiError> handleInvalidOrExpiredAccessToken(
-            AuthenticationExceptions.InvalidOrExpiredAccessToken ex, HttpServletRequest request) {
+    @ExceptionHandler(AuthenticationExceptions.InvalidOrExpiredAccessTokenException.class)
+    public ResponseEntity<ApiError> handleInvalidOrExpiredAccessTokenException(
+            AuthenticationExceptions.InvalidOrExpiredAccessTokenException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.UNAUTHORIZED.value(),
                 "UNAUTHORIZED",

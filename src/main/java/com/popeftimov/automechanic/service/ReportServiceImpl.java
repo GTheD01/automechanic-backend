@@ -69,10 +69,10 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public ReportDTO answerUserReport(Long reportId, String answer) {
         Report report = reportRepository.findById(reportId).orElseThrow(
-                () -> new ReportExceptions.ReportNotFound(reportId)
+                () -> new ReportExceptions.ReportNotFoundException(reportId)
         );
         if (report.getAnswer() != null) {
-            throw new ReportExceptions.ReportAlreadyAnswered();
+            throw new ReportExceptions.ReportAlreadyAnsweredException();
         }
 
         report.setAnswer(answer);
@@ -83,7 +83,7 @@ public class ReportServiceImpl implements ReportService{
     @Override
     public void deleteUserReport(Long reportId) {
         Report report = reportRepository.findById(reportId).orElseThrow(
-                () -> new ReportExceptions.ReportNotFound(reportId)
+                () -> new ReportExceptions.ReportNotFoundException(reportId)
         );
         reportRepository.delete(report);
     }

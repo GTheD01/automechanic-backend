@@ -106,7 +106,7 @@ class AppointmentServiceImplTest {
 
             AppointmentRequest request = createMockAppointmentRequest(appointmentDate, appointmentTime, 1L);
 
-            assertThrows(AppointmentExceptions.AppointmentCannotScheduleInThePast.class,
+            assertThrows(AppointmentExceptions.AppointmentCannotScheduleInThePastException.class,
                     () -> appointmentService.createAppointment(request));
 
             verifyNoInteractions(appointmentRepository);
@@ -122,7 +122,7 @@ class AppointmentServiceImplTest {
             when(appointmentRepository.existsByAppointmentDateAndAppointmentTime(appointmentDate, appointmentTime))
                     .thenReturn(true);
 
-            assertThrows(AppointmentExceptions.AppointmentAtDateTimeExists.class, () -> appointmentService.createAppointment(request));
+            assertThrows(AppointmentExceptions.AppointmentAtDateTimeExistsException.class, () -> appointmentService.createAppointment(request));
 
             verify(appointmentRepository).existsByAppointmentDateAndAppointmentTime(appointmentDate, appointmentTime);
             verify(appointmentRepository, never()).save(any());
@@ -134,9 +134,9 @@ class AppointmentServiceImplTest {
             LocalTime appointmentTime = LocalTime.of(12, 0);
             AppointmentRequest request = createMockAppointmentRequest(appointmentDate, appointmentTime, 900L);
 
-            when(carService.findCar(900L)).thenThrow(new CarExceptions.CarNotFound(900L));
+            when(carService.findCar(900L)).thenThrow(new CarExceptions.CarNotFoundException(900L));
 
-            assertThrows(CarExceptions.CarNotFound.class, () -> appointmentService.createAppointment(request));
+            assertThrows(CarExceptions.CarNotFoundException.class, () -> appointmentService.createAppointment(request));
 
             verify(carService, times(1)).findCar(900L);
         }

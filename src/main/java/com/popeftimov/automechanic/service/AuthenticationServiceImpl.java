@@ -100,7 +100,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             emailService.sendVerificationEmail(user.getEmail(), link);
             return ResponseEntity.status(HttpStatus.CREATED).build();
         } catch (MessagingException e) {
-            throw new SignUpExceptions.FailedToSendVerificationEmail();
+            throw new SignUpExceptions.FailedToSendVerificationEmailException();
         }
     }
 
@@ -117,7 +117,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         boolean isValidToken = passwordResetTokenService.validatePasswordResetToken(email, token);
 
         if (!isValidToken) {
-            throw new ConfirmationTokenExceptions.TokenInvalidExpired();
+            throw new ConfirmationTokenExceptions.TokenInvalidExpiredException();
         }
 
         if (!passwordValidator.test(newPassword)) {

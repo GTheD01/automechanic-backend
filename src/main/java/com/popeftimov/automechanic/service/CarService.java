@@ -33,7 +33,7 @@ public class CarService {
 
     public Car findCar(Long carId) {
         return carRepository.findById(carId)
-                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+                .orElseThrow(() -> new CarExceptions.CarNotFoundException(carId));
     }
 
     public CarResponse convertCarToCarResponse(Car car) {
@@ -57,14 +57,14 @@ public class CarService {
 
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
-            throw new CarExceptions.CarBrandNotFound();
+            throw new CarExceptions.CarBrandNotFoundException();
         }
         CarModel carModel = carModelRepository.findByName(modelName);
         if (carModel == null) {
-            throw new CarExceptions.CarModelNotFound();
+            throw new CarExceptions.CarModelNotFoundException();
         }
         if (year == null || (1950 > year || year > 2025)) {
-            throw new CarExceptions.CarYearInvalid();
+            throw new CarExceptions.CarYearInvalidException();
         }
 
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -98,7 +98,7 @@ public class CarService {
 
     public ResponseEntity<CarResponse> updateCar(Long carId, CarRequest carRequest) {
         Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+                .orElseThrow(() -> new CarExceptions.CarNotFoundException(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.loadUser(email);
@@ -114,14 +114,14 @@ public class CarService {
 
         CarBrand carBrand = carBrandRepository.findByName(brandName);
         if (carBrand == null) {
-            throw new CarExceptions.CarBrandNotFound();
+            throw new CarExceptions.CarBrandNotFoundException();
         }
         CarModel carModel = carModelRepository.findByName(modelName);
         if (carModel == null) {
-            throw new CarExceptions.CarModelNotFound();
+            throw new CarExceptions.CarModelNotFoundException();
         }
         if (year == null || (1950 > year || year > 2025)) {
-            throw new CarExceptions.CarYearInvalid();
+            throw new CarExceptions.CarYearInvalidException();
         }
 
         car.setBrand(carBrand);
@@ -135,7 +135,7 @@ public class CarService {
 
     public ResponseEntity<Void> deleteCar(Long carId) {
         Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+                .orElseThrow(() -> new CarExceptions.CarNotFoundException(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.loadUser(email);
@@ -151,7 +151,7 @@ public class CarService {
 
     public ResponseEntity<CarResponse> getCar(Long carId) {
         Car car = carRepository.findById(carId)
-                .orElseThrow(() -> new CarExceptions.CarNotFound(carId));
+                .orElseThrow(() -> new CarExceptions.CarNotFoundException(carId));
 
         String email = SecurityContextHolder.getContext().getAuthentication().getName();
         User user = userService.loadUser(email);

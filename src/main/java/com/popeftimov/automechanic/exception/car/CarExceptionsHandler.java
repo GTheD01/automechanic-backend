@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class CarExceptionsHandler {
 
-    @ExceptionHandler(CarExceptions.CarBrandNotFound.class)
-    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(CarExceptions.CarBrandNotFound ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarBrandNotFoundException.class)
+    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(CarExceptions.CarBrandNotFoundException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -22,8 +22,8 @@ public class CarExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CarExceptions.CarModelNotFound.class)
-    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(CarExceptions.CarModelNotFound ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarModelNotFoundException.class)
+    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(CarExceptions.CarModelNotFoundException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -34,8 +34,8 @@ public class CarExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CarExceptions.CarYearInvalid.class)
-    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(CarExceptions.CarYearInvalid ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarYearInvalidException.class)
+    public ResponseEntity<ApiError> handleInvalidPhoneNumberException(CarExceptions.CarYearInvalidException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -46,8 +46,8 @@ public class CarExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CarExceptions.CarNotFound.class)
-    public ResponseEntity<ApiError> handleCarNotFoundException(CarExceptions.CarNotFound ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarNotFoundException.class)
+    public ResponseEntity<ApiError> handleCarNotFoundException(CarExceptions.CarNotFoundException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.NOT_FOUND.value(),
                 "NOT FOUND",
@@ -58,8 +58,8 @@ public class CarExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(CarExceptions.CarBrandExists.class)
-    public ResponseEntity<ApiError> handleCarBrandExists(CarExceptions.CarBrandExists ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarBrandExistsException.class)
+    public ResponseEntity<ApiError> handleCarBrandExistsException(CarExceptions.CarBrandExistsException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -70,8 +70,8 @@ public class CarExceptionsHandler {
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(CarExceptions.CarModelExists.class)
-    public ResponseEntity<ApiError> handleCarModelExists(CarExceptions.CarModelExists ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarModelExistsException.class)
+    public ResponseEntity<ApiError> handleCarModelExistsException(CarExceptions.CarModelExistsException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",
@@ -81,8 +81,8 @@ public class CarExceptionsHandler {
 
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
-    @ExceptionHandler(CarExceptions.CarBrandNotProvided.class)
-    public ResponseEntity<ApiError> handleCarBrandNotProvided(CarExceptions.CarBrandNotProvided ex, HttpServletRequest request) {
+    @ExceptionHandler(CarExceptions.CarBrandNotProvidedException.class)
+    public ResponseEntity<ApiError> handleCarBrandNotProvidedException(CarExceptions.CarBrandNotProvidedException ex, HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.BAD_REQUEST.value(),
                 "BAD REQUEST",

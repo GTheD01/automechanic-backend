@@ -10,8 +10,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class SignUpExceptionsHandler {
 
-    @ExceptionHandler(SignUpExceptions.FailedToSendVerificationEmail.class)
-    public ResponseEntity<ApiError> handleFailedToSendEmailException(SignUpExceptions.FailedToSendVerificationEmail ex, HttpServletRequest request) {
+    @ExceptionHandler(SignUpExceptions.FailedToSendVerificationEmailException.class)
+    public ResponseEntity<ApiError> handleFailedToSendEmailException(SignUpExceptions.FailedToSendVerificationEmailException ex,
+                                                                     HttpServletRequest request) {
         ApiError apiError = new ApiError(
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "INTERNAL_SERVER_ERROR",

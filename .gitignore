@@ -18,7 +18,7 @@ target/
 .sts4-cache
 
 .env.prod
-.env.dev
+.env
 uploads
 
 ### IntelliJ IDEA ###

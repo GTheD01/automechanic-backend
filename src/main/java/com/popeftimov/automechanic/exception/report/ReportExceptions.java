@@ -14,20 +14,20 @@ public class ReportExceptions {
         }
     }
 
-    public static class ReportTypeNotProvided extends RuntimeException {
-        public ReportTypeNotProvided() {
+    public static class ReportTypeNotProvidedException extends RuntimeException {
+        public ReportTypeNotProvidedException() {
             super("Report type must be provided");
         }
     }
 
-    public static class ReportNotFound extends RuntimeException {
-        public ReportNotFound(Long reportId) {
+    public static class ReportNotFoundException extends RuntimeException {
+        public ReportNotFoundException(Long reportId) {
             super("Report with ID: " + reportId + " not found.");
         }
     }
 
-    public static class ReportAlreadyAnswered extends RuntimeException {
-        public ReportAlreadyAnswered() {
+    public static class ReportAlreadyAnsweredException extends RuntimeException {
+        public ReportAlreadyAnsweredException() {
             super("The report was already answered");
         }
     }

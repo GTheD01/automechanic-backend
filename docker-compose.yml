@@ -5,7 +5,7 @@ services:
     ports:
       - "5432:5432"
     env_file:
-      - .env.dev
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
@@ -13,7 +13,7 @@ services:
     container_name: rabbitmq-automechanic
     image: rabbitmq:management
     env_file:
-      - .env.dev
+      - .env
     ports:
       - "5672:5672"
       - "15672:15672"

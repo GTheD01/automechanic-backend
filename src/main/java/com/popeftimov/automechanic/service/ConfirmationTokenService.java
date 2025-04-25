@@ -36,16 +36,16 @@ public class ConfirmationTokenService {
     @Transactional
     public ResponseEntity<Void> confirmToken(String token) {
         ConfirmationToken confirmationToken = getToken(token)
-                .orElseThrow(ConfirmationTokenExceptions.TokenInvalidExpired::new);
+                .orElseThrow(ConfirmationTokenExceptions.TokenInvalidExpiredException::new);
 
         if (confirmationToken.getConfirmedAt() != null) {
-            throw new ConfirmationTokenExceptions.EmailAlreadyConfirmed();
+            throw new ConfirmationTokenExceptions.EmailAlreadyConfirmedException();
         }
 
         LocalDateTime expiredAt = confirmationToken.getExpiresAt();
 
         if (expiredAt.isBefore(LocalDateTime.now())) {
-            throw new ConfirmationTokenExceptions.TokenInvalidExpired();
+            throw new ConfirmationTokenExceptions.TokenInvalidExpiredException();
         }
 
         this.setConfirmedAt(token);

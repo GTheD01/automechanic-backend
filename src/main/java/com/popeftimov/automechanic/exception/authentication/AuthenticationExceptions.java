@@ -8,14 +8,14 @@ public class AuthenticationExceptions {
         }
     }
 
-    public static class InvalidOrExpiredRefreshToken extends RuntimeException {
-        public InvalidOrExpiredRefreshToken() {
+    public static class InvalidOrExpiredRefreshTokenException extends RuntimeException {
+        public InvalidOrExpiredRefreshTokenException() {
             super("Invalid or expired refresh token.");
         }
     }
 
-    public static class InvalidOrExpiredAccessToken extends RuntimeException {
-        public InvalidOrExpiredAccessToken() {
+    public static class InvalidOrExpiredAccessTokenException extends RuntimeException {
+        public InvalidOrExpiredAccessTokenException() {
             super("Invalid or expired access token.");
         }
     }
