@@ -1,7 +1,25 @@
 services:
+  backend:
+    build: .
+    container_name: automechanic-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      - spring.datasource.url=${DATABASE_URL}
+      - spring.datasource.username=${POSTGRES_USER}
+      - spring.datasource.password=${POSTGRES_PASSWORD}
+      - spring.profiles.active=${SPRING_PROFILES_ACTIVE}
+    depends_on:
+      - postgres
+      - rabbitmq
+    restart: always
+    networks:
+      - postgres
   postgres:
     image: postgres:15
-    container_name: automechanic-postgres
+    container_name: postgres
     ports:
       - "5432:5432"
     env_file:
@@ -9,6 +27,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     restart: always
+    networks:
+      - postgres
   rabbitmq:
     container_name: rabbitmq-automechanic
     image: rabbitmq:management
@@ -20,6 +40,12 @@ services:
     environment:
       RABBITMQ_DEFAULT_USER: ${RABBITMQ_USERNAME}
       RABBITMQ_DEFAULT_PASS: ${RABBITMQ_PASSWORD}
+    networks:
+      - postgres
 
 volumes:
   postgres_data:
+
+networks:
+  postgres:
+    driver: bridge
