@@ -38,8 +38,8 @@ class CarBrandServiceTest {
 
         CarBrandResponse response = carBrandService.convertCarBrandToCarBrandResponse(carBrand);
 
-        assertEquals(1L, response.getId());
-        assertEquals("Toyota", response.getName());
+        assertEquals(carBrand.getId(), response.getId());
+        assertEquals(carBrand.getName(), response.getName());
     }
 
     @Test
@@ -52,7 +52,7 @@ class CarBrandServiceTest {
         Page<CarBrandResponse> result = carBrandService.getAdminCarBrands(Pageable.unpaged());
 
         assertEquals(1, result.getTotalElements());
-        assertEquals("BMW", result.getContent().get(0).getName());
+        assertEquals(carBrand.getName(), result.getContent().get(0).getName());
     }
 
     @Test
@@ -67,7 +67,7 @@ class CarBrandServiceTest {
         List<CarBrandResponse> result = carBrandService.getAllCarBrands();
 
         assertEquals(2, result.size());
-        assertEquals("BMW", result.get(0).getName());
+        assertEquals(bmw.getName(), result.get(0).getName());
     }
 
     @Test
