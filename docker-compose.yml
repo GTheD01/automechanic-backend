@@ -1,6 +1,8 @@
 services:
   backend:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
     container_name: automechanic-backend
     ports:
       - "8080:8080"
@@ -15,6 +17,9 @@ services:
       - postgres
       - rabbitmq
     restart: always
+    volumes:
+      - .:/automechanic
+      - ~/.m2:/root/.m2
     networks:
       - postgres
   postgres:

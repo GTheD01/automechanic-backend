@@ -1,0 +1,13 @@
+FROM maven:3.9.8-eclipse-temurin-17
+
+WORKDIR /automechanic
+
+# Copy pom and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy full source
+COPY . .
+
+# Enable Spring Boot DevTools in the classpath (make sure it’s in your pom.xml)
+CMD ["mvn", "spring-boot:run"]
